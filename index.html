@@ -134,7 +134,7 @@
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -757,7 +757,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-06-10 11:30:46" itemprop="dateModified" datetime="2022-06-10T11:30:46+08:00">2022-06-10</time>
+      <time title="修改时间：2022-06-11 15:49:54" itemprop="dateModified" datetime="2022-06-11T15:49:54+08:00">2022-06-11</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -766,6 +766,10 @@
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
           <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%9F%BA%E7%A1%80/%E5%BC%82%E5%B8%B8/" itemprop="url" rel="index"><span itemprop="name">异常</span></a>
         </span>
     </span>
 
@@ -854,7 +858,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-06-11 10:30:11" itemprop="dateModified" datetime="2022-06-11T10:30:11+08:00">2022-06-11</time>
+      <time title="修改时间：2022-06-11 11:31:25" itemprop="dateModified" datetime="2022-06-11T11:31:25+08:00">2022-06-11</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -863,6 +867,10 @@
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
           <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%9F%BA%E7%A1%80/%E5%AE%B9%E5%99%A8/" itemprop="url" rel="index"><span itemprop="name">容器</span></a>
         </span>
     </span>
 
@@ -933,9 +941,8 @@
 </ul>
 </li>
 </ul>
-<p><img src="https://saltedfishust.github.io/2019/01/08/ThinkingInJava_8-%E6%8C%81%E6%9C%89%E5%AF%B9%E8%B1%A1/ThinkingInJava_8-%E6%8C%81%E6%9C%89%E5%AF%B9%E8%B1%A1/8_3.png" alt="img"></p>
 <p>例如：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">CrossContainerIteration</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">display</span><span class="params">(Iterator&lt;Pet&gt; it)</span> &#123;</span><br><span class="line">    <span class="keyword">while</span>(it.hasNext()) &#123;</span><br><span class="line">      <span class="type">Pet</span> <span class="variable">p</span> <span class="operator">=</span> it.next();</span><br><span class="line">      System.out.print(p.id() + <span class="string">&quot;:&quot;</span> + p + <span class="string">&quot; &quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    System.out.println();</span><br><span class="line">  &#125;    </span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">    ArrayList&lt;Pet&gt; pets = Pets.arrayList(<span class="number">8</span>);</span><br><span class="line">    LinkedList&lt;Pet&gt; petsLL = <span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;Pet&gt;(pets);</span><br><span class="line">    HashSet&lt;Pet&gt; petsHS = <span class="keyword">new</span> <span class="title class_">HashSet</span>&lt;Pet&gt;(pets);</span><br><span class="line">    TreeSet&lt;Pet&gt; petsTS = <span class="keyword">new</span> <span class="title class_">TreeSet</span>&lt;Pet&gt;(pets);</span><br><span class="line">    display(pets.iterator());</span><br><span class="line">    display(petsLL.iterator());</span><br><span class="line">    display(petsHS.iterator());</span><br><span class="line">    display(petsTS.iterator());</span><br><span class="line">  &#125;</span><br><span class="line">&#125; <span class="comment">/* Output:</span></span><br><span class="line"><span class="comment">0:Rat 1:Manx 2:Cymric 3:Mutt 4:Pug 5:Cymric 6:Pug 7:Manx</span></span><br><span class="line"><span class="comment">0:Rat 1:Manx 2:Cymric 3:Mutt 4:Pug 5:Cymric 6:Pug 7:Manx</span></span><br><span class="line"><span class="comment">4:Pug 6:Pug 3:Mutt 1:Manx 5:Cymric 7:Manx 2:Cymric 0:Rat</span></span><br><span class="line"><span class="comment">5:Cymric 2:Cymric 7:Manx 1:Manx 3:Mutt 6:Pug 4:Pug 0:Rat</span></span><br><span class="line"><span class="comment">*/</span><span class="comment">//:~</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">CrossContainerIteration</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">display</span><span class="params">(Iterator&lt;Pet&gt; it)</span> &#123;</span><br><span class="line">    <span class="keyword">while</span>(it.hasNext())&#123;</span><br><span class="line">      <span class="type">Pet</span> <span class="variable">p</span> <span class="operator">=</span> it.next();</span><br><span class="line">      System.out.print(p.id() + <span class="string">&quot;:&quot;</span> + p + <span class="string">&quot; &quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    System.out.println();</span><br><span class="line">  &#125;    </span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">    ArrayList&lt;Pet&gt; pets = Pets.arrayList(<span class="number">8</span>);</span><br><span class="line">    LinkedList&lt;Pet&gt; petsLL = <span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;Pet&gt;(pets);</span><br><span class="line">    HashSet&lt;Pet&gt; petsHS = <span class="keyword">new</span> <span class="title class_">HashSet</span>&lt;Pet&gt;(pets);</span><br><span class="line">    TreeSet&lt;Pet&gt; petsTS = <span class="keyword">new</span> <span class="title class_">TreeSet</span>&lt;Pet&gt;(pets);</span><br><span class="line">    display(pets.iterator());</span><br><span class="line">    display(petsLL.iterator());</span><br><span class="line">    display(petsHS.iterator());</span><br><span class="line">    display(petsTS.iterator());</span><br><span class="line">  &#125;</span><br><span class="line">&#125; <span class="comment">/* Output:</span></span><br><span class="line"><span class="comment">0:Rat 1:Manx 2:Cymric 3:Mutt 4:Pug 5:Cymric 6:Pug 7:Manx</span></span><br><span class="line"><span class="comment">0:Rat 1:Manx 2:Cymric 3:Mutt 4:Pug 5:Cymric 6:Pug 7:Manx</span></span><br><span class="line"><span class="comment">4:Pug 6:Pug 3:Mutt 1:Manx 5:Cymric 7:Manx 2:Cymric 0:Rat</span></span><br><span class="line"><span class="comment">5:Cymric 2:Cymric 7:Manx 1:Manx 3:Mutt 6:Pug 4:Pug 0:Rat</span></span><br><span class="line"><span class="comment">*/</span><span class="comment">//:~</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="ArrayList-和-LinkedList"><a href="#ArrayList-和-LinkedList" class="headerlink" title="ArrayList 和 LinkedList"></a>ArrayList 和 LinkedList</h2><h3 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ArrayList</span>&lt;E&gt; <span class="keyword">extends</span> <span class="title class_">AbstractList</span>&lt;E&gt;</span><br><span class="line">        <span class="keyword">implements</span> <span class="title class_">List</span>&lt;E&gt;, RandomAccess, Cloneable, java.io.Serializable</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">long</span> <span class="variable">serialVersionUID</span> <span class="operator">=</span> <span class="number">8683452581122892189L</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Default initial capacity.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">DEFAULT_CAPACITY</span> <span class="operator">=</span> <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Shared empty array instance used for empty instances.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Object[] EMPTY_ELEMENTDATA = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Shared empty array instance used for default sized empty instances. We</span></span><br><span class="line"><span class="comment">     * distinguish this from EMPTY_ELEMENTDATA to know how much to inflate when</span></span><br><span class="line"><span class="comment">     * first element is added.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The array buffer into which the elements of the ArrayList are stored.</span></span><br><span class="line"><span class="comment">     * The capacity of the ArrayList is the length of this array buffer. Any</span></span><br><span class="line"><span class="comment">     * empty ArrayList with elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA</span></span><br><span class="line"><span class="comment">     * will be expanded to DEFAULT_CAPACITY when the first element is added.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">transient</span> Object[] elementData; <span class="comment">// non-private to simplify nested class access</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The size of the ArrayList (the number of elements it contains).</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@serial</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> size;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LinkedList</span>&lt;E&gt;</span><br><span class="line">    <span class="keyword">extends</span> <span class="title class_">AbstractSequentialList</span>&lt;E&gt;</span><br><span class="line">    <span class="keyword">implements</span> <span class="title class_">List</span>&lt;E&gt;, Deque&lt;E&gt;, Cloneable, java.io.Serializable</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">transient</span> <span class="type">int</span> <span class="variable">size</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Pointer to first node.</span></span><br><span class="line"><span class="comment">     * Invariant: (first == null &amp;&amp; last == null) ||</span></span><br><span class="line"><span class="comment">     *            (first.prev == null &amp;&amp; first.item != null)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">transient</span> Node&lt;E&gt; first;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Pointer to last node.</span></span><br><span class="line"><span class="comment">     * Invariant: (first == null &amp;&amp; last == null) ||</span></span><br><span class="line"><span class="comment">     *            (last.next == null &amp;&amp; last.item != null)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">transient</span> Node&lt;E&gt; last;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -959,10 +966,8 @@
 </ul>
 </li>
 </ul>
-<h3 id="线程安全问题"><a href="#线程安全问题" class="headerlink" title="线程安全问题"></a>线程安全问题</h3><p>![img]</p>
-<p>唯有的几个线程安全的集合已经被弃用了，Vector&#x2F;Stack 和 Hashtable 我觉得是因为大量使用 synchronized 加重量级锁导致的性能很差。</p>
-<h1 id="Set"><a href="#Set" class="headerlink" title="Set"></a>Set</h1><p>![img]</p>
-<p>Set集合的特点：不能存储相同的元素。典型的实现包括：</p>
+<h3 id="线程安全问题"><a href="#线程安全问题" class="headerlink" title="线程安全问题"></a>线程安全问题</h3><p>唯有的几个线程安全的集合已经被弃用了，Vector 和 Hashtable 我觉得是因为大量使用 synchronized 加重量级锁导致的性能很差。</p>
+<h1 id="Set"><a href="#Set" class="headerlink" title="Set"></a>Set</h1><p>Set集合的特点：不能存储相同的元素。典型的实现包括：</p>
 <ul>
 <li>HashSet：为快速查找而设计的Set，存入HashSet的元素必须定义 hashCode()。哈希表是通过使用称为散列法的机制来存储信息的，元素并没有以某种特定顺序来存放；</li>
 <li>LinkedHashSet：具有HashSet的查询速度，且内部使用链表维护元素的数据（插入的次序）。于是在使用迭代器遍历Set时，结果会按元素插入的次序显示。元素也必须定义hashCode()方法；</li>
@@ -1005,7 +1010,7 @@
 <td>size( ) 返回集合的大小</td>
 </tr>
 </tbody></table>
-<h2 id="HashSet"><a href="#HashSet" class="headerlink" title="HashSet"></a>HashSet</h2><p>HashSet实现Set接口，底层由HashMap来实现，为哈希表结构，新增元素相当于HashMap的key，value默认为一个固定的Object。在我看来，HashSet相当于一个阉割版的HashMap;当有元素插入的时候，会计算元素的hashCode值，将元素插入到哈希表对应的位置中来；它继承于AbstractSet，实现了Set, Cloneable, Serializable接口。</p>
+<h2 id="HashSet"><a href="#HashSet" class="headerlink" title="HashSet"></a>HashSet</h2><p>HashSet实现Set接口，<strong>底层由HashMap来实现</strong>，为哈希表结构，新增元素相当于HashMap的key，value默认为一个固定的Object。在我看来，HashSet相当于一个阉割版的HashMap;当有元素插入的时候，会计算元素的hashCode值，将元素插入到哈希表对应的位置中来；它继承于AbstractSet，实现了Set, Cloneable, Serializable接口。</p>
 <ul>
 <li>HashSet继承AbstractSet类，获得了Set接口大部分的实现，减少了实现此接口所需的工作，实际上是又继承了AbstractCollection类；</li>
 <li>HashSet实现了Set接口，获取Set接口的方法，可以自定义具体实现，也可以继承AbstractSet类中的实现；</li>
@@ -1162,8 +1167,8 @@
 </ul>
 </li>
 <li>原因<ul>
-<li>因为默认的hashcode方法是根据对象的地址生成的，所以任何一个对象的hash值都是不同的，但在实际的场景中可能出现含有相同意义的多个对象地址不同（hash值），这就导致了我们“想要的一个key”对应多个value的问题，所以一定要重写hashcode方法；</li>
-<li>同样因为重写了hashcode方法，所以同一个hashcode位置上可能对应多个对象（甚至包括场景定义下不同含义的对象——即hash冲突），这时就需要调用equals方法判断新来的对象（的key）与已经有的对象(的key)是否相等，因为默认的equals方法也是判断地址是否相同，所以仍然存在前面的问题，即含有相同意义的多个对象地址不同，而导致相同的key有多个value，所以也要重写equals方法，这里是双重检查。可以简单理解为我们要根据业务需求定义自己的相等机制。</li>
+<li><strong>因为默认的hashcode方法是根据对象的地址生成的</strong>，所以任何一个对象的hash值都是不同的，但在实际的场景中可能出现含有相同意义的多个对象地址不同（hash值），这就导致了我们“不想要的一个key”对应多个value的问题，所以一定要重写hashcode方法；</li>
+<li>同样因为重写了hashcode方法，所以同一个hashcode位置上可能对应多个对象（甚至包括场景定义下不同含义的对象——即hash冲突），这时就需要调用equals方法判断新来的对象（的key）与已经有的对象(的key)是否相等，<strong>因为默认的equals方法也是判断地址是否相同</strong>，所以仍然存在前面的问题，即含有相同意义的多个对象地址不同，而导致相同的key有多个value，所以也要重写equals方法，这里是双重检查。可以简单理解为我们要根据业务需求定义自己的相等机制。</li>
 </ul>
 </li>
 <li>方案<ul>
@@ -1241,7 +1246,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-06-10 20:51:38" itemprop="dateModified" datetime="2022-06-10T20:51:38+08:00">2022-06-10</time>
+      <time title="修改时间：2022-06-11 11:31:02" itemprop="dateModified" datetime="2022-06-11T11:31:02+08:00">2022-06-11</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1250,6 +1255,10 @@
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
           <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%9F%BA%E7%A1%80/%E5%8F%8D%E5%B0%84/" itemprop="url" rel="index"><span itemprop="name">反射</span></a>
         </span>
     </span>
 
@@ -1341,7 +1350,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-06-10 11:40:47" itemprop="dateModified" datetime="2022-06-10T11:40:47+08:00">2022-06-10</time>
+      <time title="修改时间：2022-06-11 11:31:11" itemprop="dateModified" datetime="2022-06-11T11:31:11+08:00">2022-06-11</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1350,6 +1359,10 @@
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
           <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%9F%BA%E7%A1%80/%E6%B3%9B%E5%9E%8B/" itemprop="url" rel="index"><span itemprop="name">泛型</span></a>
         </span>
     </span>
 
