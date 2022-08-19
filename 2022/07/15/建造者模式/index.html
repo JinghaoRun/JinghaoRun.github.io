@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="建造者模式​		建造者模式（Builder Pattern）使用多个简单的对象一步一步构建成一个复杂的对象。这种类型的设计模式属于创建型模式，它提供了一种创建对象的最佳方式。 ​		主要解决在软件系统中，有时候面临着”一个复杂对象”的创建工作，其通常由各个部分的子对象用一定的算法构成；由于需求的变化，这个复杂对象的各个部分经常面临着剧烈的变化，但是将它们组合在一起的算法却相对稳定。常常使用在一些基">
+<meta property="og:type" content="article">
+<meta property="og:title" content="建造者模式">
+<meta property="og:url" content="http://example.com/2022/07/15/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/index.html">
+<meta property="og:site_name" content="WangHao&amp;博客">
+<meta property="og:description" content="建造者模式​		建造者模式（Builder Pattern）使用多个简单的对象一步一步构建成一个复杂的对象。这种类型的设计模式属于创建型模式，它提供了一种创建对象的最佳方式。 ​		主要解决在软件系统中，有时候面临着”一个复杂对象”的创建工作，其通常由各个部分的子对象用一定的算法构成；由于需求的变化，这个复杂对象的各个部分经常面临着剧烈的变化，但是将它们组合在一起的算法却相对稳定。常常使用在一些基">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2022/07/15/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%5C1.png">
+<meta property="og:image" content="http://example.com/2022/07/15/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%5C2.png">
+<meta property="og:image" content="http://example.com/2022/07/15/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%5C3.png">
+<meta property="og:image" content="http://example.com/2022/07/15/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%5C4.png">
+<meta property="og:image" content="http://example.com/2022/07/15/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%5C5.jpg">
+<meta property="og:image" content="http://example.com/2022/07/15/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%5C6.jpg">
+<meta property="og:image" content="http://example.com/2022/07/15/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%5C7.jpg">
+<meta property="og:image" content="http://example.com/2022/07/15/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%5C5.png">
+<meta property="og:image" content="http://example.com/2022/07/15/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%5C8.jpg">
+<meta property="article:published_time" content="2022-07-15T07:12:08.000Z">
+<meta property="article:modified_time" content="2022-07-25T01:37:37.017Z">
+<meta property="article:author" content="Jing">
+<meta property="article:tag" content="建造者模式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2022/07/15/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%5C1.png">
+
+
+<link rel="canonical" href="http://example.com/2022/07/15/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2022/07/15/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/","path":"2022/07/15/建造者模式/","title":"建造者模式"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>建造者模式 | WangHao&博客</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">WangHao&博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Welcome to the home of WangHao</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">建造者模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8E%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.1.</span> <span class="nav-text">与工厂模式的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8E%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.2.</span> <span class="nav-text">与抽象工厂模式的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">1.3.</span> <span class="nav-text">建造者模式的应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E4%BE%8B%E5%BA%94%E7%94%A8"><span class="nav-number">1.4.</span> <span class="nav-text">实例应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%E5%9C%A8-JDK-%E7%9A%84%E5%BA%94%E7%94%A8%E5%92%8C%E6%BA%90%E7%A0%81"><span class="nav-number">1.5.</span> <span class="nav-text">建造者模式在 JDK 的应用和源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MyBatis%E4%B8%ADSqlSessionFactoryBuiler"><span class="nav-number">1.6.</span> <span class="nav-text">MyBatis中SqlSessionFactoryBuiler</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Spring%E6%A1%86%E6%9E%B6%E4%B8%AD%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%BA%94%E7%94%A8"><span class="nav-number">1.7.</span> <span class="nav-text">Spring框架中建造者模式的应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%93%BE%E5%BC%8F%EF%BC%8C%E9%9D%99%E6%80%81%E5%86%85%E9%83%A8%E7%B1%BB%EF%BC%8C%E5%88%9B%E5%BB%BA%E5%8A%A8%E6%80%81SQL"><span class="nav-number">1.8.</span> <span class="nav-text">链式，静态内部类，创建动态SQL</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Jing"
+      src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">Jing</p>
+  <div class="site-description" itemprop="description">Stay hungry,stay foolish</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/07/15/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="Jing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangHao&博客">
+      <meta itemprop="description" content="Stay hungry,stay foolish">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="建造者模式 | WangHao&博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          建造者模式
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-07-15 15:12:08" itemprop="dateCreated datePublished" datetime="2022-07-15T15:12:08+08:00">2022-07-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-07-25 09:37:37" itemprop="dateModified" datetime="2022-07-25T09:37:37+08:00">2022-07-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" itemprop="url" rel="index"><span itemprop="name">设计模式</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="建造者模式"><a href="#建造者模式" class="headerlink" title="建造者模式"></a>建造者模式</h1><p>​		建造者模式（Builder Pattern）使用多个简单的对象一步一步构建成一个复杂的对象。这种类型的设计模式属于创建型模式，它提供了一种创建对象的最佳方式。</p>
+<p>​		主要解决在软件系统中，有时候面临着”一个复杂对象”的创建工作，其通常由各个部分的子对象用一定的算法构成；由于需求的变化，这个复杂对象的各个部分经常面临着剧烈的变化，但是将它们组合在一起的算法却相对稳定。常常使用在一些基本部件不会变，而其组合经常变化的时候。</p>
+<p>​		关键组成部分：建造者：创建和提供实例，导演：管理建造出来的实例的依赖关系。</p>
+<p>​		建造者（Builder）模式的主要角色如下。</p>
+<span id="more"></span>
+
+<ol>
+<li>产品角色（Product）：它是包含多个组成部件的复杂对象，由具体建造者来创建其各个零部件。（最终指挥者返回的对象）</li>
+<li>抽象建造者（Builder）：它是一个包含创建产品各个子部件的抽象方法的接口，通常还包含一个返回复杂产品的方法 getResult()。（负责定义该产品由哪些部分组成）</li>
+<li>具体建造者(Concrete Builder）：实现 Builder 接口，完成复杂产品的各个部件的具体创建方法。（这里不同子类就有可以使用不同的材料不同的方式来创建零部件）</li>
+<li>指挥者（Director）：它调用建造者对象中的部件构造与装配方法完成复杂对象的创建，在指挥者中不涉及具体产品的信息。只是规定产品构建的顺序。这里可以传入不同的具体建造者，实现不同产品的构建</li>
+</ol>
+<h2 id="与工厂模式的区别"><a href="#与工厂模式的区别" class="headerlink" title="与工厂模式的区别"></a>与工厂模式的区别</h2><ul>
+<li><p>建造者模式更加注重方法的调用顺序，工厂模式注重创建对象。</p>
+</li>
+<li><p>创建对象的力度不同，建造者模式创建复杂的对象，由各种复杂的部件组成，工厂模式创建出来的对象都一样</p>
+</li>
+<li><p>关注重点不一样，工厂模式只需要把对象创建出来就可以了，而建造者模式不仅要创建出对象，还要知道对象由哪些部件组成。</p>
+</li>
+<li><p>建造者模式根据建造过程中的顺序不一样，最终对象部件组成也不一样。</p>
+<pre><code>控制指的是方法的调用顺序的控制。在Builder 模式中， Director 决定了Builder 角色中方法的
+</code></pre>
+<p>调用顺序，而在Template Method 模式中，父类决定了子类方法的调用顺序</p>
+</li>
+</ul>
+<h2 id="与抽象工厂模式的区别"><a href="#与抽象工厂模式的区别" class="headerlink" title="与抽象工厂模式的区别"></a>与抽象工厂模式的区别</h2><pre><code>    抽象工厂模式实现对产品家族的创建，一个产品家族是这样的一系列产品：具有不同分类维度的产品组合，采用抽象工厂模式不需要关心构建过程，只关心什么产品由什么工厂生产即可。而建造者模式则是要求按照指定的蓝图建造产品，它的主要目的是通过组装零配件而产生一个新产品
+</code></pre>
+<h2 id="建造者模式的应用场景"><a href="#建造者模式的应用场景" class="headerlink" title="建造者模式的应用场景"></a>建造者模式的应用场景</h2><pre><code>    建造者模式唯一区别于工厂模式的是针对复杂对象的创建。也就是说，如果创建简单对象，通常都是使用工厂模式进行创建，而如果创建复杂对象，就可以考虑使用建造者模式。
+</code></pre>
+<p>当需要创建的产品具备复杂创建过程时，可以抽取出共性创建过程，然后交由具体实现类自定义创建流程，使得同样的创建行为可以生产出不同的产品，分离了创建与表示，使创建产品的灵活性大大增加。</p>
+<p>建造者模式主要适用于以下应用场景：</p>
+<ul>
+<li>相同的方法，不同的执行顺序，产生不同的结果。</li>
+<li>多个部件或零件，都可以装配到一个对象中，但是产生的结果又不相同。</li>
+<li>产品类非常复杂，或者产品类中不同的调用顺序产生不同的作用。</li>
+<li>初始化一个对象特别复杂，参数多，而且很多参数都具有默认值。</li>
+</ul>
+<h2 id="实例应用"><a href="#实例应用" class="headerlink" title="实例应用"></a>实例应用</h2><pre><code>    使用Builder 模式编写“文档”的程序。文档具有以下结构。含有一个标题，含有几个字符串，含有条目项目
+    Builder 类中定义了决定文档结构的方法，然后Director 类使用该方法编写一个具体的文档。
+    Builder 是抽象类，它并没有进行任何实际的处理，仅仅声明了抽象方法。Builder 类的子类决定了用来编写文档的具体处理。
+    在示例程序中，我们定义了以下Builder 类的子类。
+    • TextBuilder 类：使用纯文本（普通字符串）编写文档
+    • HTMLBuilder 类：使用HTML 编写文档
+    Director 使用TextBuilder 类时可以编写纯文本文档；使用HTMLBuilder 类时可以编写HTML 文档。
+</code></pre>
+<p>Builder 类:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">Builder</span> &#123;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title function_">makeTitle</span><span class="params">(String title)</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title function_">makeString</span><span class="params">(String str)</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title function_">makeitems</span><span class="params">(String [] items )</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title function_">close</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Director 类</p>
+<pre><code>    Director 类的构造函数的参数是Builder 类型的。但是实际上我们并不会将Builder 类的实例作为参数传递给Director 类。这是因为Builder 类是抽象类，是无法生成其实例的。实际上传递给Director 类的是Builder 类的子类（TextBuilder 类和HTMLBuilder 类等）的实例。而正是这些Builder 类的子类决定了编写出的文档的形式。
+    construct 方法是编写文挡的方法。调用这个方法后就会编写文档。construct 方法中所使用的方法都是在Builder 类中声明的方法
+</code></pre>
+<p>Director 类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Director</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> Builder builder;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Director</span><span class="params">(Builder builder)</span> &#123;              <span class="comment">// 因为接收的参数是Builder类的子类</span></span><br><span class="line">        <span class="built_in">this</span>.builder = builder;                     <span class="comment">// 所以可以将其保存在builder字段中</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">construct</span><span class="params">()</span> &#123;                       <span class="comment">// 编写文档</span></span><br><span class="line">        builder.makeTitle(<span class="string">&quot;Greeting&quot;</span>);              <span class="comment">// 标题</span></span><br><span class="line">        builder.makeString(<span class="string">&quot;从早上至下午&quot;</span>);         <span class="comment">// 字符串</span></span><br><span class="line">        builder.makeItems(<span class="keyword">new</span> <span class="title class_">String</span>[]&#123;             <span class="comment">// 条目</span></span><br><span class="line">            <span class="string">&quot;早上好。&quot;</span>,</span><br><span class="line">            <span class="string">&quot;下午好。&quot;</span>,</span><br><span class="line">        &#125;);</span><br><span class="line">        builder.makeString(<span class="string">&quot;晚上&quot;</span>);                 <span class="comment">// 其他字符串</span></span><br><span class="line">        builder.makeItems(<span class="keyword">new</span> <span class="title class_">String</span>[]&#123;             <span class="comment">// 其他条目</span></span><br><span class="line">            <span class="string">&quot;晚上好。&quot;</span>,</span><br><span class="line">            <span class="string">&quot;晚安。&quot;</span>,</span><br><span class="line">            <span class="string">&quot;再见。&quot;</span>,</span><br><span class="line">        &#125;);</span><br><span class="line">        builder.close();                            <span class="comment">// 完成文档</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>TextBuilder 类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TextBuilder</span> <span class="keyword">extends</span> <span class="title class_">Builder</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">StringBuffer</span> <span class="variable">buffer</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">StringBuffer</span>();           <span class="comment">// 文档内容保存在该字段中 </span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">buildTitle</span><span class="params">(String title)</span> &#123;                       <span class="comment">// 纯文本的标题</span></span><br><span class="line">        buffer.append(<span class="string">&quot;==============================\n&quot;</span>);          <span class="comment">// 装饰线</span></span><br><span class="line">        buffer.append(<span class="string">&quot;『&quot;</span> + title + <span class="string">&quot;』\n&quot;</span>);                       <span class="comment">// 为标题添加『』</span></span><br><span class="line">        buffer.append(<span class="string">&quot;\n&quot;</span>);                                        <span class="comment">// 换行</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">buildString</span><span class="params">(String str)</span> &#123;                        <span class="comment">// 纯文本的字符串</span></span><br><span class="line">        buffer.append(<span class="string">&#x27;■&#x27;</span> + str + <span class="string">&quot;\n&quot;</span>);                           <span class="comment">// 为字符串添加■</span></span><br><span class="line">        buffer.append(<span class="string">&quot;\n&quot;</span>);                                        <span class="comment">// 换行</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">buildItems</span><span class="params">(String[] items)</span> &#123;                     <span class="comment">// 纯文本的条目</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; items.length; i++) &#123;</span><br><span class="line">            buffer.append(<span class="string">&quot;　・&quot;</span> + items[i] + <span class="string">&quot;\n&quot;</span>);                <span class="comment">// 为条目添加・</span></span><br><span class="line">        &#125;</span><br><span class="line">        buffer.append(<span class="string">&quot;\n&quot;</span>);                                        <span class="comment">// 换行</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">buildDone</span><span class="params">()</span> &#123;                                 <span class="comment">// 完成文档</span></span><br><span class="line">        buffer.append(<span class="string">&quot;==============================\n&quot;</span>);          <span class="comment">// 装饰线</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getResult</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> buffer.toString();                                   <span class="comment">// 将StringBuffer转换为String </span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>HTMLBuilder 类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HTMLBuilder</span> <span class="keyword">extends</span> <span class="title class_">Builder</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> String filename;                                    <span class="comment">// 文件名</span></span><br><span class="line">    <span class="keyword">private</span> PrintWriter writer;                                 <span class="comment">// 用于编写文件的PrintWriter</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">buildTitle</span><span class="params">(String title)</span> &#123;                       <span class="comment">// HTML文件的标题</span></span><br><span class="line">        filename = title + <span class="string">&quot;.html&quot;</span>;                                 <span class="comment">// 将标题作为文件名</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            writer = <span class="keyword">new</span> <span class="title class_">PrintWriter</span>(<span class="keyword">new</span> <span class="title class_">FileWriter</span>(filename));     <span class="comment">// 生成PrintWriter</span></span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        writer.println(<span class="string">&quot;&lt;html&gt;&lt;head&gt;&lt;title&gt;&quot;</span> + title + <span class="string">&quot;&lt;/title&gt;&lt;/head&gt;&lt;body&gt;&quot;</span>);    <span class="comment">// 输出标题  </span></span><br><span class="line">        writer.println(<span class="string">&quot;&lt;h1&gt;&quot;</span> + title + <span class="string">&quot;&lt;/h1&gt;&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">buildString</span><span class="params">(String str)</span> &#123;                        <span class="comment">// HTML中的文字</span></span><br><span class="line">        writer.println(<span class="string">&quot;&lt;p&gt;&quot;</span> + str + <span class="string">&quot;&lt;/p&gt;&quot;</span>);                       <span class="comment">// 输出&lt;p&gt;标签</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">buildItems</span><span class="params">(String[] items)</span> &#123;                     <span class="comment">// HTML中的条目</span></span><br><span class="line">        writer.println(<span class="string">&quot;&lt;ul&gt;&quot;</span>);                                     <span class="comment">// 输出&lt;ul&gt;和&lt;li&gt;</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; items.length; i++) &#123;</span><br><span class="line">            writer.println(<span class="string">&quot;&lt;li&gt;&quot;</span> + items[i] + <span class="string">&quot;&lt;/li&gt;&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        writer.println(<span class="string">&quot;&lt;/ul&gt;&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">buildDone</span><span class="params">()</span> &#123;                                 <span class="comment">// 完成文档</span></span><br><span class="line">        writer.println(<span class="string">&quot;&lt;/body&gt;&lt;/html&gt;&quot;</span>);                           <span class="comment">// 关闭标签</span></span><br><span class="line">        writer.close();                                             <span class="comment">// 关闭文件</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getResult</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> filename;                                            <span class="comment">// 返回文件名</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Main 类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Main</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (args.length != <span class="number">1</span>) &#123;</span><br><span class="line">            usage();</span><br><span class="line">            System.exit(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (args[<span class="number">0</span>].equals(<span class="string">&quot;plain&quot;</span>)) &#123;</span><br><span class="line">            <span class="type">TextBuilder</span> <span class="variable">textbuilder</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TextBuilder</span>();</span><br><span class="line">            <span class="type">Director</span> <span class="variable">director</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Director</span>(textbuilder);</span><br><span class="line">            director.construct();</span><br><span class="line">            <span class="type">String</span> <span class="variable">result</span> <span class="operator">=</span> textbuilder.getResult();</span><br><span class="line">            System.out.println(result);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (args[<span class="number">0</span>].equals(<span class="string">&quot;html&quot;</span>)) &#123;</span><br><span class="line">            <span class="type">HTMLBuilder</span> <span class="variable">htmlbuilder</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">HTMLBuilder</span>();</span><br><span class="line">            <span class="type">Director</span> <span class="variable">director</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Director</span>(htmlbuilder);</span><br><span class="line">            director.construct();</span><br><span class="line">            <span class="type">String</span> <span class="variable">filename</span> <span class="operator">=</span> htmlbuilder.getResult();</span><br><span class="line">            System.out.println(filename + <span class="string">&quot;文件编写完成。&quot;</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            usage();</span><br><span class="line">            System.exit(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">usage</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Usage: java Main plain      编写纯文本文档&quot;</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;Usage: java Main html       编写HTML文档&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="建造者模式在-JDK-的应用和源码"><a href="#建造者模式在-JDK-的应用和源码" class="headerlink" title="建造者模式在 JDK 的应用和源码"></a>建造者模式在 JDK 的应用和源码</h2><p>​		java.lang.StringBuilder 中的建造者模式</p>
+<p>源码中建造者模式角色分析</p>
+<ol>
+<li><p>Appendable 接口定义了多个 append 方法(抽象方法), 即 Appendable 为抽象建造者, 定义了抽象方<img src="/2022/07/15/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%5C1.png" alt="1"></p>
+</li>
+<li><p>AbstractStringBuilder 实现了 Appendable 接口方法，这里的 AbstractStringBuilder 已经是建造者，只是不能实例化</p>
+</li>
+<li><p><img src="/2022/07/15/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%5C2.png" alt="1"></p>
+</li>
+<li><p>StringBuilder 即充当了指挥者角色，同时充当了具体的建造者，建造方法的实现是由 AbstractStringBuilder 完成 , 而 StringBuilder 继承了 AbstractStringBuilder</p>
+</li>
+</ol>
+<p><img src="/2022/07/15/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%5C3.png" alt="1"></p>
+<p><img src="/2022/07/15/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%5C4.png" alt="1"></p>
+<p>​		StringBuilder类,append方法就是给我们提供了一种链式创建对象的方法，然后toString方法返回了一个完整的对象。</p>
+<h2 id="MyBatis中SqlSessionFactoryBuiler"><a href="#MyBatis中SqlSessionFactoryBuiler" class="headerlink" title="MyBatis中SqlSessionFactoryBuiler"></a>MyBatis中SqlSessionFactoryBuiler</h2><p><img src="/2022/07/15/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%5C5.jpg" alt="1"></p>
+<p>​	上面就是构建一个SqlSessionFactory对象的方法，我们看到里面的XMLConfigBuilder其实就是一个<strong>具体建造者角色</strong>，而其父类BaseBuilder就是一个<strong>抽象建造者角色</strong>。</p>
+<p><img src="/2022/07/15/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%5C6.jpg" alt="1"></p>
+<p><img src="/2022/07/15/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%5C7.jpg" alt="1"></p>
+<h2 id="Spring框架中建造者模式的应用"><a href="#Spring框架中建造者模式的应用" class="headerlink" title="Spring框架中建造者模式的应用"></a>Spring框架中建造者模式的应用</h2><p>​		Spring框架中的建造者模式的应用有很多，例如BeanDefinitionBuilder用于构建Bean定义信息对象，将BeanDefinition的创建过程进行封装，并提供BeanDefinitionBuilder各种Bean定义信息对象的创建方法，其实现更加的简洁（省略了抽象builder以及指挥者）并且符合实际开发需求。<br><img src="/2022/07/15/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%5C5.png" alt="1"></p>
+<p>​			以下方法为链式调用创建对象</p>
+<p><img src="/2022/07/15/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%5C8.jpg" alt="1"></p>
+<h2 id="链式，静态内部类，创建动态SQL"><a href="#链式，静态内部类，创建动态SQL" class="headerlink" title="链式，静态内部类，创建动态SQL"></a>链式，静态内部类，创建动态SQL</h2><p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7024026719120490527">用建造者模式实现一个防SQL注入的ORM框架 - 掘金 (juejin.cn)</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/yinyunmoyi/p/14313217.html">庞大的建造者模式：以组装SQL为例 - 勇闯8 - 博客园 (cnblogs.com)</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/" rel="tag"># 建造者模式</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/07/13/%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/" rel="prev" title="抽象工厂模式">
+                  <i class="fa fa-chevron-left"></i> 抽象工厂模式
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/07/23/Java%E6%B5%85%E5%85%8B%E9%9A%86%E4%B8%8E%E6%B7%B1%E5%85%8B%E9%9A%86/" rel="next" title="Java浅克隆与深克隆">
+                  Java浅克隆与深克隆 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jing</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

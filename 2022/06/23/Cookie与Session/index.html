@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="HTTP无状态​	HTTP 是无状态的。也就是说，HTTP 请求方和响应方间无法维护状态（客户端和服务端互相不认识），都是一次性的，它不知道前后的请求都发生了什么。但有的场景下，我们需要维护状态。最典型的，一个用户登陆微博，发布、关注、评论，都应是在登录后的用户状态下的。所以服务器与浏览器为了进行会话跟踪（知道是谁在访问我），就必须主动的去维护一个状态，这个状态用于告知服务端前后两个请求是否来自同">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cookie与Session">
+<meta property="og:url" content="http://example.com/2022/06/23/Cookie%E4%B8%8ESession/index.html">
+<meta property="og:site_name" content="WangHao&amp;博客">
+<meta property="og:description" content="HTTP无状态​	HTTP 是无状态的。也就是说，HTTP 请求方和响应方间无法维护状态（客户端和服务端互相不认识），都是一次性的，它不知道前后的请求都发生了什么。但有的场景下，我们需要维护状态。最典型的，一个用户登陆微博，发布、关注、评论，都应是在登录后的用户状态下的。所以服务器与浏览器为了进行会话跟踪（知道是谁在访问我），就必须主动的去维护一个状态，这个状态用于告知服务端前后两个请求是否来自同">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-06-23T12:28:15.000Z">
+<meta property="article:modified_time" content="2022-08-08T08:21:10.458Z">
+<meta property="article:author" content="Jing">
+<meta property="article:tag" content="鉴权">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2022/06/23/Cookie%E4%B8%8ESession/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2022/06/23/Cookie%E4%B8%8ESession/","path":"2022/06/23/Cookie与Session/","title":"Cookie与Session"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Cookie与Session | WangHao&博客</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">WangHao&博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Welcome to the home of WangHao</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#HTTP%E6%97%A0%E7%8A%B6%E6%80%81"><span class="nav-number">1.</span> <span class="nav-text">HTTP无状态</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Cookie"><span class="nav-number">2.</span> <span class="nav-text">Cookie</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Cookie%E5%B1%9E%E6%80%A7%E9%85%8D%E7%BD%AE"><span class="nav-number">3.</span> <span class="nav-text">Cookie属性配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Domain-x2F-Path"><span class="nav-number">3.1.</span> <span class="nav-text">Domain &#x2F; Path</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Expires-x2F-Max-Age"><span class="nav-number">3.2.</span> <span class="nav-text">Expires &#x2F; Max-Age</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Cookie%E7%BC%BA%E7%82%B9%EF%BC%9A"><span class="nav-number">3.3.</span> <span class="nav-text">Cookie缺点：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Session"><span class="nav-number">4.</span> <span class="nav-text">Session</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Session%E5%8E%9F%E7%90%86"><span class="nav-number">4.1.</span> <span class="nav-text">Session原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#session-%E7%99%BB%E9%99%86-x2F-%E9%AA%8C%E8%AF%81%E6%B5%81%E7%A8%8B%EF%BC%9A"><span class="nav-number">4.2.</span> <span class="nav-text">session 登陆&#x2F;验证流程：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Session-%E7%9A%84%E5%AD%98%E5%82%A8%E6%96%B9%E5%BC%8F"><span class="nav-number">4.3.</span> <span class="nav-text">Session 的存储方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Session-%E7%9A%84%E5%88%86%E5%B8%83%E5%BC%8F%E9%97%AE%E9%A2%98"><span class="nav-number">4.4.</span> <span class="nav-text">Session 的分布式问题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Cookie-%E5%92%8C-Session-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">5.</span> <span class="nav-text">Cookie 和 Session 的区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Token"><span class="nav-number">6.</span> <span class="nav-text">Token</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Token%E7%99%BB%E5%BD%95%E6%B5%81%E7%A8%8B"><span class="nav-number">6.1.</span> <span class="nav-text">Token登录流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF-token-%E7%9A%84%E5%AD%98%E5%82%A8%E6%96%B9%E5%BC%8F"><span class="nav-number">6.2.</span> <span class="nav-text">客户端 token 的存储方式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JWT"><span class="nav-number">7.</span> <span class="nav-text">JWT</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Jing"
+      src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">Jing</p>
+  <div class="site-description" itemprop="description">Stay hungry,stay foolish</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/06/23/Cookie%E4%B8%8ESession/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="Jing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangHao&博客">
+      <meta itemprop="description" content="Stay hungry,stay foolish">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Cookie与Session | WangHao&博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Cookie与Session
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-06-23 20:28:15" itemprop="dateCreated datePublished" datetime="2022-06-23T20:28:15+08:00">2022-06-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-08-08 16:21:10" itemprop="dateModified" datetime="2022-08-08T16:21:10+08:00">2022-08-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E5%AE%9E%E8%B7%B5/" itemprop="url" rel="index"><span itemprop="name">分布式实践</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="HTTP无状态"><a href="#HTTP无状态" class="headerlink" title="HTTP无状态"></a>HTTP无状态</h1><p>​	HTTP 是无状态的。也就是说，HTTP 请求方和响应方间无法维护状态（客户端和服务端互相不认识），都是一次性的，它不知道前后的请求都发生了什么。但有的场景下，我们需要维护状态。最典型的，一个用户登陆微博，发布、关注、评论，都应是在登录后的用户状态下的。所以服务器与浏览器为了进行会话跟踪（知道是谁在访问我），就必须主动的去维护一个状态，这个状态用于告知服务端前后两个请求是否来自同一浏览器。而这个状态需要通过 cookie 或者 session 去实现。</p>
+<h1 id="Cookie"><a href="#Cookie" class="headerlink" title="Cookie"></a>Cookie</h1><p>​	Cookies是一些存储在用户电脑上的小文件。它是被设计用来保存一些站点的用户数据，这样能够让服务器为这样的用户定制内容。页面代码能够获取到Cookie值然后发送给服务器，比如Cookie中存储了所在地理位置，以后每次进入地图就可以默认定位到改地点。</p>
+<p>​	cookie的执行原理：就是当客户端访问服务器的时候（服务器运用了cookie），服务器会生成一份cookie传输给客户端，客户端会自动把cookie保存起来，以后客户端每次访问服务器，都会自动的携带着这份cookie。简单来说，就是当客户端访问服务器时，服务器会生成一个票据给客户端，当客户端收到票据的之后就保存起来，以后再访问服务器就会自动带着票据。</p>
+<span id="more"></span>
+
+<p>​		过程如下：</p>
+<p>​	在服务端提供标记的接口，通过 HTTP 返回头的 Set-Cookie 字段，直接保存到浏览器上。</p>
+<p>​	之后浏览器发起请求时，会自动把 cookie 通过 HTTP 请求头的 Cookie 字段，带给接口。</p>
+<p><strong>cookie 存储在客户端</strong> cookie 是服务器发送到用户浏览器并保存在本地的一小块数据，它会在浏览器下次向同一服务器再发起请求时被携带并发送到服务器上。</p>
+<p><strong>cookie 是不可跨域的</strong>：每个 cookie 都会绑定单一的域名，无法在别的域名下获取使用，</p>
+<h1 id="Cookie属性配置"><a href="#Cookie属性配置" class="headerlink" title="Cookie属性配置"></a>Cookie属性配置</h1><h2 id="Domain-x2F-Path"><a href="#Domain-x2F-Path" class="headerlink" title="Domain &#x2F; Path"></a><strong>Domain &#x2F; Path</strong></h2><p>​	cookie通过 Domain（域）&#x2F; Path（路径）两级来限制有效范围，</p>
+<p>​	Domain属性指定浏览器发出 HTTP 请求时，哪些域名要附带这个 Cookie。如果没有指定该属性，浏览器会默认将其设为当前 URL 的一级域名，比如 <a target="_blank" rel="noopener" href="http://www.example.com/">www.example.com</a> 会设为 example.com，而且以后如果访问example.com的任何子域名，HTTP 请求也会带上这个 Cookie。如果服务器在Set-Cookie字段指定的域名，不属于当前域名，浏览器会拒绝这个 Cookie。Path属性指定浏览器发出 HTTP 请求时，哪些路径要附带这个 Cookie。只要浏览器发现，Path属性是 HTTP 请求路径的开头一部分，就会在头信息里面带上这个 Cookie。比如，PATH属性是&#x2F;，那么请求&#x2F;docs路径也会包含该 Cookie。当然，前提是域名必须一致。</p>
+<h2 id="Expires-x2F-Max-Age"><a href="#Expires-x2F-Max-Age" class="headerlink" title="Expires &#x2F; Max-Age"></a>Expires &#x2F; Max-Age</h2><p>​	cookie通过通过 Expires、Max-Age 中的一种来限制有效时间范围。Expires属性指定一个具体的到期时间，到了指定时间以后，浏览器就不再保留这个 Cookie。它的值是 UTC 格式。如果不设置该属性，或者设为null，Cookie 只在当前会话（session）有效，浏览器窗口一旦关闭，当前 Session 结束，该 Cookie 就会被删除。另外，浏览器根据本地时间，决定 Cookie 是否过期，由于本地时间是不精确的，所以没有办法保证 Cookie 一定会在服务器指定的时间过期。Max-Age属性指定从现在开始 Cookie 存在的秒数，比如60 * 60 * 24 * 365（即一年）。过了这个时间以后，浏览器就不再保留这个 Cookie。如果同时指定了Expires和Max-Age，那么Max-Age的值将优先生效。如果Set-Cookie字段没有指定Expires或Max-Age属性，那么这个 Cookie 就是 Session Cookie，即它只在本次对话存在，一旦用户关闭浏览器，浏览器就不会再保留这个 Cookie。</p>
+<h2 id="Cookie缺点："><a href="#Cookie缺点：" class="headerlink" title="Cookie缺点："></a>Cookie缺点：</h2><ol>
+<li>保存在客户端，容易被篡改。</li>
+<li>大小受限，本身最大4kb。</li>
+</ol>
+<h1 id="Session"><a href="#Session" class="headerlink" title="Session"></a>Session</h1><p>​	Session是另一种记录客户状态的机制，不同的是Cookie保存在客户端浏览器中，而Session保存在服务器上。客户端浏览器访问服务器的时候，服务器把客户端信息以某种形式记录在服务器上。这就是Session。客户端浏览器再次访问时只需要从该Session中查找该客户的状态就可以了session是一种特殊的cookie。cookie是保存在客户端的，而session是保存在服务端。</p>
+<h2 id="Session原理"><a href="#Session原理" class="headerlink" title="Session原理"></a>Session原理</h2><p>​	当客户端第一次请求服务器的时候，服务器生成一份session保存在服务端，将该数据(session)的id以cookie的形式传递给客户端；以后的每次请求，浏览器都会自动的携带cookie来访问服务器(session数据id)。</p>
+<h2 id="session-登陆-x2F-验证流程："><a href="#session-登陆-x2F-验证流程：" class="headerlink" title="session 登陆&#x2F;验证流程："></a>session 登陆&#x2F;验证流程：</h2><ul>
+<li>用户第一次请求服务器的时候，服务器根据用户提交的相关信息，创建对应的 Session</li>
+<li>请求返回时将此 Session 的唯一标识信息 SessionID 返回给浏览器</li>
+<li>浏览器接收到服务器返回的 SessionID 信息后，会将此信息存入到 Cookie 中，同时 Cookie 记录此 SessionID 属于哪个域名</li>
+<li>当用户第二次访问服务器的时候，请求会自动判断此域名下是否存在 Cookie 信息，如果存在自动将 Cookie 信息也发送给服务端，服务端会从 Cookie 中获取 SessionID，再根据 SessionID 查找对应的 Session 信息，如果没有找到说明用户没有登录或者登录失效，如果找到 Session 证明用户已经登录可执行后面操作。</li>
+</ul>
+<h2 id="Session-的存储方式"><a href="#Session-的存储方式" class="headerlink" title="Session 的存储方式"></a><strong>Session 的存储方式</strong></h2><p>​	显然，服务端只是给 cookie 一个 sessionId，而 session 的具体内容（可能包含用户信息、session 状态等），要自己存一下。存储的方式有几种：</p>
+<ul>
+<li>Redis（推荐）：内存型数据库，redis中文官方网站。以 key-value 的形式存，正合 sessionId-sessionData 的场景；且访问快。</li>
+<li>内存：直接放到变量里。一旦服务重启就没了</li>
+<li>数据库：普通数据库。性能不高。</li>
+</ul>
+<h2 id="Session-的分布式问题"><a href="#Session-的分布式问题" class="headerlink" title="Session 的分布式问题"></a>Session 的分布式问题</h2><p>通常服务端是集群，而用户请求过来会走一次负载均衡，不一定打到哪台机器上。那一旦用户后续接口请求到的机器和他登录请求的机器不一致，或者登录请求的机器宕机了，session 不就失效了吗？这个问题现在有几种解决方式。</p>
+<ul>
+<li>一是从「存储」角度，把 session 集中存储。如果我们用独立的 Redis 或普通数据库，就可以把 session 都存到一个库里。</li>
+<li>二是从「分布」角度，让相同 IP 的请求在负载均衡时都打到同一台机器上。以 nginx 为例，可以配置 ip_hash 来实现。</li>
+</ul>
+<p>​	但通常还是采用第一种方式，因为第二种相当于阉割了负载均衡，且仍没有解决「用户请求的机器宕机」的问题。</p>
+<h1 id="Cookie-和-Session-的区别"><a href="#Cookie-和-Session-的区别" class="headerlink" title="Cookie 和 Session 的区别"></a>Cookie 和 Session 的区别</h1><ol>
+<li>安全性：Session 比 Cookie 安全，Session 是存储在服务器端的，Cookie 是存储在客户端的。</li>
+<li>存取值的类型不同：Cookie 只支持存字符串数据，想要设置其他类型的数据，需要将其转换成字符串，Session 可以存任意数据类型。</li>
+<li>有效期不同：Cookie 可设置为长时间保持，比如我们经常使用的默认登录功能，Session 一般失效时间较短，客户端关闭（默认情况下）或者 Session 超时都会失效。</li>
+<li>存储大小不同：单个 Cookie 保存的数据不能超过 4K，Session 可存储数据远高于 Cookie，但是当访问量过多，会占用过多的服务器资源。</li>
+</ol>
+<h1 id="Token"><a href="#Token" class="headerlink" title="Token"></a>Token</h1><p>​	session 的维护给服务端造成很大困扰，我们必须找地方存放它，又要考虑分布式的问题，甚至要单独为了它启用一套 Redis 集群。</p>
+<p>​	Token是在服务端产生的，如果前端使用用户名&#x2F;密码向服务端请求认证，服务端认证成功，那么在服务端会返回token给前端，前端可以在每次请求的时候带上token证明自己的合法地位。如果这个 Token 在服务端持久化（比如存入数据库），那它就是一个永久的身份令牌。</p>
+<h2 id="Token登录流程"><a href="#Token登录流程" class="headerlink" title="Token登录流程"></a>Token登录流程</h2><ul>
+<li>用户登录，服务端校验账号密码，获得用户信息</li>
+<li>把用户信息、token 配置编码成 token，通过 cookie set 到浏览器</li>
+<li>此后用户请求业务接口，通过 cookie 携带 token</li>
+<li>接口校验 token 有效性，进行正常业务接口处理</li>
+</ul>
+<h2 id="客户端-token-的存储方式"><a href="#客户端-token-的存储方式" class="headerlink" title="客户端 token 的存储方式"></a><strong>客户端 token 的存储方式</strong></h2><p>​	在前面 cookie 说过，cookie 并不是客户端存储凭证的唯一方式。token 因为它的「无状态性」，有效期、使用限制都包在 token 内容里，对 cookie 的管理能力依赖较小，客户端存起来就显得更自由。但 web 应用的主流方式仍是放在 cookie 里，毕竟少操心。</p>
+<p>​	token怎么防止用户篡改数据。如果 token 涉及到敏感权限，就要想办法避免 token 被篡改。解决方案就是给 token 加签名，来识别 token 是否被篡改过。例如在 cookie-session - npm 库中，增加两项配置：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">secret: <span class="string">&#x27;iAmSecret&#x27;</span>,signed: <span class="literal">true</span>, </span><br></pre></td></tr></table></figure>
+
+<p>​	这样会多种一个 .sig cookie，里面的值就是 <code>&#123;&quot;userid&quot;:&quot;abb”&#125;</code> 和 <code>iAmSecret</code>通过加密算法计算出来的，常见的比如HMACSHA256 类 (System.Security.Cryptography)现在 cdd 虽然能伪造出<code>eyJ1c2VyaWQiOiJhIn0=</code>，但伪造不出 sig 的内容，因为他不知道 secret。</p>
+<h1 id="JWT"><a href="#JWT" class="headerlink" title="JWT"></a><strong>JWT</strong></h1><p>Token加Cookie的做法额外增加了 cookie 数量，数据本身也没有规范的格式，所以 JSON Web Token Introduction - jwt.io 横空出世了。</p>
+<p>​	JSON Web Token (JWT) 是一个开放标准，定义了一种传递 JSON 信息的方式。这些信息通过数字签名确保可信。</p>
+<p>它是一种成熟的 token 字符串生成方案，包含了我们前面提到的数据、签名。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
+<li>HTTP 是无状态的，为了维持前后请求，需要前端存储标记</li>
+<li>cookie 是一种完善的标记方式，通过 HTTP 头或 js 操作，有对应的安全策略，是大多数状态管理方案的基石</li>
+<li>session 是一种状态管理方案，前端通过 cookie 存储 id，后端存储数据，但后端要处理分布式问题</li>
+<li>token 是另一种状态管理方案，相比于 session 不需要后端存储，数据全部存在前端，解放后端，释放灵活性</li>
+<li>token 的编码技术，通常基于 base64，或增加加密算法防篡改，jwt 是一种成熟的编码方案</li>
+<li>在复杂系统中，token 可通过 service token、refresh token 的分权，同时满足安全性和用户体验</li>
+<li>session 和 token 的对比就是「用不用cookie」和「后端存不存」的对比</li>
+<li>单点登录要求不同域下的系统「一次登录，全线通用」，通常由独立的 SSO 系统记录登录状态、下发 ticket，各业务系统配合存储和认证 ticket</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%89%B4%E6%9D%83/" rel="tag"># 鉴权</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/06/16/List%E9%9B%86%E5%90%88%E7%9A%84%E5%9D%91/" rel="prev" title="List集合的坑">
+                  <i class="fa fa-chevron-left"></i> List集合的坑
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/06/24/%E7%BB%A7%E6%89%BF/" rel="next" title="继承">
+                  继承 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jing</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
