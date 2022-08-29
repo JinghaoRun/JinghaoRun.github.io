@@ -139,7 +139,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-count">48</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -208,6 +208,22 @@
 
       <time title="创建时间：2022-08-28 22:07:36" itemprop="dateCreated datePublished" datetime="2022-08-28T22:07:36+08:00">2022-08-28</time>
     </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-08-29 10:01:39" itemprop="dateModified" datetime="2022-08-29T10:01:39+08:00">2022-08-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">MySQL数据库</span></a>
+        </span>
+    </span>
 
   
 </div>
@@ -219,7 +235,18 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          
+          <h1 id="一：条件字段函数操作"><a href="#一：条件字段函数操作" class="headerlink" title="一：条件字段函数操作"></a>一：条件字段函数操作</h1><p>​		看如下语句：t_modified字段上建有索引</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select count(*) from tradelog where month(t_modified)=7;</span><br></pre></td></tr></table></figure>
+
+<p>​		此时这条语句是不会走t_modified字段索引的，而where t_modified&#x3D;’2018-7-1’的时候可以用上索引。原因如下：</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/08/28/MySQL%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
