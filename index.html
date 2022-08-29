@@ -139,7 +139,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">48</span>
+        <span class="site-state-item-count">47</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -177,7 +177,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/21/MySQL%E4%BC%98%E9%9B%85%E5%9C%B0%E4%BD%BF%E7%94%A8count%EF%BC%88-%EF%BC%89/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/28/MySQL%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/head.jpg">
@@ -195,7 +195,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/08/21/MySQL%E4%BC%98%E9%9B%85%E5%9C%B0%E4%BD%BF%E7%94%A8count%EF%BC%88-%EF%BC%89/" class="post-title-link" itemprop="url">MySQL优雅地使用count（*）和Order By</a>
+          <a href="/2022/08/28/MySQL%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88/" class="post-title-link" itemprop="url">MySQL索引失效</a>
         </h2>
 
         <div class="post-meta-container">
@@ -206,23 +206,7 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2022-08-21 20:43:27" itemprop="dateCreated datePublished" datetime="2022-08-21T20:43:27+08:00">2022-08-21</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-08-28 21:58:12" itemprop="dateModified" datetime="2022-08-28T21:58:12+08:00">2022-08-28</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">MySQL数据库</span></a>
-        </span>
+      <time title="创建时间：2022-08-28 22:07:36" itemprop="dateCreated datePublished" datetime="2022-08-28T22:07:36+08:00">2022-08-28</time>
     </span>
 
   
@@ -235,20 +219,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>​		在实际开发中经常经常需要计算一个表的行数，但是随着系统中记录数越来越多，select count(*) from t 语句执行得也会越来越慢，</p>
-<h1 id="count-的实现方式"><a href="#count-的实现方式" class="headerlink" title="count(*)的实现方式"></a>count(*)的实现方式</h1><ul>
-<li>MyISAM引擎把一个表的总行数存在了磁盘上，因此执行count(*)的时候会直接返回这个数，效率很高；</li>
-<li>而InnoDB引擎就麻烦了，它执行count(*)的时候，需要把数据一行一行地从引擎里面读出来，然后累积计数。</li>
-</ul>
-<p>​		InnoDB的事务设计默认的隔离级别是可重复读，在代码上就是通过多版本并发控制，也就是MVCC来实现的，每一行记录都要判断自己是否对这个会话可见，对于count(*)请求来说，InnoDB会遍历全表把数据一行一行地读出依次判断，因此对于不同事务中的结果可能不一样。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/08/21/MySQL%E4%BC%98%E9%9B%85%E5%9C%B0%E4%BD%BF%E7%94%A8count%EF%BC%88-%EF%BC%89/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          
       
     </div>
 
@@ -310,7 +281,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-08-28 20:39:16" itemprop="dateModified" datetime="2022-08-28T20:39:16+08:00">2022-08-28</time>
+      <time title="修改时间：2022-08-28 22:03:07" itemprop="dateModified" datetime="2022-08-28T22:03:07+08:00">2022-08-28</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
