@@ -20,15 +20,15 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="自增主键可以让主键索引尽量地保持递增顺序插入，避免了页分裂，因此索引更紧凑。 自增值保存策略 表的结构定义存放在后缀名为.frm的文件中，但是并不会保存自增值。不同的引擎对于自增值的保存策略不同。  MyISAM引擎的自增值保存在数据文件中。  在MySQL 5.7及之前的版本，自增值保存在内存里，并没有持久化。每次重启后，第一次打开表的时候，都会去找自增值的最大值max(id)，然后将max(i">
+    <meta name="description" content="自增主键可以让主键索引尽量地保持递增顺序插入，避免了页分裂，因此索引更紧凑。 自增值保存策略表的结构定义存放在后缀名为.frm的文件中，但是并不会保存自增值。不同的引擎对于自增值的保存策略不同。  MyISAM引擎的自增值保存在数据文件中。  在MySQL 5.7及之前的版本，自增值保存在内存里，并没有持久化。每次重启后，第一次打开表的时候，都会去找自增值的最大值max(id)，然后将max(id">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MySQL主键不连续原因">
 <meta property="og:url" content="http://example.com/2022/08/21/MySQL%E4%B8%BB%E9%94%AE%E4%B8%8D%E8%BF%9E%E7%BB%AD%E5%8E%9F%E5%9B%A0/index.html">
 <meta property="og:site_name" content="WangHao&amp;博客">
-<meta property="og:description" content="自增主键可以让主键索引尽量地保持递增顺序插入，避免了页分裂，因此索引更紧凑。 自增值保存策略 表的结构定义存放在后缀名为.frm的文件中，但是并不会保存自增值。不同的引擎对于自增值的保存策略不同。  MyISAM引擎的自增值保存在数据文件中。  在MySQL 5.7及之前的版本，自增值保存在内存里，并没有持久化。每次重启后，第一次打开表的时候，都会去找自增值的最大值max(id)，然后将max(i">
+<meta property="og:description" content="自增主键可以让主键索引尽量地保持递增顺序插入，避免了页分裂，因此索引更紧凑。 自增值保存策略表的结构定义存放在后缀名为.frm的文件中，但是并不会保存自增值。不同的引擎对于自增值的保存策略不同。  MyISAM引擎的自增值保存在数据文件中。  在MySQL 5.7及之前的版本，自增值保存在内存里，并没有持久化。每次重启后，第一次打开表的时候，都会去找自增值的最大值max(id)，然后将max(id">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-08-21T09:32:16.000Z">
-<meta property="article:modified_time" content="2022-08-21T12:44:27.841Z">
+<meta property="article:modified_time" content="2022-09-01T13:02:09.254Z">
 <meta property="article:author" content="Jing">
 <meta property="article:tag" content="MySQL主键不连续原因">
 <meta name="twitter:card" content="summary">
@@ -104,7 +104,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -117,6 +117,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%A2%9E%E5%80%BC%E4%BF%9D%E5%AD%98%E7%AD%96%E7%95%A5"><span class="nav-number">1.</span> <span class="nav-text">自增值保存策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%A2%9E%E5%80%BC%E4%BF%AE%E6%94%B9%E6%9C%BA%E5%88%B6"><span class="nav-number">2.</span> <span class="nav-text">自增值修改机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E9%94%AE%E4%B8%8D%E8%BF%9E%E7%BB%AD%E5%8E%9F%E5%9B%A0%EF%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">主键不连续原因：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%A2%9E%E5%80%BC%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%83%BD%E5%9B%9E%E9%80%80%EF%BC%9A"><span class="nav-number">4.</span> <span class="nav-text">自增值为什么不能回退：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E6%AE%8A%E6%83%85%E5%86%B5%E4%B8%8B%E7%9A%84insert%E8%AF%AD%E5%8F%A5"><span class="nav-number">5.</span> <span class="nav-text">特殊情况下的insert语句</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#insert-%E5%BE%AA%E7%8E%AF%E5%86%99%E5%85%A5"><span class="nav-number">5.1.</span> <span class="nav-text">insert 循环写入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#insert-%E5%94%AF%E4%B8%80%E9%94%AE%E5%86%B2%E7%AA%81"><span class="nav-number">5.2.</span> <span class="nav-text">insert 唯一键冲突</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -131,7 +132,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-count">52</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -142,7 +143,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-count">52</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -209,9 +210,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2022-08-21 17:32:16 / 修改时间：20:44:27" itemprop="dateCreated datePublished" datetime="2022-08-21T17:32:16+08:00">2022-08-21</time>
+      <time title="创建时间：2022-08-21 17:32:16" itemprop="dateCreated datePublished" datetime="2022-08-21T17:32:16+08:00">2022-08-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-09-01 21:02:09" itemprop="dateModified" datetime="2022-09-01T21:02:09+08:00">2022-09-01</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -234,8 +241,7 @@
     
     <div class="post-body" itemprop="articleBody">
         <p>自增主键可以让主键索引尽量地保持递增顺序插入，避免了页分裂，因此索引更紧凑。</p>
-<p><strong>自增值保存策略</strong></p>
-<p>表的结构定义存放在后缀名为.frm的文件中，但是并不会保存自增值。不同的引擎对于自增值的保存策略不同。</p>
+<h3 id="自增值保存策略"><a href="#自增值保存策略" class="headerlink" title="自增值保存策略"></a><strong>自增值保存策略</strong></h3><p>表的结构定义存放在后缀名为.frm的文件中，但是并不会保存自增值。不同的引擎对于自增值的保存策略不同。</p>
 <ul>
 <li><p>MyISAM引擎的自增值保存在数据文件中。</p>
 </li>
@@ -246,8 +252,7 @@
 </ul>
 <span id="more"></span>
 
-<p><strong>自增值修改机制</strong></p>
-<p>在MySQL里面，如果字段id被定义为AUTO_INCREMENT，在插入一行数据的时候，自增值的行为如下：</p>
+<h3 id="自增值修改机制"><a href="#自增值修改机制" class="headerlink" title="自增值修改机制"></a><strong>自增值修改机制</strong></h3><p>在MySQL里面，如果字段id被定义为AUTO_INCREMENT，在插入一行数据的时候，自增值的行为如下：</p>
 <ol>
 <li>如果插入数据时id字段指定为0、null 或未指定值，那么就把这个表当前的 AUTO_INCREMENT值填到自增字段；</li>
 <li>如果插入数据时id字段指定了具体的值，就直接使用语句里指定的值。</li>
@@ -259,8 +264,7 @@
 </ol>
 <p><strong>新的自增值生成算法是</strong>：从auto_increment_offset开始，以auto_increment_increment为步长，持续叠加，直到找到第一个大于X的值，作为新的自增值。</p>
 <p>其中，auto_increment_offset 和 auto_increment_increment是两个系统参数，分别用来表示自增的初始值和步长，默认值都是1。</p>
-<p><strong>主键不连续原因：</strong></p>
-<ol>
+<h3 id="主键不连续原因："><a href="#主键不连续原因：" class="headerlink" title="主键不连续原因："></a><strong>主键不连续原因：</strong></h3><ol>
 <li><p>不断insert的过程中出现某些字段<strong>唯一键冲突，或者提交失败事务回滚了</strong>没有插入成功，但是自增主键自增了却没有回退，导致下一次成功插入的时候中间就缺了一个。</p>
 </li>
 <li><p>对于批量插入数据的语句，MySQL有一个批量申请自增id的策略：</p>
@@ -273,8 +277,7 @@
 <p>这样当插入的行数据不够时就会出现自增id的浪费，导致自增id不是连续的。</p>
 </li>
 </ol>
-<p><strong>自增值为什么不能回退</strong>：</p>
-<p>假设有两个并行执行的事务，在申请自增值的时候，为了避免两个事务申请到相同的自增id，肯定要加锁，然后顺序申请。一个获取主键2 一个获取主键3 但是如果一个事务执行失败，另一个执行成功的，自增主键要回退到2，那么下一个事务就会导致主键冲突</p>
+<h3 id="自增值为什么不能回退："><a href="#自增值为什么不能回退：" class="headerlink" title="自增值为什么不能回退："></a><strong>自增值为什么不能回退</strong>：</h3><p>假设有两个并行执行的事务，在申请自增值的时候，为了避免两个事务申请到相同的自增id，肯定要加锁，然后顺序申请。一个获取主键2 一个获取主键3 但是如果一个事务执行失败，另一个执行成功的，自增主键要回退到2，那么下一个事务就会导致主键冲突</p>
 <p>而为了解决这个主键冲突，有两种方法：</p>
 <ol>
 <li>每次申请id之前，先判断表里面是否已经存在这个id。如果存在，就跳过这个id。但是，这个方法的成本很高。因为，本来申请id是一个很快的操作，现在还要再去主键索引树上判断id是否存在。</li>
@@ -282,6 +285,10 @@
 </ol>
 <p>可见，这两个方法都会导致性能问题。造成这些麻烦的罪魁祸首，就是我们假设的这个“允许自增id回退”的前提导致的。</p>
 <p>因此，InnoDB放弃了这个设计，语句执行失败也不回退自增id。也正是因为这样，所以才只保证了自增id是递增的，但不保证是连续的。</p>
+<h3 id="特殊情况下的insert语句"><a href="#特殊情况下的insert语句" class="headerlink" title="特殊情况下的insert语句"></a>特殊情况下的insert语句</h3><p>​		在上面提到，MySQL对自增主键锁做了优化，尽量在申请到自增id以后，就释放自增锁。这个结论对于普通的insert语句”才有效。</p>
+<p>​		还有些insert语句是属于“特殊情况”的，在执行过程中需要给其他资源加锁，或者无法在申请到自增id以后就立马释放自增锁。</p>
+<h4 id="insert-循环写入"><a href="#insert-循环写入" class="headerlink" title="insert 循环写入"></a>insert 循环写入</h4><p>​		比如：insert … select 是很常见的在两个表之间拷贝数据的方法。但需要注意的是，在可重复读隔离级别下，这个语句会给select的表里扫描到的记录和间隙加读锁。而如果insert和select的对象是同一个表，则有可能会造成循环写入。这种情况下，我们需要引入用户临时表来做优化，至于为什么需要临时表，原因是这类一边遍历数据，一边更新数据的情况，如果读出来的数据直接写回原表，就可能在遍历过程中，读到刚刚插入的记录，新插入的记录如果参与计算逻辑，就跟语义不符。。</p>
+<h4 id="insert-唯一键冲突"><a href="#insert-唯一键冲突" class="headerlink" title="insert 唯一键冲突"></a>insert 唯一键冲突</h4><p>​		在执行insert插入语句时，如果发生主键冲突，并不只是简单地报错返回，还在冲突的索引上加了共享next-key lock（读锁）。但是当两个事务同时插入出现主键冲突的话，两个事务都会加上读锁。就会陷入到相互等待的死锁情况。所以碰到由于唯一键约束导致报错后，要尽快提交或回滚事务，避免加锁时间过长。</p>
 
     </div>
 

@@ -128,7 +128,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-count">52</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -139,7 +139,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-count">52</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -168,6 +168,339 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/09/01/MySQL%E4%B8%AD%E7%9A%84%E5%88%86%E5%8C%BA%E8%A1%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="Jing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangHao&博客">
+      <meta itemprop="description" content="Stay hungry,stay foolish">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | WangHao&博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/09/01/MySQL%E4%B8%AD%E7%9A%84%E5%88%86%E5%8C%BA%E8%A1%A8/" class="post-title-link" itemprop="url">MySQL中的分区表</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-09-01 21:56:55 / 修改时间：21:57:47" itemprop="dateCreated datePublished" datetime="2022-09-01T21:56:55+08:00">2022-09-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">MySQL数据库</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="分区概述"><a href="#分区概述" class="headerlink" title="分区概述"></a>分区概述</h2><ul>
+<li>分区是一种表的设计模式。分区功能并不是在存储引擎层完成的，因此不只有InnoDB存储引擎支持分区。</li>
+<li>分区的过程是将一个表或索引分解为多个更小、更可管理的部分。就访问数据库的应用而言，从逻辑上讲，只有一个表或一个索引，但是在物理上这个表或索引可能由数十个物理分区组成。每个分区都是独立的对象，可以独自处理，也可以作为一个更大对象的一部分进行处理。</li>
+<li>MySQL数据库支持的分区类型为水平分区（分行），并不支持垂直分区（分列）。此外，MySQL数据库的分区是局部分区索引，一个分区中既存放数据又存放索引。全局分区是指，数据存放各个分区中，但是所有数据的索引放在一个对象中。目前，MySQL数据库暂时不支持全局分区。</li>
+</ul>
+<h2 id="分区类型"><a href="#分区类型" class="headerlink" title="分区类型"></a>分区类型</h2><p>当前MySQL数据库支持以下几种类型的分区：</p>
+<ul>
+<li>RANGE分区：行数据基于属于一个给定<strong>连续</strong>区间的列值放入分区。</li>
+<li>LIST分区：和RANGE分区类型一样，只是LIST分区面向的是<strong>离散</strong>的值。</li>
+<li>HASH分区：根据<strong>用户自定义的表达式</strong>来进行分区，返回值不能为负数。</li>
+<li>KEY分区：根据<strong>MySQL数据库提供的散列函数</strong>来进行分区。</li>
+<li>COLUMNS分区：前面四种分区的条件必须是整型（integer），如果不是整型，那么需要通过函数将其转化为整型。MySQL 5.5版本开始支持COLUMNS分区，可视为对RANGE分区和LIST分区的一种进化。COLUMNS分区<strong>可以直接使用非整型的数据进行分区，分区根据类型直接比较而得到，不需要转化为整型</strong>。此外，RANGE COLUMNS分区可以对多个列的值进行分区。</li>
+</ul>
+<p>不论创建何种类型的分区，如果表中存在主键或唯一索引时，分区列必须是唯一索引的一个组成部分。也就是说如果唯一索引为 <code>UNIQUE KEY (col1, col2)</code>，那么分区列必须为col1 或者 col2。接下来详细介绍这四种分区。</p>
+<h3 id="RANGE-分区"><a href="#RANGE-分区" class="headerlink" title="RANGE 分区"></a>RANGE 分区</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">+------------+----------------------------------------------------------------+</span><br><span class="line">| Table      | Create Table                                                   |</span><br><span class="line">+------------+----------------------------------------------------------------+</span><br><span class="line">| parti_test | CREATE TABLE `parti_test` (</span><br><span class="line">  `id` int DEFAULT NULL</span><br><span class="line">) ENGINE=InnoDB DEFAULT CHARSET=gbk</span><br><span class="line">/*!50100 PARTITION BY RANGE (`id`)</span><br><span class="line">(PARTITION p0 VALUES LESS THAN (10) ENGINE = InnoDB,</span><br><span class="line"> PARTITION p1 VALUES LESS THAN (20) ENGINE = InnoDB,</span><br><span class="line"> PARTITION p2 VALUES LESS THAN MAXVALUE ENGINE = InnoDB) */ |</span><br><span class="line">+------------+----------------------------------------------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<p>例如上面这个表，就是一种RANGE分区，我们按照 id 列分成了p0，p1，p2三个区，在磁盘的物理文件中我们的确发现了三个文件，也就是说这个表在物理层面被拆分成了三个子表，代表三个分区。<br><img src="https://note.youdao.com/yws/api/personal/file/WEB3d44d8cb323f888375f47066d09c2847?method=download&shareKey=09849fae1e53e5fe3e26dfe3bdaad8a3" alt="img"><br>接下来我们插入数据9, 10,15, 21，由于表根据列id进行分区，因此数据根据id列值的范围存放在不同的物理文件中，我们可以通过explain的partitons信息查看所查询的数据位于哪个分区。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from parti_test;</span><br><span class="line">+------+</span><br><span class="line">| id   |</span><br><span class="line">+------+</span><br><span class="line">|    9 |</span><br><span class="line">|   15 |</span><br><span class="line">|   10 |</span><br><span class="line">|   21 |</span><br><span class="line">+------+</span><br><span class="line">4 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; explain select * from parti_test;</span><br><span class="line">+----+-------------+------------+------------+------+---------------+------+---------+------+------+----------+-------+</span><br><span class="line">| id | select_type | table      | partitions | type | possible_keys | key  | key_len | ref  | rows | filtered | Extra |</span><br><span class="line">+----+-------------+------------+------------+------+---------------+------+---------+------+------+----------+-------+</span><br><span class="line">|  1 | SIMPLE      | parti_test | p0,p1,p2   | ALL  | NULL          | NULL | NULL    | NULL |    4 |   100.00 | NULL  |</span><br><span class="line">+----+-------------+------------+------------+------+---------------+------+---------+------+------+----------+-------+</span><br><span class="line">1 row in set, 1 warning (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; explain select * from parti_test where id&lt;10;</span><br><span class="line">+----+-------------+------------+------------+------+---------------+------+---------+------+------+----------+-------------+</span><br><span class="line">| id | select_type | table      | partitions | type | possible_keys | key  | key_len | ref  | rows | filtered | Extra       |</span><br><span class="line">+----+-------------+------------+------------+------+---------------+------+---------+------+------+----------+-------------+</span><br><span class="line">|  1 | SIMPLE      | parti_test | p0         | ALL  | NULL          | NULL | NULL    | NULL |    1 |   100.00 | Using where |</span><br><span class="line">+----+-------------+------------+------------+------+---------------+------+---------+------+------+----------+-------------+</span><br><span class="line">1 row in set, 1 warning (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; explain select * from parti_test where id&gt;=10 and id&lt;20;</span><br><span class="line">+----+-------------+------------+------------+------+---------------+------+---------+------+------+----------+-------------+</span><br><span class="line">| id | select_type | table      | partitions | type | possible_keys | key  | key_len | ref  | rows | filtered | Extra       |</span><br><span class="line">+----+-------------+------------+------------+------+---------------+------+---------+------+------+----------+-------------+</span><br><span class="line">|  1 | SIMPLE      | parti_test | p1         | ALL  | NULL          | NULL | NULL    | NULL |    2 |    50.00 | Using where |</span><br><span class="line">+----+-------------+------------+------------+------+---------------+------+---------+------+------+----------+-------------+</span><br><span class="line">1 row in set, 1 warning (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; explain select * from parti_test where id&gt;=20;</span><br><span class="line">+----+-------------+------------+------------+------+---------------+------+---------+------+------+----------+-------------+</span><br><span class="line">| id | select_type | table      | partitions | type | possible_keys | key  | key_len | ref  | rows | filtered | Extra       |</span><br><span class="line">+----+-------------+------------+------------+------+---------------+------+---------+------+------+----------+-------------+</span><br><span class="line">|  1 | SIMPLE      | parti_test | p2         | ALL  | NULL          | NULL | NULL    | NULL |    1 |   100.00 | Using where |</span><br><span class="line">+----+-------------+------------+------------+------+---------------+------+---------+------+------+----------+-------------+</span><br><span class="line">1 row in set, 1 warning (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<p>我们还可以通过查询information_schema架构下的PARTITIONS表来查看每个分区的具体信息，执行的语句如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from information_schema.PARTITIONS WHERE table_schema=database() AND table_name=&#x27;parti_test&#x27;\G;</span><br><span class="line">*************************** 1. row ***************************</span><br><span class="line">                TABLE_CATALOG: def</span><br><span class="line">                 TABLE_SCHEMA: dbtest</span><br><span class="line">                   TABLE_NAME: parti_test</span><br><span class="line">               PARTITION_NAME: p0</span><br><span class="line">            SUBPARTITION_NAME: NULL</span><br><span class="line">   PARTITION_ORDINAL_POSITION: 1</span><br><span class="line">SUBPARTITION_ORDINAL_POSITION: NULL</span><br><span class="line">             PARTITION_METHOD: RANGE</span><br><span class="line">          SUBPARTITION_METHOD: NULL</span><br><span class="line">         PARTITION_EXPRESSION: `id`</span><br><span class="line">      SUBPARTITION_EXPRESSION: NULL</span><br><span class="line">        PARTITION_DESCRIPTION: 10</span><br><span class="line">                   TABLE_ROWS: 1</span><br><span class="line">               AVG_ROW_LENGTH: 16384</span><br><span class="line">                  DATA_LENGTH: 16384</span><br><span class="line">              MAX_DATA_LENGTH: 0</span><br><span class="line">                 INDEX_LENGTH: 0</span><br><span class="line">                    DATA_FREE: 0</span><br><span class="line">                  CREATE_TIME: 2021-04-26 12:45:21</span><br><span class="line">                  UPDATE_TIME: 2021-05-09 10:08:14</span><br><span class="line">                   CHECK_TIME: NULL</span><br><span class="line">                     CHECKSUM: NULL</span><br><span class="line">            PARTITION_COMMENT:</span><br><span class="line">                    NODEGROUP: default</span><br><span class="line">              TABLESPACE_NAME: NULL</span><br><span class="line">*************************** 2. row ***************************</span><br><span class="line">                TABLE_CATALOG: def</span><br><span class="line">                 TABLE_SCHEMA: dbtest</span><br><span class="line">                   TABLE_NAME: parti_test</span><br><span class="line">               PARTITION_NAME: p1</span><br><span class="line">            SUBPARTITION_NAME: NULL</span><br><span class="line">   PARTITION_ORDINAL_POSITION: 2</span><br><span class="line">SUBPARTITION_ORDINAL_POSITION: NULL</span><br><span class="line">             PARTITION_METHOD: RANGE</span><br><span class="line">          SUBPARTITION_METHOD: NULL</span><br><span class="line">         PARTITION_EXPRESSION: `id`</span><br><span class="line">      SUBPARTITION_EXPRESSION: NULL</span><br><span class="line">        PARTITION_DESCRIPTION: 20</span><br><span class="line">                   TABLE_ROWS: 2</span><br><span class="line">               AVG_ROW_LENGTH: 8192</span><br><span class="line">                  DATA_LENGTH: 16384</span><br><span class="line">              MAX_DATA_LENGTH: 0</span><br><span class="line">                 INDEX_LENGTH: 0</span><br><span class="line">                    DATA_FREE: 0</span><br><span class="line">                  CREATE_TIME: 2021-04-26 12:45:21</span><br><span class="line">                  UPDATE_TIME: 2021-05-09 10:08:20</span><br><span class="line">                   CHECK_TIME: NULL</span><br><span class="line">                     CHECKSUM: NULL</span><br><span class="line">            PARTITION_COMMENT:</span><br><span class="line">                    NODEGROUP: default</span><br><span class="line">              TABLESPACE_NAME: NULL</span><br><span class="line">*************************** 3. row ***************************</span><br><span class="line">                TABLE_CATALOG: def</span><br><span class="line">                 TABLE_SCHEMA: dbtest</span><br><span class="line">                   TABLE_NAME: parti_test</span><br><span class="line">               PARTITION_NAME: p2</span><br><span class="line">            SUBPARTITION_NAME: NULL</span><br><span class="line">   PARTITION_ORDINAL_POSITION: 3</span><br><span class="line">SUBPARTITION_ORDINAL_POSITION: NULL</span><br><span class="line">             PARTITION_METHOD: RANGE</span><br><span class="line">          SUBPARTITION_METHOD: NULL</span><br><span class="line">         PARTITION_EXPRESSION: `id`</span><br><span class="line">      SUBPARTITION_EXPRESSION: NULL</span><br><span class="line">        PARTITION_DESCRIPTION: MAXVALUE</span><br><span class="line">                   TABLE_ROWS: 1</span><br><span class="line">               AVG_ROW_LENGTH: 16384</span><br><span class="line">                  DATA_LENGTH: 16384</span><br><span class="line">              MAX_DATA_LENGTH: 0</span><br><span class="line">                 INDEX_LENGTH: 0</span><br><span class="line">                    DATA_FREE: 0</span><br><span class="line">                  CREATE_TIME: 2021-04-26 12:45:21</span><br><span class="line">                  UPDATE_TIME: 2021-05-09 10:08:28</span><br><span class="line">                   CHECK_TIME: NULL</span><br><span class="line">                     CHECKSUM: NULL</span><br><span class="line">            PARTITION_COMMENT:</span><br><span class="line">                    NODEGROUP: default</span><br><span class="line">              TABLESPACE_NAME: NULL</span><br><span class="line">3 rows in set (0.01 sec)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>其实上面 TABLE_ROWS: 1 这里并不总是准确的，我猜想可能也是抽样统计的，并不是实时的数量，因为有时候看就是错的。</p>
+</blockquote>
+<p>那 RANGE 分区的优点是什么哪，我们为什么要进行分区哪？</p>
+<ul>
+<li>RANGE分区非常适用于对日期列的分区，例如，对于销售类的表，可以根据年份来分区存放销售记录，这样创建的好处是便于对表的管理，如果要删除2008年的数据，我们不需要执行DELETE FROM sales WHERE date&gt;&#x3D;’2008-01-01’ and date &lt;’2009-01-01’，只需删除2008年数据所在的分区即可。</li>
+<li>这样创建的另一个好处是可以加快某些查询操作，例如上面我们explain查询语句发现，对于范围查询，如果落在分区范围内，只会搜索这个分区，而不会搜索整个分区——称为Partition Pruning（分区修剪）。</li>
+</ul>
+<h3 id="LIST-分区"><a href="#LIST-分区" class="headerlink" title="LIST 分区"></a>LIST 分区</h3><p>LIST分区和RANGE分区非常相似，只是分区列的值是离散的，而非连续的，例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show create table parti_list;</span><br><span class="line">+------------+---------------------------------------------------------------------------------------------+</span><br><span class="line">| Table      | Create Table                                                                                |</span><br><span class="line">+------------+---------------------------------------------------------------------------------------------+</span><br><span class="line">| parti_list | CREATE TABLE `parti_list` (</span><br><span class="line">  `a` int DEFAULT NULL,</span><br><span class="line">  `b` int DEFAULT NULL</span><br><span class="line">) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci</span><br><span class="line">/*!50100 PARTITION BY LIST (`b`)</span><br><span class="line">(PARTITION p0 VALUES IN (1,3,5,7,9) ENGINE = InnoDB,</span><br><span class="line"> PARTITION p1 VALUES IN (0,2,4,6,8) ENGINE = InnoDB) */ |</span><br><span class="line">+------------+---------------------------------------------------------------------------------------------+</span><br><span class="line">1 row in set (0.03 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from parti_list;</span><br><span class="line">+------+------+</span><br><span class="line">| a    | b    |</span><br><span class="line">+------+------+</span><br><span class="line">|    1 |    1 |</span><br><span class="line">|    1 |    3 |</span><br><span class="line">|    1 |    2 |</span><br><span class="line">|    1 |    4 |</span><br><span class="line">+------+------+</span><br><span class="line">4 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; explain select * from parti_list;</span><br><span class="line">+----+-------------+------------+------------+------+---------------+------+---------+------+------+----------+-------+</span><br><span class="line">| id | select_type | table      | partitions | type | possible_keys | key  | key_len | ref  | rows | filtered | Extra |</span><br><span class="line">+----+-------------+------------+------------+------+---------------+------+---------+------+------+----------+-------+</span><br><span class="line">|  1 | SIMPLE      | parti_list | p0,p1      | ALL  | NULL          | NULL | NULL    | NULL |    4 |   100.00 | NULL  |</span><br><span class="line">+----+-------------+------------+------------+------+---------------+------+---------+------+------+----------+-------+</span><br><span class="line">1 row in set, 1 warning (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select table_name, partition_name, table_rows from information_schema.partitions where table_name=&#x27;parti_list&#x27; and table_schema=database() \G;</span><br><span class="line">*************************** 1. row ***************************</span><br><span class="line">    TABLE_NAME: parti_list</span><br><span class="line">PARTITION_NAME: p0</span><br><span class="line">    TABLE_ROWS: 2</span><br><span class="line">*************************** 2. row ***************************</span><br><span class="line">    TABLE_NAME: parti_list</span><br><span class="line">PARTITION_NAME: p1</span><br><span class="line">    TABLE_ROWS: 2</span><br><span class="line">2 rows in set (0.03 sec)</span><br></pre></td></tr></table></figure>
+
+<p>如果插入的值不在分区的定义中，那么MySQL数据库同样会抛出异常。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; insert into parti_list select 1,11;</span><br><span class="line">ERROR 1526 (HY000): Table has no partition for value 11</span><br></pre></td></tr></table></figure>
+
+<p>另外，在执行INSERT操作插入多个行数据的过程中如果遇到分区未定义的值，MyISAM和InnoDB存储引擎的处理会完全不同。MyISAM引擎会将之前的行数据都插入，但之后的数据不会被插入。<strong>而InnoDB存储引擎将其视为一个事务，没有任何数据被插入</strong>。</p>
+<h3 id="HASH分区"><a href="#HASH分区" class="headerlink" title="HASH分区"></a>HASH分区</h3><p>HASH分区的目的是将数据均匀地分布到预先定义的各个分区中，保证各分区的数据数量大致是一样的。在RANGE和LIST分区中，必须明确指定一个给定的列值或列值集合应该保存在哪个分区中；而在HASH分区中，MySQL自动完成这些工作，用户所要做的只是基于将要被散列的列值指定一个表达式（哈希函数），以及指定被分区的表将要被分割成的分区数量。其格式为在create table 后面加上，</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PARTITION BY HASH(expr)   -- expr为表达式，也就是哈希函数，即用某列的值作为函数的输入，当然也可以用列值本身</span><br><span class="line">PARTITIONS num;           -- 分区数，不写默认为1，就是不分区</span><br></pre></td></tr></table></figure>
+
+<p>例如下列取函数 year(b) 即哈希函数为对该列取年份值，然后对哈希值取模计算分区：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show create table parti_hash;</span><br><span class="line">+------------+---------------------------------------------------------------------------------------------+</span><br><span class="line">| Table      | Create Table                                                                                |</span><br><span class="line">+------------+---------------------------------------------------------------------------------------------+</span><br><span class="line">| parti_hash | CREATE TABLE `parti_hash` (</span><br><span class="line">  `a` int DEFAULT NULL,</span><br><span class="line">  `b` datetime DEFAULT NULL</span><br><span class="line">) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci</span><br><span class="line">/*!50100 PARTITION BY HASH (year(`b`))</span><br><span class="line">PARTITIONS 4 */ |</span><br><span class="line">+------------+---------------------------------------------------------------------------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; insert into parti_hash select 1, &#x27;2021-04-01&#x27;;</span><br><span class="line">Query OK, 1 row affected (0.04 sec)</span><br><span class="line">Records: 1  Duplicates: 0  Warnings: 0</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from parti_hash;</span><br><span class="line">+------+---------------------+</span><br><span class="line">| a    | b                   |</span><br><span class="line">+------+---------------------+</span><br><span class="line">|    1 | 2021-04-01 00:00:00 |</span><br><span class="line">+------+---------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<p>因为 <code>2021 MOD 4 = 1</code>， 因此该记录会被放入分区p1中，我们可以按如下方法来验证一下，果然放在了p1中。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select table_name, partition_name, table_rows from information_schema.partitions where table_name=&#x27;parti_hash&#x27; and table_schema=database() \G;</span><br><span class="line">*************************** 1. row ***************************</span><br><span class="line">    TABLE_NAME: parti_hash</span><br><span class="line">PARTITION_NAME: p0</span><br><span class="line">    TABLE_ROWS: 0</span><br><span class="line">*************************** 2. row ***************************</span><br><span class="line">    TABLE_NAME: parti_hash</span><br><span class="line">PARTITION_NAME: p1</span><br><span class="line">    TABLE_ROWS: 1</span><br><span class="line">*************************** 3. row ***************************</span><br><span class="line">    TABLE_NAME: parti_hash</span><br><span class="line">PARTITION_NAME: p2</span><br><span class="line">    TABLE_ROWS: 0</span><br><span class="line">*************************** 4. row ***************************</span><br><span class="line">    TABLE_NAME: parti_hash</span><br><span class="line">PARTITION_NAME: p3</span><br><span class="line">    TABLE_ROWS: 0</span><br><span class="line">4 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<p>MySQL数据库还支持一种称为LINEAR HASH的分区，它使用一个更加复杂的算法来确定新行插入到已经分区的表中的位置。它的语法和HASH分区的语法相似，只是将关键字HASH改为LINEAR HASH，感兴趣的同学可以了解一下。</p>
+<h3 id="KEY分区"><a href="#KEY分区" class="headerlink" title="KEY分区"></a>KEY分区</h3><p>KEY分区也很简单，使用和HASH分区相似，唯一的不同之处在于HASH分区通过用户定义的函数进行分区，而KEY分区使用MySQL数据库提供的函数进行分区。MySQL数据库使用其内部的散列函数来分区。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE parti_key (</span><br><span class="line">    -&gt; a INT,</span><br><span class="line">    -&gt; b DATETIME)ENGINE=InnoDB</span><br><span class="line">    -&gt; PARTITION BY KEY(b)</span><br><span class="line">    -&gt; PARTITIONS 4;</span><br></pre></td></tr></table></figure>
+
+<h3 id="COLUMNS分区"><a href="#COLUMNS分区" class="headerlink" title="COLUMNS分区"></a>COLUMNS分区</h3><p>在前面介绍的RANGE、LIST、HASH和KEY这四种分区中，分区的条件必须是整型（integer），如果不是整型，那么需要通过函数将其转化为整型，如YEAR（）、TO_DAYS（）、MONTH（）等函数。MySQL5.5版本开始支持COLUMNS分区，可视为对RANGE分区和LIST分区的一种进化。COLUMNS分区可以直接使用非整型的数据进行分区，分区根据类型直接比较而得到，不需要转化为整型。此外，RANGE COLUMNS分区可以对多个列的值进行分区。</p>
+<p>COLUMNS分区支持以下数据类型：</p>
+<ul>
+<li>所有的整型类型，如INT、SMALLINT、TINYINT和BIGINT。对FLOAT和DECIMAL则不予支持。</li>
+<li>日期类型，如DATE和DATETIME。对其余的日期类型不予支持。</li>
+<li>字符串类型，如CHAR、 VARCHAR、BINARY和VARBINARY。对BLOB和TEXT类型不予支持。</li>
+</ul>
+<p>用法也很简单，对于之前的RANGE和LIST分区，只需要用RANGE COLUMNS和LIST COLUMNS代替即可。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; create table parti_cloumns_range (</span><br><span class="line">    a int, b datetime) </span><br><span class="line">    partition by range(b)(</span><br><span class="line">    partition p0 values less than (&#x27;2015-01-01&#x27;), </span><br><span class="line">    partition p1 values less than (&#x27;2020-01-01&#x27;));</span><br><span class="line">ERROR 1697 (HY000): VALUES value for partition &#x27;p0&#x27; must have type INT -- 报错，必须是整形</span><br><span class="line"></span><br><span class="line">mysql&gt; create table parti_cloumns_range (</span><br><span class="line">    a int, b datetime) </span><br><span class="line">    partition by range columns(b)(</span><br><span class="line">    partition p0 values less than (&#x27;2015-01-01&#x27;), </span><br><span class="line">    partition p1 values less than (&#x27;2020-01-01&#x27;));</span><br><span class="line">Query OK, 0 rows affected (0.83 sec)</span><br></pre></td></tr></table></figure>
+
+<h2 id="子分区"><a href="#子分区" class="headerlink" title="子分区"></a>子分区</h2><p>子分区（subpartitioning）是在分区的基础上再进行分区，有时也称这种分区为复合分区（composite partitioning）。MySQL数据库允许在RANGE和LIST的分区上再进行HASH或KEY的子分区。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; create table subparti (</span><br><span class="line">    -&gt; a int,</span><br><span class="line">    -&gt; b date)</span><br><span class="line">    -&gt; partition by range(year(b))</span><br><span class="line">    -&gt; subpartition by hash(to_days(b))</span><br><span class="line">    -&gt; subpartitions 2(</span><br><span class="line">    -&gt; partition p0 values less than (2000),</span><br><span class="line">    -&gt; partition p1 values less than (2020),</span><br><span class="line">    -&gt; partition p2 values less than maxvalue);</span><br><span class="line">Query OK, 0 rows affected (1.76 sec)</span><br></pre></td></tr></table></figure>
+
+<p>表 subparti 先根据b列进行了RANGE分区分成三个，然后对每个分区又进行了一次HASH分区分为两个，所以分区的数量应该为（3*2&#x3D;6）个，这通过查看物理磁盘上的文件也可以得到证实。<br><img src="https://note.youdao.com/yws/api/personal/file/9272F49427F34BFCAF5E40F6ED25B94C?method=download&shareKey=09849fae1e53e5fe3e26dfe3bdaad8a3" alt="img"></p>
+<p>我们也可以通过使用 SUBPARTITION 语法来显式地指出各个子分区的名字，对上述的表同样可以执行以下语句：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; create table subparti (</span><br><span class="line">    -&gt; a int,</span><br><span class="line">    -&gt; b date)</span><br><span class="line">    -&gt; partition by range(year(b))</span><br><span class="line">    -&gt; subpartition by hash(to_days(b)) (</span><br><span class="line">    -&gt; partition p0 values less than (2000) (</span><br><span class="line">    -&gt; subpartition s0,</span><br><span class="line">    -&gt; subpartition s1),</span><br><span class="line">    -&gt; partition p1 values less than (2020) (</span><br><span class="line">    -&gt; subpartition s2,</span><br><span class="line">    -&gt; subpartition s3),</span><br><span class="line">    -&gt; partition p2 values less than maxvalue (</span><br><span class="line">    -&gt; subpartition s4,</span><br><span class="line">    -&gt; subpartition s5)</span><br><span class="line">    -&gt; );</span><br><span class="line">Query OK, 0 rows affected (1.76 sec)</span><br></pre></td></tr></table></figure>
+
+<p>子分区的建立需要注意以下几个问题：</p>
+<ul>
+<li>每个子分区的数量必须相同。</li>
+<li>如果在一个分区表的任何分区上使用SUBPARTITION来明确定义任何子分区，那么就必须定义所有的子分区。</li>
+<li>每个SUBPARTITION子句必须包括子分区的一个名字。</li>
+<li>子分区的名字必须是唯一的。</li>
+</ul>
+<h2 id="分区中的NULL值"><a href="#分区中的NULL值" class="headerlink" title="分区中的NULL值"></a>分区中的NULL值</h2><p>MySQL数据库允许对NULL值进行分区，但是处理方法可能与其他数据库不同。<strong>MySQL数据库的分区总是把NULL值视为小于任何的一个非NULL值，这和MySQL数据库中处理NULL值的ORDER BY操作是一样的</strong>。因此对于不同的分区类型，MySQL数据库对NULL值的处理也各不相同。</p>
+<ul>
+<li>对于RANGE分区，如果向分区列插入了NULL值，那么MySQL数据库会将该值放入最左边的分区。</li>
+<li>要在LIST分区下使用NULL值，必须显式地指出向哪个分区中可以放入NULL值，否则会报错。</li>
+<li>HASH和KEY分区对NULL的处理方式与RANGE和LIST分区不一样，任何分区函数（哈希函数）都会将含有NULL值的记录返回为0，所以NULL值一定会放在p0分区。</li>
+</ul>
+<h2 id="分区的性能"><a href="#分区的性能" class="headerlink" title="分区的性能"></a>分区的性能</h2><p>数据库的应用分为两类：一类是<strong>OLTP（联机事务处理）</strong>，如Blog、电子商务、网络游戏等；另一类是<strong>OLAP（联机分析处理）</strong>，如数据仓库、数据集市等。在一个实际的应用环境中，可能既有OLTP的应用，也有OLAP的应用。</p>
+<p>对于OLAP的应用，分区的确可以很好地提高查询的性能，因为OLAP应用的大多数查询需要频繁地扫描一张很大的表。假设有一张1亿行的表，其中有一个时间戳属性列，需要从这张表中获取一年的数据。如果按时间戳进行分区，则只需要扫描相应的分区即可。这就是前面介绍的Partition Pruning技术。</p>
+<p>然而对于OLTP的应用，在分区时应该非常小心。在这种应用下，通常不可能会获取一张大表中10%的数据，大部分都是通过索引返回几条记录即可。而根据B+树索引的原理可知，对于一张大表，一般的B+树需要2～3次的磁盘IO操作，因此B+树可以很好地完成对大表的查询操作，不需要分区的帮助，更何况设计不好的分区会带来严重的性能问题。</p>
+<p>一千万行的表是一张非常大的表吗？需要分区吗？例如对主键做10个HASH分区，这样每个分区就只有一百万的数据了，我们可能会认为这时查询应该变得更快了，但是考虑这样一个问题：一百万行和一千万行的数据本身构成的B+树的层次是其实都很小，可能都是两层，那么上述主键分区的索引可能并不会带来性能的提高。假设一千万行数据的B+树的高度是3，一百万行数据的B+树的高度是2，这样上述主键分区的索引可以避免一次IO，从而提高查询的效率，这没问题，但是这张表只有主键索引，没有任何其他列需要查询吗？如果我们查询其他列（非分区列），这时就需要扫描所有的10个分区，即使每个分区的查询开销为2次IO操作，那么一共需要20次IO。而对于原来单表的设计，此次查询原本只需要2～3次IO操作，所以要综合考虑，分区并不一定能带来性能提升。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/09/01/MySQL%E7%9A%84%E8%81%94%E7%BB%93%EF%BC%88Join%EF%BC%89%E7%AE%97%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="Jing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangHao&博客">
+      <meta itemprop="description" content="Stay hungry,stay foolish">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | WangHao&博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/09/01/MySQL%E7%9A%84%E8%81%94%E7%BB%93%EF%BC%88Join%EF%BC%89%E7%AE%97%E6%B3%95/" class="post-title-link" itemprop="url">MySQL的联结（Join）算法</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-09-01 15:18:54 / 修改时间：21:57:05" itemprop="dateCreated datePublished" datetime="2022-09-01T15:18:54+08:00">2022-09-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">MySQL数据库</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="笛卡尔积"><a href="#笛卡尔积" class="headerlink" title="笛卡尔积"></a>笛卡尔积</h3><p>​		所有的广义内连接的核心和共同点是完全基于<strong>笛卡尔积</strong>原理的，两个表进行笛卡尔积运算得到的结果表是由第一个表的每一行与第二个表的每一行拼接后形成的表，称为‘笛卡尔积表’，结果表的行数等于两个表的行数之积。如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * from 表1 [CROSS] JOIN 表2；</span><br></pre></td></tr></table></figure>
+
+<p>这里没有任何限制和条件，这种联结称为<strong>交叉连接</strong>，得到的结果就是两个表的笛卡尔积，所有广义内连接在原理上都是通过在笛卡尔积的基础上进行过滤得到的。</p>
+<p>，</p>
+<h3 id="内连接（等值连接）"><a href="#内连接（等值连接）" class="headerlink" title="内连接（等值连接）"></a>内连接（等值连接）</h3><p>​		我们要在笛卡尔积的基础上进行过滤了，以选择我们需要的记录（行）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-- 写法1：显式内连接，通过ON进行过滤</span><br><span class="line">SELECT * from 表1 [INNER] JOIN 表2 ON 等值条件；</span><br><span class="line">-- 写法2：隐式内连接，通过WHERE进行过滤</span><br><span class="line">SELECT * from 表1，表2 WHERE 等值条件；</span><br></pre></td></tr></table></figure>
+
+<p>​		注意这里的条件是等值条件，一般类似 <strong>表1.字段1&#x3D;表2.字段2</strong> 这种（字段就是列），所以内连接又称为等值连接。内连接允许条件不是等值的，那就不是等值连接就是一般的内连接了。不过我们一般都用等值连接。内连接也允许没有等值条件，如果没有 ON 的话此时就等同于交叉联结CROSS JOIN。</p>
+<h3 id="自然连接"><a href="#自然连接" class="headerlink" title="自然连接"></a>自然连接</h3><p>​		上述内连接是对行进行过滤，对列进行过滤的话就是自然连接，自然连接要求你只能选择那些唯一的列，一般通过对一个表使用通配符（SELECT *），而对其他表的列使用明确的子集来完成：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-- 写法1</span><br><span class="line">SELECT 表1.*, 表2.不包含重复列的其他列 from 表1 [INNER] JOIN 表2；</span><br><span class="line">-- 写法2</span><br><span class="line">SELECT 表1.*, 表2.不包含重复列的其他列 from 表1，表2；</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>​		但一般我们是既对行进行过滤也对列进行过滤，事实上，我们几乎使用的每个内连接都是自然连接，很可能永远都不会用到不是自然连接的内连接，即它们两个是搭配使用的：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-- 写法1</span><br><span class="line">SELECT 表1.*, 表2.不包含重复列的其他列 from 表1 [INNER] JOIN 表2 ON 等值条件；</span><br><span class="line">-- 写法2</span><br><span class="line">SELECT 表1.*, 表2.不包含重复列的其他列 from 表1，表2 WHERE 等值条件；</span><br></pre></td></tr></table></figure>
+
+<p>​		在MySQL中有提供实现的自然连接（NATURAL JOIN），注意这里的自然连接跟我们上面说的有那么一点点不同，NATURAL JOIN等同于INNTER JOIN与USING的组合，它隐含的作用是将两个表中具有相同名称的列进行匹配，前提是两个表必须含有相同名字的列，然后我们可以省略ON条件，例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">SELECT * from 表1 NATURAL JOIN 表2;</span><br><span class="line"></span><br><span class="line">等同于</span><br><span class="line"></span><br><span class="line">SELECT * from 表1 [INNER] JOIN 表2 ON t1.same_column = t2.same_column;</span><br></pre></td></tr></table></figure>
+
+<h3 id="自连接"><a href="#自连接" class="headerlink" title="自连接"></a>自连接</h3><p>​		自连接顾名思义就是自己跟自己连接，说白了他本质上还是一种特殊的自己跟自己的交叉连接，自连接的实现必须借助给表起别名，如果不用别名就会报错，因为要多次调用同一个表：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-- 写法1，AS t1为起别名操作，注意也可以省略AS，直接t1即可</span><br><span class="line">SELECT * from 表1 [AS] t1 [INNER] JOIN 表2 [AS] t2；</span><br><span class="line">-- 写法2</span><br><span class="line">SELECT * from 表1 [AS] t1，表2 [AS] t2；</span><br></pre></td></tr></table></figure>
+
+<p>​		但一般我们不这么用，与前面类似，自连接的使用一般搭配内连接和自然连接：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-- 写法1</span><br><span class="line">SELECT 表1.*, 表2.不包含重复列的其他列 from 表1 AS t1 [INNER] JOIN 表2 AS t2 ON 等值条件；</span><br><span class="line">-- 写法2</span><br><span class="line">SELECT 表1.*, 表2.不包含重复列的其他列 from 表1 AS t1，表2 AS t2 WHERE 等值条件；</span><br></pre></td></tr></table></figure>
+
+<h2 id="外连接"><a href="#外连接" class="headerlink" title="外连接"></a>外连接</h2><p>​		之前我们提到所有的广义内连接是完全基于笛卡尔积的，即所有广义内连接的结果都能在笛卡尔积表里找到，内连接将一个表中的行与另一个表中的行相关联，但有时候需要包含没有关联行的那些行，这些行在是笛卡尔积中是不存在的，这时就要用到外连接了，即<strong>外连接不是完全基于笛卡尔积的</strong>。</p>
+<p>​	左外连接</p>
+<p><strong>返回包括左表中的所有记录和右表中连接字段相等的记录</strong>。这个要求笛卡尔积表并不能满足。例如有两个表如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">员工表：</span><br><span class="line">    +----------+--------------+----------+</span><br><span class="line">    | 员工ID   | 员工名字     | 部门ID   |</span><br><span class="line">    +----------+--------------+----------+</span><br><span class="line">    | 1        | 张三         | 1        |</span><br><span class="line">    | 2        | 李四         | 2        |</span><br><span class="line">    | 3        | 王五         | NULL     |</span><br><span class="line">    +----------+--------------+----------+</span><br><span class="line">部门表：</span><br><span class="line">    +----------+--------------+</span><br><span class="line">    | 部门ID   | 部门名字     |</span><br><span class="line">    +----------+--------------+</span><br><span class="line">    | 1        | 销售部       |</span><br><span class="line">    | 2        | 财务部       |</span><br><span class="line">    +----------+--------------+</span><br></pre></td></tr></table></figure>
+
+<p>假设这么一种情况，王五刚入职，还没有分配部门，这时领导要求查询所有员工的信息及所在的部门信息，包括未分配部门的员工。那这个要求在笛卡尔积表里能找到吗？<br>我们试一下内连接：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SELECT * FROM emp [INNER] JOIN dep ON emp.`员工ID` = dep.`部门ID`;</span><br><span class="line"></span><br><span class="line">+----------+--------------+----------+----------+--------------+</span><br><span class="line">| 员工ID   | 员工名字     | 部门ID   | 部门ID   | 部门名字     |</span><br><span class="line">+----------+--------------+----------+----------+--------------+</span><br><span class="line">| 1        | 张三         | 1        | 1        | 销售部       |</span><br><span class="line">| 2        | 李四         | 2        | 2        | 财务部       |</span><br><span class="line">+----------+--------------+----------+----------+--------------+</span><br></pre></td></tr></table></figure>
+
+<p>好像不行，并不包括王五的记录啊，那我们看一下笛卡尔表里都有什么：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SELECT * FROM emp [INNER] JOIN dep;</span><br><span class="line">+----------+--------------+----------+----------+--------------+</span><br><span class="line">| 员工ID   | 员工名字     | 部门ID   | 部门ID   | 部门名字     |</span><br><span class="line">+----------+--------------+----------+----------+--------------+</span><br><span class="line">| 1        | 张三         | 1        | 1        | 销售部       |</span><br><span class="line">| 1        | 张三         | 1        | 2        | 财务部       |</span><br><span class="line">| 2        | 李四         | 2        | 1        | 销售部       |</span><br><span class="line">| 2        | 李四         | 2        | 2        | 财务部       |</span><br><span class="line">| 3        | 王五         | NULL     | 1        | 销售部       |</span><br><span class="line">| 3        | 王五         | NULL     | 2        | 财务部       |</span><br><span class="line">+----------+--------------+----------+----------+--------------+</span><br></pre></td></tr></table></figure>
+
+<p>我们发现笛卡尔积表里并没有符合要求的记录，此时就要用到外连接了：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SELECT * FROM emp LEFT [OUTER] JOIN dep ON emp.`员工ID` = dep.`部门ID`;</span><br><span class="line"></span><br><span class="line">+----------+--------------+----------+----------+--------------+</span><br><span class="line">| 员工ID   | 员工名字     | 部门ID   | 部门ID   | 部门名字     |</span><br><span class="line">+----------+--------------+----------+----------+--------------+</span><br><span class="line">| 1        | 张三         | 1        | 1        | 销售部       |</span><br><span class="line">| 2        | 李四         | 2        | 2        | 财务部       |</span><br><span class="line">| 3        | 王五         | NULL     | NULL     | NULL         |</span><br><span class="line">+----------+--------------+----------+----------+--------------+</span><br></pre></td></tr></table></figure>
+
+<p>我们可以看到王五那条记录在笛卡尔积表是不存在的，这也是我们所说的<strong>外连接不是完全基于笛卡尔积的，左外连接会返回包括左表中的所有记录和右表中连接字段相等的记录（可以理解成外连接比内连接的记录更多，多了一边为null的记录）</strong>。</p>
+<p>这存在一个隐式的条件，外连接可以没有条件吗？我们知道内连接没有条件会变成交叉连接，答案是外连接必须存在等值条件，不然这种连接就跟外连接的定义相违背，SQL也会报错。但是我们可以给一个恒为true的条件，这时外连接是否会就退化成内连接了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM 表1 LEFT [OUTER] JOIN 表2 ON 1=1;</span><br><span class="line"> </span><br><span class="line">-- 等价于 </span><br><span class="line"></span><br><span class="line">SELECT * FROM 表1, 表2;</span><br></pre></td></tr></table></figure>
+
+<p>或者我们用逻辑查询处理的思路分析一下上面这种特殊情况，首先从from开始生成两个表的笛卡尔积，然后ON过滤，这里条件始终为true没有执行任何过滤，笛卡尔积中的所有记录都保留下来，然后到join中添加外部行，因为左边的边的记录都在，所以不需要添加外部行，所以这时就是笛卡尔积。</p>
+<h3 id="右外连接"><a href="#右外连接" class="headerlink" title="右外连接"></a>右外连接</h3><p>跟左外连接原理完全相同，只不过返回包括右表中的所有记录和左表中连接字段相等的记录。其实掌握一个就行，左外连接中两个表互换位置就是右外连接了。语法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * from RIGHT [OUTER] JOIN 表2 ON 等值条件；</span><br></pre></td></tr></table></figure>
+
+<h3 id="全外连接"><a href="#全外连接" class="headerlink" title="全外连接"></a>全外连接</h3><p>返回左右表中所有的记录和左右表中连接字段相等的记录。<br>语法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * from FULL [OUTER] JOIN 表2 ON 等值条件；</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：FULL OUTER JOIN的支持： Access、MariaDB、MySQL、Open Office Base和SQLite不支持FULL OUTER JOIN语法	</p>
+</blockquote>
+<p><img src="/2022/09/01/MySQL%E7%9A%84%E8%81%94%E7%BB%93%EF%BC%88Join%EF%BC%89%E7%AE%97%E6%B3%95/MySQL%E7%9A%84%E8%81%94%E7%BB%93%EF%BC%88Join%EF%BC%89%E7%AE%97%E6%B3%95%5C1.png"></p>
+<h2 id="联结算法"><a href="#联结算法" class="headerlink" title="联结算法"></a>联结算法</h2><p>​		联接算法是MySQL数据库用于处理联接的物理策略。目前MySQL数据库仅支持Nested-Loops Join算法，这里只简单介绍一下这个联结算法。Nested-Loops Join算法有三种，分别为：</p>
+<ul>
+<li><p>Index Nested-Loop Join</p>
+</li>
+<li><p>Simple Nested-Loops Join算法</p>
+</li>
+<li><p>Block Nested-Loops Join算法</p>
+</li>
+</ul>
+<h3 id="Index-Nested-Loop-Join"><a href="#Index-Nested-Loop-Join" class="headerlink" title="Index Nested-Loop Join"></a>Index Nested-Loop Join</h3><p>​		当被驱动表有索引的时候，联结查询的执行过程是：</p>
+<p>​		先遍历表t1，然后根据从表t1中取出的每行数据中的a值，去表t2中查找满足条件的记录。在形式上，这个过程就跟我们写程序时的嵌套查询类似，并且可以用上被驱动表的索引，所以我们称之为“Index Nested-Loop Join”，简称NLJ。假设在t2表上有a的索引，那么这里t1<strong>驱动表是走全表扫描，而被驱动表是走树搜索。</strong>		从这里的驱动表和被驱动表的查询过程可以看出，可以使用被驱动表的索引的前提下，<strong>使用join时将体量较小的小表作为驱动表</strong></p>
+<h3 id="Simple-Nested-Loop-Join"><a href="#Simple-Nested-Loop-Join" class="headerlink" title="Simple Nested-Loop Join"></a>Simple Nested-Loop Join</h3><p>​		当被驱动表用不上索引的时候，那么拿到了表1的行数据之后需要在被驱动表上做一次全表扫描。如果两个表都是使用的全表扫描的话，那么扫描的行数就是两个表行数之积。算法太过于笨重，MySQL也没有使用这个Simple Nested-Loop Join算法。而是使用了另一个叫作“Block Nested-Loop Join”的算法，简称BNL。</p>
+<h3 id="Block-Nested-Loop-Join"><a href="#Block-Nested-Loop-Join" class="headerlink" title="Block Nested-Loop Join"></a>Block Nested-Loop Join</h3><p>​		这时候，被驱动表上没有可用的索引，算法的流程是这样的：</p>
+<ol>
+<li>把表t1的数据读入线程内存join_buffer中，由于我们这个语句中写的是select *，因此是把整个表t1放入了内存；</li>
+<li>扫描表t2，把表t2中的每一行取出来，跟join_buffer中的数据做对比，满足join条件的，作为结果集的一部分返回。</li>
+</ol>
+<p>​		在这个过程中，对表t1和t2都做了一次全表扫描，由于join_buffer是以无序数组的方式组织的，因此对表t2中的每一行都需要做比对判断。但是，Block Nested-Loop Join算法的判断都是内存操作，速度上会快很多，性能也更好。这个时候任何一个表作为驱动表和被驱动表耗时都是一样的。</p>
+<p>​		在实际过程中如果join_buffer放不下一整个表的数据，就分段放满然后使用被驱动表做匹配，匹配完之后就清空join_buffer继续读驱动表的数据。这也是这个算法名字“Block”的由来：表示“分块去join”。但是在join_buffer_size不够大的时候（这种情况更常见），应该选择小表做驱动表。这样尽可能让join_buffer一次性就加载完驱动表这样被驱动表就不用重复去匹配。</p>
+<p>​		这里的小表定义规则是：<strong>在决定哪个表做驱动表的时候，应该是两个表按照各自的条件过滤，过滤完成之后，计算参与join的各个字段的总数据量，数据量小的那个表，就是“小表”，应该作为驱动表。</strong></p>
+<h2 id="集合操作"><a href="#集合操作" class="headerlink" title="集合操作"></a>集合操作</h2><ul>
+<li>与联接操作一样，集合操作也是对两个输入进行操作，并生成一个虚拟表，有点类似于数学中的合并；</li>
+<li>集合操作的两个输入必须拥有相同的列数，若数据类型不同，MySQL数据库会自动将进行隐式转化，并且结果列的名称由第一个输入决定；</li>
+<li>若SELECT语句中包含LIMIT和ORDER BY子句，要为参与集合操作的各SELECT语句添加括号，否则执行集合查询会产生错误。</li>
+</ul>
+<p>例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from x;</span><br><span class="line">+------+</span><br><span class="line">| a    |</span><br><span class="line">+------+</span><br><span class="line">| a    |</span><br><span class="line">| b    |</span><br><span class="line">| c    |</span><br><span class="line">+------+</span><br><span class="line">3 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from y;</span><br><span class="line">+------+</span><br><span class="line">| a    |</span><br><span class="line">+------+</span><br><span class="line">| a    |</span><br><span class="line">| b    |</span><br><span class="line">+------+</span><br><span class="line">2 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select a as m from x</span><br><span class="line">    -&gt; union</span><br><span class="line">    -&gt; select 1 as n from dual</span><br><span class="line">    -&gt; union select &#x27;abc&#x27; as o from dual;</span><br><span class="line">+---------------------+</span><br><span class="line">| m                   |</span><br><span class="line">+---------------------+</span><br><span class="line">| a                   |</span><br><span class="line">| b                   |</span><br><span class="line">| c                   |</span><br><span class="line">| 1                   |</span><br><span class="line">| abc                 |</span><br><span class="line">+---------------------+</span><br></pre></td></tr></table></figure>
+
+<h3 id="UNION-DISTINCT"><a href="#UNION-DISTINCT" class="headerlink" title="UNION [DISTINCT]"></a>UNION [DISTINCT]</h3><p>UNION DISTINCT组合两个输入，并应用DISTINCT过滤重复项。一般省略DISTINCT关键字，直接用UNION，例如</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from x</span><br><span class="line">    -&gt; union</span><br><span class="line">    -&gt; select * from y;</span><br><span class="line">+------+</span><br><span class="line">| a    |</span><br><span class="line">+------+</span><br><span class="line">| a    |</span><br><span class="line">| b    |</span><br><span class="line">| c    |</span><br><span class="line">+------+</span><br><span class="line">3 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<p>MySQL数据库目前对UNION DISTINCT的实现方式如下：</p>
+<ul>
+<li>创建一张临时表，即虚拟表。</li>
+<li>对这张临时表的列添加唯一索引（Unique Index）。</li>
+<li>将输入的数据插入临时表。</li>
+<li>返回虚拟表。</li>
+</ul>
+<h3 id="UNION-ALL"><a href="#UNION-ALL" class="headerlink" title="UNION ALL"></a>UNION ALL</h3><p>UNION ALL组合两个输入中所有项的结果集，并包含重复的选项，例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from x</span><br><span class="line">    -&gt; union all</span><br><span class="line">    -&gt; select * from y;</span><br><span class="line">+------+</span><br><span class="line">| a    |</span><br><span class="line">+------+</span><br><span class="line">| a    |</span><br><span class="line">| b    |</span><br><span class="line">| c    |</span><br><span class="line">| a    |</span><br><span class="line">| b    |</span><br><span class="line">+------+</span><br><span class="line">5 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -208,6 +541,22 @@
 
       <time title="创建时间：2022-08-31 16:17:53" itemprop="dateCreated datePublished" datetime="2022-08-31T16:17:53+08:00">2022-08-31</time>
     </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-09-01 15:22:02" itemprop="dateModified" datetime="2022-09-01T15:22:02+08:00">2022-09-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">MySQL数据库</span></a>
+        </span>
+    </span>
 
   
 </div>
@@ -219,7 +568,37 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          
+          <p>​		之前介绍的binlog可以用来归档，也可以用来做主备同步。</p>
+<h1 id="MySQL主备的基本原理"><a href="#MySQL主备的基本原理" class="headerlink" title="MySQL主备的基本原理"></a>MySQL主备的基本原理</h1><h2 id="主备切换流程"><a href="#主备切换流程" class="headerlink" title="主备切换流程"></a>主备切换流程</h2><ol>
+<li>原先的状态时客户端的读写都是直接访问A节点，而节点B是A的备库，B被设置为只读（readonly）模式，只是将A的更新都同步过来，到本地执行。这样可以保持节点B和A的数据是相同的。</li>
+<li>当需要切换的时候，将客户端读写访问的都切换成节点B，而节点A是B的备库。</li>
+</ol>
+<h2 id="主备延迟"><a href="#主备延迟" class="headerlink" title="主备延迟"></a>主备延迟</h2><p>​		所谓主备延迟，就是同一个事务，在备库执行完成的时间和主库执行完成的时间之间的差值，可以在备库上执行show slave status命令，它的返回结果里面会显示seconds_behind_master，用于表示当前备库延迟了多少秒。</p>
+<p>​		seconds_behind_master的计算方法是这样的：</p>
+<ol>
+<li>每个事务的binlog 里面都有一个时间字段，用于记录主库上写入的时间；</li>
+<li>备库取出当前正在执行的事务的时间字段的值，计算它与当前系统时间的差值，得到seconds_behind_master。</li>
+</ol>
+<p>主备延迟最直接的表现是，备库消费中转日志（relay log）的速度，比主库生产binlog的速度要慢。</p>
+<h1 id="update在主备数据库上的执行流程"><a href="#update在主备数据库上的执行流程" class="headerlink" title="update在主备数据库上的执行流程"></a>update在主备数据库上的执行流程</h1><p>​	主库接收到客户端的更新请求后，执行内部事务的更新逻辑，同时写binlog。备库B跟主库A之间维持了一个长连接。主库A内部有一个线程，专门用于服务备库B的这个长连接。一个事务日志同步的完整过程是这样的：</p>
+<ol>
+<li>在备库B上通过change master命令，设置主库A的IP、端口、用户名、密码，以及要从哪个位置开始请求binlog，这个位置包含文件名和日志偏移量。</li>
+<li>在备库B上执行start slave命令，这时候备库会启动两个线程：io_thread和sql_thread。其中io_thread负责与主库建立连接。</li>
+<li>主库A校验完用户名、密码后，开始按照备库B传过来的位置，从本地读取binlog，发给B。</li>
+<li>备库B拿到binlog后，写到本地文件，称为<strong>中转日志（relay log）</strong>。</li>
+<li>sql_thread读取中转日志，解析出日志里的命令，并执行。</li>
+</ol>
+<h1 id="binlog的三种格式"><a href="#binlog的三种格式" class="headerlink" title="binlog的三种格式"></a>binlog的三种格式</h1><h2 id="statement格式"><a href="#statement格式" class="headerlink" title="statement格式"></a>statement格式</h2><p>statement记录的就是我们输入的SQL原文，可能会出现：在主库执行这条SQL语句的时候，用的是索引a；而在备库执行这条SQL语句的时候，却使用了索引t_modified。</p>
+<h2 id="row格式"><a href="#row格式" class="headerlink" title="row格式"></a>row格式</h2><p>​		row格式的binlog里没有了SQL语句的原文，而是替换成了两个event：Table_map和Delete_rows。</p>
+<ol>
+<li>Table_map event，用于说明接下来要操作的表是test库的表t;</li>
+<li>Delete_rows event，用于定义删除的行为。当我们执行delete语句时，row格式的binlog也会把被删掉的行的整行信息保存起来。</li>
+</ol>
+<p>​		当binlog_format使用row格式的时候，binlog里面记录了真实删除行的主键id，这样binlog传到备库去的时候，就肯定会删除id&#x3D;4的行，不会有主备删除不同行的问题。</p>
+<h2 id="mixed格式"><a href="#mixed格式" class="headerlink" title="mixed格式"></a>mixed格式</h2><p>​		mixed格式的意思是，MySQL自己会判断这条SQL语句是否可能引起主备不一致，如果有可能，就用row格式，否则就用statement格式。</p>
+<p>​		原因是：有些statement格式的binlog可能会导致主备不一致，所以要使用row格式。但是row格式的缺点是，很占空间。比如你用一个delete语句删掉10万行数据，用statement的话就是一个SQL语句被记录到binlog中，占用几十个字节的空间。但如果用row格式的binlog，就要把这10万条记录都写到binlog中。这样做，不仅会占用更大的空间，同时写binlog也要耗费IO资源，影响执行速度。</p>
+<h5 id="MySQL主备，读写分离出现的问题"><a href="#MySQL主备，读写分离出现的问题" class="headerlink" title="MySQL主备，读写分离出现的问题"></a>MySQL主备，读写分离出现的问题</h5><p>​		由于主从数据库可能存在延迟，客户端执行完一个更新事务后马上发起查询，如果查询选择的是从库的话，就有可能读到刚刚的事务更新之前的状态。这种情况称为过期读。</p>
+
       
     </div>
 
@@ -582,9 +961,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2022-08-21 17:32:16 / 修改时间：20:44:27" itemprop="dateCreated datePublished" datetime="2022-08-21T17:32:16+08:00">2022-08-21</time>
+      <time title="创建时间：2022-08-21 17:32:16" itemprop="dateCreated datePublished" datetime="2022-08-21T17:32:16+08:00">2022-08-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-09-01 21:02:09" itemprop="dateModified" datetime="2022-09-01T21:02:09+08:00">2022-09-01</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -607,8 +992,7 @@
     
     <div class="post-body" itemprop="articleBody">
           <p>自增主键可以让主键索引尽量地保持递增顺序插入，避免了页分裂，因此索引更紧凑。</p>
-<p><strong>自增值保存策略</strong></p>
-<p>表的结构定义存放在后缀名为.frm的文件中，但是并不会保存自增值。不同的引擎对于自增值的保存策略不同。</p>
+<h3 id="自增值保存策略"><a href="#自增值保存策略" class="headerlink" title="自增值保存策略"></a><strong>自增值保存策略</strong></h3><p>表的结构定义存放在后缀名为.frm的文件中，但是并不会保存自增值。不同的引擎对于自增值的保存策略不同。</p>
 <ul>
 <li><p>MyISAM引擎的自增值保存在数据文件中。</p>
 </li>
@@ -888,203 +1272,8 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/20/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="Jing">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="WangHao&博客">
-      <meta itemprop="description" content="Stay hungry,stay foolish">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | WangHao&博客">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/08/20/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/" class="post-title-link" itemprop="url">MySQL中的锁</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2022-08-20 20:02:17" itemprop="dateCreated datePublished" datetime="2022-08-20T20:02:17+08:00">2022-08-20</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-08-30 11:24:08" itemprop="dateModified" datetime="2022-08-30T11:24:08+08:00">2022-08-30</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">MySQL数据库</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="MySQL中锁的分类"><a href="#MySQL中锁的分类" class="headerlink" title="MySQL中锁的分类"></a>MySQL中锁的分类</h1><h2 id="按照设计思想分类"><a href="#按照设计思想分类" class="headerlink" title="按照设计思想分类"></a>按照设计思想分类</h2><p>乐观锁和悲观锁是一种设计思想，这种设计思想广泛存在于所有需要同步加锁的场景中，例如Java中的实现：乐观锁为volatile+cas，悲观锁为synchronized或ReentrantLock这种锁。在mysql中思想是类似的。</p>
-<h3 id="乐观锁"><a href="#乐观锁" class="headerlink" title="乐观锁"></a>乐观锁</h3><p>每次读数据的时候都认为其他人不会修改，所以不会上锁，而是在更新的时候去判断在此期间有没有其他人更新了数据，可以<strong>使用版本号机制</strong>。在数据库中可以通过为数据表增加一个版本号字段实现。读取数据时将版本号一同读出，数据每次更新时对版本号加一。当我们更新的时候，判断数据库表对应记录的当前版本号与第一次取出来的版本号值进行比对，如果值相等，则予以更新，否则认为是过期数据，类似于Java中的cas操作。乐观锁适用于多读的应用类型，可以提高吞吐量。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/08/20/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/19/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="Jing">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="WangHao&博客">
-      <meta itemprop="description" content="Stay hungry,stay foolish">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | WangHao&博客">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/08/19/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95/" class="post-title-link" itemprop="url">MySQL数据库的索引</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2022-08-19 22:49:40" itemprop="dateCreated datePublished" datetime="2022-08-19T22:49:40+08:00">2022-08-19</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-08-21 13:54:55" itemprop="dateModified" datetime="2022-08-21T13:54:55+08:00">2022-08-21</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">MySQL数据库</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="索引的定义"><a href="#索引的定义" class="headerlink" title="索引的定义"></a>索引的定义</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>MySQL官方对索引的定义：索引（Index）是帮助MySQL 高效获取数据的数据结构。可以得到索引的本质是数据结构，可以简单理解为<strong>排好序的快速查找数据结构</strong>。这种数据结构往往空间很大，是存在硬盘里的，又称为磁盘级索引。</p>
-<h2 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h2><p>优势：</p>
-<ul>
-<li>提高数据检索的效率，降低数据库的IO成本。</li>
-<li>通过索引列对数据进行排序，降低数据排序的成本，降低了CPU的消耗。</li>
-</ul>
-<p>劣势：</p>
-<ul>
-<li>虽然索引提高了查询速度，但同时会降低更新表的速度。在更新表时，MySQL不仅要更新数据，也要维护索引，调整因为更新所带来的键值变化后的索引信息（所以说在频繁更新的列上不建议建索引）。</li>
-<li>实际上索引也是一张表，该表保存了主键与索引字段，并指向实体表的记录，所以索引列也是要占用空间的。</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/08/19/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 </div>
