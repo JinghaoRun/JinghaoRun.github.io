@@ -30,7 +30,7 @@
 <meta property="og:image" content="https://note.youdao.com/yws/api/personal/file/WEB3d44d8cb323f888375f47066d09c2847?method=download&shareKey=09849fae1e53e5fe3e26dfe3bdaad8a3">
 <meta property="og:image" content="https://note.youdao.com/yws/api/personal/file/9272F49427F34BFCAF5E40F6ED25B94C?method=download&shareKey=09849fae1e53e5fe3e26dfe3bdaad8a3">
 <meta property="article:published_time" content="2022-09-01T13:56:55.000Z">
-<meta property="article:modified_time" content="2022-09-01T13:57:47.520Z">
+<meta property="article:modified_time" content="2022-09-02T01:46:38.858Z">
 <meta property="article:author" content="Jing">
 <meta property="article:tag" content="MySQL中的分区表">
 <meta name="twitter:card" content="summary">
@@ -213,9 +213,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2022-09-01 21:56:55 / 修改时间：21:57:47" itemprop="dateCreated datePublished" datetime="2022-09-01T21:56:55+08:00">2022-09-01</time>
+      <time title="创建时间：2022-09-01 21:56:55" itemprop="dateCreated datePublished" datetime="2022-09-01T21:56:55+08:00">2022-09-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-09-02 09:46:38" itemprop="dateModified" datetime="2022-09-02T09:46:38+08:00">2022-09-02</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -242,6 +248,8 @@
 <li>分区的过程是将一个表或索引分解为多个更小、更可管理的部分。就访问数据库的应用而言，从逻辑上讲，只有一个表或一个索引，但是在物理上这个表或索引可能由数十个物理分区组成。每个分区都是独立的对象，可以独自处理，也可以作为一个更大对象的一部分进行处理。</li>
 <li>MySQL数据库支持的分区类型为水平分区（分行），并不支持垂直分区（分列）。此外，MySQL数据库的分区是局部分区索引，一个分区中既存放数据又存放索引。全局分区是指，数据存放各个分区中，但是所有数据的索引放在一个对象中。目前，MySQL数据库暂时不支持全局分区。</li>
 </ul>
+<span id="more"></span>
+
 <h2 id="分区类型"><a href="#分区类型" class="headerlink" title="分区类型"></a>分区类型</h2><p>当前MySQL数据库支持以下几种类型的分区：</p>
 <ul>
 <li>RANGE分区：行数据基于属于一个给定<strong>连续</strong>区间的列值放入分区。</li>

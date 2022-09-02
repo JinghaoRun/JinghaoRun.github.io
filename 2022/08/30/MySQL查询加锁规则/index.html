@@ -29,7 +29,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2022/08/30/MySQL%E6%9F%A5%E8%AF%A2%E5%8A%A0%E9%94%81%E8%A7%84%E5%88%99/MySQL%E6%9F%A5%E8%AF%A2%E5%8A%A0%E9%94%81%E8%A7%84%E5%88%99%5C1.jpg">
 <meta property="article:published_time" content="2022-08-30T08:14:27.000Z">
-<meta property="article:modified_time" content="2022-08-30T13:28:08.848Z">
+<meta property="article:modified_time" content="2022-09-02T01:49:32.517Z">
 <meta property="article:author" content="Jing">
 <meta property="article:tag" content="MySQL查询加锁规则">
 <meta name="twitter:card" content="summary">
@@ -119,7 +119,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AD%89%E5%80%BC%E6%9F%A5%E8%AF%A2%E9%97%B4%E9%9A%99%E9%94%81"><span class="nav-number">1.</span> <span class="nav-text">等值查询间隙锁</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%9E%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95%E7%AD%89%E5%80%BC%E9%94%81"><span class="nav-number">2.</span> <span class="nav-text">非唯一索引等值锁</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BB%E9%94%AE%E7%B4%A2%E5%BC%95%E8%8C%83%E5%9B%B4%E9%94%81"><span class="nav-number">3.</span> <span class="nav-text">主键索引范围锁</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%9E%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95%E8%8C%83%E5%9B%B4%E9%94%81"><span class="nav-number">4.</span> <span class="nav-text">非唯一索引范围锁</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#limit-%E8%AF%AD%E5%8F%A5%E5%8A%A0%E9%94%81"><span class="nav-number">5.</span> <span class="nav-text">limit 语句加锁</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8A%A0%E9%94%81%E8%A7%84%E5%88%99"><span class="nav-number">1.</span> <span class="nav-text">加锁规则</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AD%89%E5%80%BC%E6%9F%A5%E8%AF%A2%E9%97%B4%E9%9A%99%E9%94%81"><span class="nav-number">2.</span> <span class="nav-text">等值查询间隙锁</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%9E%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95%E7%AD%89%E5%80%BC%E9%94%81"><span class="nav-number">3.</span> <span class="nav-text">非唯一索引等值锁</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BB%E9%94%AE%E7%B4%A2%E5%BC%95%E8%8C%83%E5%9B%B4%E9%94%81"><span class="nav-number">4.</span> <span class="nav-text">主键索引范围锁</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%9E%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95%E8%8C%83%E5%9B%B4%E9%94%81"><span class="nav-number">5.</span> <span class="nav-text">非唯一索引范围锁</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#limit-%E8%AF%AD%E5%8F%A5%E5%8A%A0%E9%94%81"><span class="nav-number">6.</span> <span class="nav-text">limit 语句加锁</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -212,9 +212,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2022-08-30 16:14:27 / 修改时间：21:28:08" itemprop="dateCreated datePublished" datetime="2022-08-30T16:14:27+08:00">2022-08-30</time>
+      <time title="创建时间：2022-08-30 16:14:27" itemprop="dateCreated datePublished" datetime="2022-08-30T16:14:27+08:00">2022-08-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-09-02 09:49:32" itemprop="dateModified" datetime="2022-09-02T09:49:32+08:00">2022-09-02</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -237,13 +243,14 @@
     
     <div class="post-body" itemprop="articleBody">
         <p>​		间隙锁是一种加在两个索引之间的锁，例如(10, 20)；或者加在第一个索引之前，例如(-∞, 10)；或最后一个索引之后的间隙，例如(20, ∞)。这个间隙可以跨一个索引记录，多个索引记录，甚至是空的。另：间隙锁在可重复读隔离级别下才有效，而在别的隔离级别下只有行锁。<strong>在读提交隔离级别下语句执行过程中加上的行锁，在语句执行完成后，就要把“不满足条件的行”上的行锁直接释放了</strong>，不需要等到事务提交。</p>
-<pre><code># 加锁规则
+<span id="more"></span>
 
-    1. 原则1：MySQL查询的加锁单位是前开后闭区间的next-key lock（间隙锁 + 行锁）需要注意的是这个加锁步骤是按照两步来执行的：第一步的间隙锁不是互斥的，也就是别的事务加了这个事务还能加。
-    1. 原则2：查找过程中访问到的对象才会加锁。
-    1. 优化1：索引上的等值查询，给唯一索引加锁的时候，next-key lock退化为行锁。
-    1. 优化2：索引上的等值查询，向右遍历时且最后一个值不满足等值条件的时候，next-key lock退化为间隙锁。（右闭退化掉，变成左开右开。
-</code></pre>
+<h1 id="加锁规则"><a href="#加锁规则" class="headerlink" title="加锁规则"></a>加锁规则</h1><ol>
+<li>原则1：MySQL查询的加锁单位是前开后闭区间的next-key lock（间隙锁 + 行锁）需要注意的是这个加锁步骤是按照两步来执行的：第一步的间隙锁不是互斥的，也就是别的事务加了这个事务还能加。</li>
+<li>原则2：查找过程中访问到的对象才会加锁。</li>
+<li>优化1：索引上的等值查询，给唯一索引加锁的时候，next-key lock退化为行锁。</li>
+<li>优化2：索引上的等值查询，向右遍历时且最后一个值不满足等值条件的时候，next-key lock退化为间隙锁。（右闭退化掉，变成左开右开</li>
+</ol>
 <h1 id="等值查询间隙锁"><a href="#等值查询间隙锁" class="headerlink" title="等值查询间隙锁"></a>等值查询间隙锁</h1><p>​		<strong>等值查询：通过索引树搜索</strong>，</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">begin;</span><br><span class="line">select * from t where id&gt;9 and id&lt;12 order by id desc for update;</span><br></pre></td></tr></table></figure>
 
