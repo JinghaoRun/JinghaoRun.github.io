@@ -139,7 +139,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-count">57</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -177,7 +177,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/09/05/%E5%B9%B6%E5%8F%91-Java%E9%98%BB%E5%A1%9E%E4%B8%8E%E5%94%A4%E9%86%92%E5%8E%9F%E7%90%86/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/09/05/%E5%B9%B6%E5%8F%91-%E7%BA%BF%E7%A8%8B%E9%98%BB%E5%A1%9E%E4%B8%8E%E5%94%A4%E9%86%92%E5%8E%9F%E7%90%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/head.jpg">
@@ -195,7 +195,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/09/05/%E5%B9%B6%E5%8F%91-Java%E9%98%BB%E5%A1%9E%E4%B8%8E%E5%94%A4%E9%86%92%E5%8E%9F%E7%90%86/" class="post-title-link" itemprop="url">并发-Java阻塞与唤醒原理</a>
+          <a href="/2022/09/05/%E5%B9%B6%E5%8F%91-%E7%BA%BF%E7%A8%8B%E9%98%BB%E5%A1%9E%E4%B8%8E%E5%94%A4%E9%86%92%E5%8E%9F%E7%90%86/" class="post-title-link" itemprop="url">并发-Java阻塞与唤醒原理</a>
         </h2>
 
         <div class="post-meta-container">
@@ -205,8 +205,18 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
+      
 
-      <time title="创建时间：2022-09-05 17:31:27" itemprop="dateCreated datePublished" datetime="2022-09-05T17:31:27+08:00">2022-09-05</time>
+      <time title="创建时间：2022-09-05 17:31:27 / 修改时间：21:00:46" itemprop="dateCreated datePublished" datetime="2022-09-05T17:31:27+08:00">2022-09-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">Java并发编程</span></a>
+        </span>
     </span>
 
   
@@ -219,7 +229,32 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          
+          <h1 id="java-locksupport"><a href="#java-locksupport" class="headerlink" title="java locksupport"></a>java locksupport</h1><p>​		LockSupport是一个线程阻塞工具类，所有的方法都是静态方法，可以让线程在任意位置阻塞。各种并发框架如CountDownLatch、CyclicBarrier和Semaphore是基于AQS (AbstractQueuedSynchronizer)框架实现的，AQS框架借助于两个类：</p>
+<ul>
+<li>Unsafe（提供CAS操作） &#x2F;&#x2F;JDK9以后引入了VarHandle变量句柄，代替了Unsafe</li>
+<li>LockSupport（提供park&#x2F;unpark操作）</li>
+</ul>
+<p>​		而LockSupport的park和unpark的实现是依赖于Unsafe类的prak和unpark的。重载方法中可以传入一个blocker对象，在dump线程时能获得更多的信息，用于问题排查或系统监控。</p>
+<p><strong>其中常用方法如下：</strong></p>
+<p>park(Object blocker); &#x2F;&#x2F; 暂停当前线程<br>parkNanos(Object blocker, long nanos); &#x2F;&#x2F; 暂停当前线程，不过有超时时间的限制<br>parkUntil(Object blocker, long deadline); &#x2F;&#x2F; 暂停当前线程，直到某个时间</p>
+<p>其中这几个语句的blocker是用来记录线程被阻塞时被谁阻塞的。用于线程监控和分析工具来定位原因的</p>
+<p>park(); &#x2F;&#x2F; 无期限暂停当前线程<br>parkNanos(long nanos); &#x2F;&#x2F; 暂停当前线程，不过有超时时间的限制<br>parkUntil(long deadline); &#x2F;&#x2F; 暂停当前线程，直到某个时间<br>unpark(Thread thread); &#x2F;&#x2F; 恢复某个线程</p>
+<p><strong>这里的<code>park</code>和<code>unpark</code>其实实现了<code>wait</code>和<code>notify</code>的功能，不过还是有一些差别的</strong></p>
+<h2 id="park-unpark-与-wait-notify-异同"><a href="#park-unpark-与-wait-notify-异同" class="headerlink" title="park ,unpark 与 wait ,notify 异同"></a>park ,unpark 与 wait ,notify 异同</h2><ol>
+<li>park 和 wait 都会让线程进入<code>WAITING</code>或<code>TIMED_WAITING</code>状态，都可以被 interrupt 方法打断（<strong>ReentrateLock 可打断基于 park</strong> ）；</li>
+<li>wait、notify 和 notifyAll都是Object中的方法,在调用这两个方法前必须先获得锁对象,及其关联的 Monitor 一起使用；而 park、unpark 不必，park没有锁的概念。<ul>
+<li>wait 必须写在 synchronized 里，这是因为 wait 必须是由加锁的对象调用的，其原理是通过加锁的对象关联的同步监视器（Monitor）来管理线程，当调用 wait 方法时，把当前持锁线程放入 Monitor 的 WaitSet，所以无论是 wait 还是 notify 都必须由被锁对象调用。</li>
+<li>而 park 则不同，park 是类方法，调用方式类似于 sleep，而 unpark 必须指定线程对象，所以它是“精确唤醒”。</li>
+</ul>
+</li>
+<li>park &amp; unpark 是以线程为单位来【阻塞】和【唤醒】线程，wait 和 notify 都是以被锁对象（准确讲是其关联的 Monitor）为单位的，所以 notify 只能随机唤醒一个关联的 Monitor 里 WaitSet 等待的线程，notifyAll 是唤醒关联的 Monitor 里 WaitSet 所有的等待的线程，就不那么【精确】</li>
+<li><strong>park &amp; unpark 可以先 unpark，而 wait &amp; notify 不能先 notify</strong>。</li>
+</ol>
+<h2 id="park-amp-unpark-底层原理"><a href="#park-amp-unpark-底层原理" class="headerlink" title="park &amp; unpark 底层原理"></a>park &amp; unpark 底层原理</h2><h3 id="设计思想"><a href="#设计思想" class="headerlink" title="设计思想"></a>设计思想</h3><p>​		park是在怎么实现精准唤醒的哪，其实并不难理解，我们知道wait是基于锁的，所以它有竞争，所以搞了个Monitor管理被锁对象的这些个线程，但park并没有锁的概念，一个线程就关联一个<code>Parker</code>对象，你把我park了（类似于sleep）我就暂停呗，想把我唤醒就必须精确到我现在这一个线程对象。</p>
+<h3 id="底层原理"><a href="#底层原理" class="headerlink" title="底层原理"></a>底层原理</h3><p>​		在具体底层的原理上，每个线程都有自己的一个 <code>Parker</code> 对象，由三部分组成 <code>_counter</code> （计数变量）， <code>_cond</code>（条件变量） 和 <code>_mutex</code>（互斥量）。mutex和condition保护了一个_counter的变量，简单点说：当park时，这个变量被设置为0，当unpark时，这个变量被设置为1。改变变量是基于Unsafe（提供CAS操作）</p>
+<p>​		park方法本质是消费许可，先尝试直接能否直接拿到“许可”，即_counter&gt;0时，如果成功，则把_counter设置为0,并返回（）<strong>这时候线程不用阻塞等待许可</strong>：如果没有可消费的许可（<strong>初始时许可是不可用的，所以在调用 park 后 thread 被挂起</strong>），那么就阻塞当前线程，一直等待，直到阻塞线程的unpark方法被其他线程调用，然后消费许可，当前线程被唤醒，继续执行。</p>
+<p>​		unpark方法本质是生产许可，直接设置_counter为1，再unlock mutext返回。如果_counter之前的值是0，则还要调用pthread_cond_signal唤醒在park中等待的线程 ，一个线程刚创建出来，然后运行，此时是没有许可的，所以unpark方法可以在park方法前调用。下次park方法调用时，直接消费许可，线程不用阻塞等待许可。许可最多只有一个，连续多次调用unpark只能生产一个许可。</p>
+
       
     </div>
 
