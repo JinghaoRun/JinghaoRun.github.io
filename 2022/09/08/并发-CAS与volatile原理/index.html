@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="volatile并发编程中的三个特性 原子性： 一个或多个操作为一个整体，要么全部执行要么都不执行，synchronized 可以保证代码块的原子性和共享变量的可见性 可见性： 当多个线程共享同一变量时，若其中一个线程对该共享变量进行了修改，那么该修改对其他线程是立即可见的 有序性： 程序执行的顺序与代码的先后顺序相同">
+<meta property="og:type" content="article">
+<meta property="og:title" content="并发-CAS与volatile原理">
+<meta property="og:url" content="http://example.com/2022/09/08/%E5%B9%B6%E5%8F%91-CAS%E4%B8%8Evolatile%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="WangHao&amp;博客">
+<meta property="og:description" content="volatile并发编程中的三个特性 原子性： 一个或多个操作为一个整体，要么全部执行要么都不执行，synchronized 可以保证代码块的原子性和共享变量的可见性 可见性： 当多个线程共享同一变量时，若其中一个线程对该共享变量进行了修改，那么该修改对其他线程是立即可见的 有序性： 程序执行的顺序与代码的先后顺序相同">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-09-08T13:14:48.000Z">
+<meta property="article:modified_time" content="2022-09-11T06:58:21.199Z">
+<meta property="article:author" content="Jing">
+<meta property="article:tag" content="CAS">
+<meta property="article:tag" content="volatile">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2022/09/08/%E5%B9%B6%E5%8F%91-CAS%E4%B8%8Evolatile%E5%8E%9F%E7%90%86/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2022/09/08/%E5%B9%B6%E5%8F%91-CAS%E4%B8%8Evolatile%E5%8E%9F%E7%90%86/","path":"2022/09/08/并发-CAS与volatile原理/","title":"并发-CAS与volatile原理"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>并发-CAS与volatile原理 | WangHao&博客</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">WangHao&博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Welcome to the home of WangHao</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#volatile"><span class="nav-number">1.</span> <span class="nav-text">volatile</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B8%AD%E7%9A%84%E4%B8%89%E4%B8%AA%E7%89%B9%E6%80%A7"><span class="nav-number">1.1.</span> <span class="nav-text">并发编程中的三个特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E8%A7%81%E6%80%A7"><span class="nav-number">1.2.</span> <span class="nav-text">可见性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#volatile%E4%BF%9D%E8%AF%81%E6%95%B0%E6%8D%AE%E7%9A%84%E5%8F%AF%E8%A7%81%E6%80%A7"><span class="nav-number">1.3.</span> <span class="nav-text">volatile保证数据的可见性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#volatile%E4%B8%8D%E8%83%BD%E4%BF%9D%E8%AF%81%E6%95%B0%E6%8D%AE%E7%9A%84%E5%8E%9F%E5%AD%90%E6%80%A7"><span class="nav-number">1.4.</span> <span class="nav-text">volatile不能保证数据的原子性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#volatile%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86"><span class="nav-number">1.5.</span> <span class="nav-text">volatile底层原理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CAS"><span class="nav-number">2.</span> <span class="nav-text">CAS</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CAS-%E7%9A%84%E7%89%B9%E7%82%B9"><span class="nav-number">2.1.</span> <span class="nav-text">CAS 的特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%97%A0%E9%94%81%E6%95%88%E7%8E%87%E9%AB%98"><span class="nav-number">2.2.</span> <span class="nav-text">为什么无锁效率高</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CAS-%E6%90%AD%E9%85%8D-volatile%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.3.</span> <span class="nav-text">CAS 搭配 volatile的实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CAS-%E7%9A%84%E9%97%AE%E9%A2%98%EF%BC%88ABA%EF%BC%89"><span class="nav-number">2.4.</span> <span class="nav-text">CAS 的问题（ABA）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3ABA%E9%97%AE%E9%A2%98"><span class="nav-number">2.5.</span> <span class="nav-text">如何解决ABA问题</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Jing"
+      src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">Jing</p>
+  <div class="site-description" itemprop="description">Stay hungry,stay foolish</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">63</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">72</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/09/08/%E5%B9%B6%E5%8F%91-CAS%E4%B8%8Evolatile%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="Jing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangHao&博客">
+      <meta itemprop="description" content="Stay hungry,stay foolish">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="并发-CAS与volatile原理 | WangHao&博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          并发-CAS与volatile原理
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-09-08 21:14:48" itemprop="dateCreated datePublished" datetime="2022-09-08T21:14:48+08:00">2022-09-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-09-11 14:58:21" itemprop="dateModified" datetime="2022-09-11T14:58:21+08:00">2022-09-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">Java并发编程</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="volatile"><a href="#volatile" class="headerlink" title="volatile"></a>volatile</h1><h2 id="并发编程中的三个特性"><a href="#并发编程中的三个特性" class="headerlink" title="并发编程中的三个特性"></a>并发编程中的三个特性</h2><ul>
+<li>原子性： 一个或多个操作为一个整体，要么全部执行要么都不执行，synchronized 可以保证代码块的原子性和共享变量的可见性</li>
+<li>可见性： 当多个线程共享同一变量时，若其中一个线程对该共享变量进行了修改，那么该修改对其他线程是立即可见的</li>
+<li>有序性： 程序执行的顺序与代码的先后顺序相同</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="可见性"><a href="#可见性" class="headerlink" title="可见性"></a>可见性</h2><p>​		可见性是指当一个线程修改了共享变量后，其他线程能够立即得知这个修改。通过之前对synchronzed内存语义进行了分析，当线程获取锁时会从主内存中获取共享变量的最新值，释放锁的时候会将共享变量同步到主内存中。从而，<strong>synchronized具有可见性</strong>，volatile会通过在指令中添加<strong>lock指令</strong>，以实现内存可见性。因此, <strong>volatile具有可见性</strong>	</p>
+<h2 id="volatile保证数据的可见性"><a href="#volatile保证数据的可见性" class="headerlink" title="volatile保证数据的可见性"></a>volatile保证数据的可见性</h2><p>​		当一个共享变量被volatile修饰之后，这个变量就具备了两层语义：</p>
+<ol>
+<li><p><strong>保证共享变量的可见性：保证了不同线程对这个变量进行操作时的可见性，即一个线程修改了某个变量的值，这新值对其他线程来说是立即可见的。</strong></p>
+</li>
+<li><p><strong>防止局部指令重排序：happens-before规则中的volatile变量规则规定了一个线程先去写一个volatile变量，然后一个线程去读这个变量，那么这个写操作的结果一定对读的这个线程可见。</strong></p>
+</li>
+</ol>
+<p>	</p>
+<p>​		在 Java 中，<code>volatile</code> 关键字可以保证变量的可见性，如果我们将变量声明为 <strong><code>volatile</code></strong> ，这就指示 JVM这个变量是共享且不稳定的，每次使用它都到主存中进行读取。但不能保证数据的原子性。<code>synchronized</code> 关键字两者都能保证。</p>
+<p>​		<strong>在 Java 中，<code>volatile</code> 关键字除了可以保证变量的可见性，还有一个重要的作用就是防止 JVM 的指令重排序。</strong> 如果我们将变量声明为 <strong><code>volatile</code></strong> ，在对这个变量进行读写操作的时候，会通过插入特定的 <strong>内存屏障</strong> 的方式来禁止指令重排序。</p>
+<p>​		volatile放置指令重排序的经典应用：<strong>双重校验锁实现对象单例（线程安全）</strong> ：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Singleton</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">static</span> Singleton uniqueInstance;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Singleton</span><span class="params">()</span> &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span>  <span class="keyword">static</span> Singleton <span class="title function_">getUniqueInstance</span><span class="params">()</span> &#123;</span><br><span class="line">       <span class="comment">//先判断对象是否已经实例过，没有实例化过才进入加锁代码</span></span><br><span class="line">        <span class="keyword">if</span> (uniqueInstance == <span class="literal">null</span>) &#123; <span class="comment">//这里会因为指令重排序导致没初始化之前就分配了内存导致这里不为空。</span></span><br><span class="line">            <span class="comment">//类对象加锁</span></span><br><span class="line">            <span class="keyword">synchronized</span> (Singleton.class) &#123;</span><br><span class="line">                <span class="keyword">if</span> (uniqueInstance == <span class="literal">null</span>) &#123;</span><br><span class="line">                    uniqueInstance = <span class="keyword">new</span> <span class="title class_">Singleton</span>();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> uniqueInstance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​	<code>uniqueInstance</code> 采用 <code>volatile</code> 关键字修饰也是很有必要的， <code>uniqueInstance = new Singleton();</code> 这段代码其实是分为三步执行：</p>
+<ol>
+<li>为 <code>uniqueInstance</code> 分配内存空间</li>
+<li>初始化 <code>uniqueInstance</code></li>
+<li>将 <code>uniqueInstance</code> 指向分配的内存地址</li>
+</ol>
+<p>​		但是由于 JVM 具有指令重排的特性，执行顺序有可能变成 1-&gt;3-&gt;2。指令重排在单线程环境下不会出现问题，但是在多线程环境下会导致<strong>一个线程获得还没有初始化的实例</strong>。例如，线程 T1 执行了 1 和 3，此时 T2 调用 <code>getUniqueInstance</code>() 后发现 <code>uniqueInstance</code> 不为空，因此返回 <code>uniqueInstance</code>，但此时 <code>uniqueInstance</code> 还未被初始化。  </p>
+<h2 id="volatile不能保证数据的原子性"><a href="#volatile不能保证数据的原子性" class="headerlink" title="volatile不能保证数据的原子性"></a>volatile不能保证数据的原子性</h2><p><strong><code>volatile</code> 关键字能保证变量的可见性，但不能保证对变量的操作是原子性的。</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">VolatoleAtomicityDemo</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">volatile</span> <span class="keyword">static</span> <span class="type">int</span> <span class="variable">inc</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">increase</span><span class="params">()</span> &#123;</span><br><span class="line">        inc++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        <span class="type">ExecutorService</span> <span class="variable">threadPool</span> <span class="operator">=</span> Executors.newFixedThreadPool(<span class="number">5</span>);</span><br><span class="line">        <span class="type">VolatoleAtomicityDemo</span> <span class="variable">volatoleAtomicityDemo</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">VolatoleAtomicityDemo</span>();</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">5</span>; i++) &#123;</span><br><span class="line">            threadPool.execute(() -&gt; &#123;</span><br><span class="line">                <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> <span class="number">0</span>; j &lt; <span class="number">500</span>; j++) &#123;</span><br><span class="line">                    volatoleAtomicityDemo.increase();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 等待1.5秒，保证上面程序执行完成</span></span><br><span class="line">        Thread.sleep(<span class="number">1500</span>);</span><br><span class="line">        System.out.println(inc); <span class="comment">//这里输出结果会出现问题：运行结果小于2500</span></span><br><span class="line">        threadPool.shutdown();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​	<code>inc++</code> 其实是一个复合操作，包括三步：</p>
+<ol>
+<li>读取 inc 的值。</li>
+<li>对 inc 加 1。</li>
+<li>将 inc 的值写回内存。</li>
+</ol>
+<p><code>volatile</code> 是无法保证这三个操作是具有原子性的，有可能导致下面这种情况出现：</p>
+<ol>
+<li>线程 1 对 <code>inc</code> 进行读取操作之后，还未对其进行修改。线程 2 又读取了 <code>inc</code>的值并对其进行修改（+1），再将<code>inc</code> 的值写回内存。</li>
+<li>线程 2 操作完毕后，线程 1 对 <code>inc</code>的值进行修改（+1），再将<code>inc</code> 的值写回内存。</li>
+</ol>
+<p>​		这也就导致两个线程分别对 <code>inc</code> 进行了一次自增操作后，<code>inc</code> 实际上只增加了 1。</p>
+<p>​		利用 <code>synchronized</code> 、<code>Lock</code>或者<code>AtomicInteger</code>可以保证操作执行的原子性。</p>
+<p>使用 <code>synchronized</code> 改进：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title function_">increase</span><span class="params">()</span> &#123;</span><br><span class="line">    inc++;</span><br><span class="line">&#125;Copy to clipboardErrorCopied</span><br></pre></td></tr></table></figure>
+
+<p>使用 <code>AtomicInteger</code> 改进：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">AtomicInteger</span> <span class="variable">inc</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AtomicInteger</span>();</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">increase</span><span class="params">()</span> &#123;</span><br><span class="line">    inc.getAndIncrement();</span><br><span class="line">&#125;Copy to clipboardErrorCopied</span><br></pre></td></tr></table></figure>
+
+<p>使用 <code>ReentrantLock</code> 改进：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Lock</span> <span class="variable">lock</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ReentrantLock</span>();</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">increase</span><span class="params">()</span> &#123;</span><br><span class="line">    lock.lock();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        inc++;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="volatile底层原理"><a href="#volatile底层原理" class="headerlink" title="volatile底层原理"></a>volatile底层原理</h2><h1 id="CAS"><a href="#CAS" class="headerlink" title="CAS"></a>CAS</h1><p>​		CAS 的含义就是 比较并交换（<code>Compare-and-Swap</code>）CAS指令需要有三个操作数，分别是内存位置（在Java中可以简单地理解为变量的<strong>内存地址</strong>，用 V 表示）、旧的预期值（用 A 表示）和准备设置的<strong>新值</strong>（用 B 表示）。CAS 指令执行时，<strong>当且仅当 V 符合 A 时，处理器才会用 B 更新 V 的值</strong>，否则它就不执行更新。但是，不管是否更新了 V 的值，都会返回 V 的旧值，上述的处理过程是一个原子操作，执行期间不会被其他线程中断。</p>
+<p>Unsafe 类中 cas 方法的源码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 四个参数，分别为：操作的变量所属的对象引用，内存偏移量（通过这个变量地址获取 V），旧的预期值 A， 新值 B</span><br><span class="line">public final native boolean compareAndSwapObject(Object var1, long var2, Object var4, Object var5);</span><br><span class="line"></span><br><span class="line">public final native boolean compareAndSwapInt(Object var1, long var2, int var4, int var5);</span><br><span class="line"></span><br><span class="line">public final native boolean compareAndSwapLong(Object var1, long var2, long var4, long var6);</span><br></pre></td></tr></table></figure>
+
+<h2 id="CAS-的特点"><a href="#CAS-的特点" class="headerlink" title="CAS 的特点"></a>CAS 的特点</h2><p>因为 CAS 往往都是搭配 while循环使用，会一直占用CPU，所以适用于线程数少、多核 CPU 的场景下。</p>
+<ul>
+<li>CAS 是基于乐观锁的思想：最乐观的估计，不怕别的线程来修改共享变量，就算改了也没关系，我吃亏点再重试呗。</li>
+<li>synchronized 是基于悲观锁的思想：最悲观的估计，得防着其它线程来修改共享变量，我上了锁你们都别想改，我改完了解开锁，你们才有机会。</li>
+<li>CAS 体现的是无锁并发、无阻塞并发，因为没有使用 synchronized，所以线程不会陷入阻塞，这是效率提升的因素之一， 但如果竞争激烈，可以想到重试必然频繁发生，反而效率会受影响。</li>
+</ul>
+<h2 id="为什么无锁效率高"><a href="#为什么无锁效率高" class="headerlink" title="为什么无锁效率高"></a>为什么无锁效率高</h2><ul>
+<li>无锁情况下，即使重试失败，线程始终在高速运行，没有停歇，而 synchronized 会让线程在没有获得锁的时候，发生上下文切换，进入阻塞。虽然无锁不会进入阻塞，但由于没有分到时间片，仍然会进入到可运行状态，还是会导致上下文切换。</li>
+</ul>
+<h2 id="CAS-搭配-volatile的实现"><a href="#CAS-搭配-volatile的实现" class="headerlink" title="CAS 搭配 volatile的实现"></a>CAS 搭配 volatile的实现</h2><p>​		CAS 必须借助 volatile 才能读取到共享变量的最新值来实现比较并交换的效果。</p>
+<h2 id="CAS-的问题（ABA）"><a href="#CAS-的问题（ABA）" class="headerlink" title="CAS 的问题（ABA）"></a>CAS 的问题（ABA）</h2><p>​		且CAS从语义上来说并不是真正完美的，它存在一个逻辑漏洞：如果一个变量 V 初次读取的时候是 A 值，并且在准备赋值的时候检查到它仍然为 A 值，那就能说明它的值没有被其他线程改变过了吗？这是不能的，因为如果在这段期间它的值曾经被改成 B，后来又被改回为 A，那 CAS 操作就会误认为它从来没有被改变过。这个漏洞称为 CAS 操作的“ABA问题”。</p>
+<h2 id="如何解决ABA问题"><a href="#如何解决ABA问题" class="headerlink" title="如何解决ABA问题"></a>如何解决ABA问题</h2><p>AtomicMarkableReference 和 AtomicStampedReference 可以同来解决 ABA 问题。</p>
+<ul>
+<li><code>AtomicMarkableReference</code> 可以通过控制版本是否更改标记（<strong>boolean 值</strong>）来保证 CAS 的正确性；</li>
+<li><code>AtomicStampedReference</code> 可以通过控制变量值的版本号（<strong>int 值</strong>）来保证 CAS 的正确性。</li>
+</ul>
+<p>不过目前来说这两个类处于相当鸡肋的位置，大部分情况下 ABA 问题不会影响程序并发的正确性，如果需要解决ABA问题，改用传统的互斥同步可能会比原子类更为高效。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CAS/" rel="tag"># CAS</a>
+              <a href="/tags/volatile/" rel="tag"># volatile</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/09/07/%E5%B9%B6%E5%8F%91-%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98/" rel="prev" title="线程安全问题">
+                  <i class="fa fa-chevron-left"></i> 线程安全问题
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/09/11/%E5%B9%B6%E5%8F%91-JMM-Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E4%B8%8Ehappen%20before/" rel="next" title="并发-JMM:Java内存模型与happen-before">
+                  并发-JMM:Java内存模型与happen-before <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jing</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
