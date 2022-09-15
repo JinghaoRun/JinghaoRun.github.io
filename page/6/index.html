@@ -18,7 +18,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="Stay hungry,stay foolish">
 <meta property="og:type" content="website">
@@ -128,7 +128,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">63</span>
+          <span class="site-state-item-count">69</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -139,7 +139,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">72</span>
+        <span class="site-state-item-count">82</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -168,6 +168,555 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/07/11/%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="Jing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangHao&博客">
+      <meta itemprop="description" content="Stay hungry,stay foolish">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | WangHao&博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/07/11/%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">适配器模式</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-07-11 15:21:24 / 修改时间：20:25:10" itemprop="dateCreated datePublished" datetime="2022-07-11T15:21:24+08:00">2022-07-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" itemprop="url" rel="index"><span itemprop="name">设计模式</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="适配器模式"><a href="#适配器模式" class="headerlink" title="适配器模式"></a>适配器模式</h1><p>​	用于填补现有的程序和所需的程序之间差异的设计模式就是Adapter模式。主要解决在软件系统中，常常要将一些”现存的对象”放到新的环境中，而新环境要求的接口是现对象不能满足的。</p>
+<p>​	比如是有个A，A要去用B的方法，但是不能直接用，所以通过一个适配器，A 用适配器，适配器用 B。</p>
+<p>​	主要方式是：适配器继承或依赖已有的对象，实现想要的目标接口。</p>
+<p>​	优点：1.可以让任何两个没有关联的类一起运行。 2、提高了类的复用。 3、增加了类的透明度。 4、灵活性好。</p>
+<p>​	缺点：过多地使用适配器，会让系统非常零乱，不易整体进行把握。比如，明明看到调用的是 A 接口，其实内部被适配成了 B 接口的实现，一个系统如果太多出现这种情况， 2.由于 JAVA 至多继承一个类，所以至多只能适配一个适配者类，而且目标类必须是抽象类。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/07/11/%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/07/03/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="Jing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangHao&博客">
+      <meta itemprop="description" content="Stay hungry,stay foolish">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | WangHao&博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/07/03/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/" class="post-title-link" itemprop="url">动态代理</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-07-03 20:12:43" itemprop="dateCreated datePublished" datetime="2022-07-03T20:12:43+08:00">2022-07-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-07-12 21:09:04" itemprop="dateModified" datetime="2022-07-12T21:09:04+08:00">2022-07-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" itemprop="url" rel="index"><span itemprop="name">设计模式</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="静态代理"><a href="#静态代理" class="headerlink" title="静态代理"></a>静态代理</h1><p>​	所谓静态代理，就是通过声明一个明确的代理类来访问源对象，例如我们有2个接口，Person和Animal。每个接口各有2个实现类，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Student</span> <span class="keyword">implements</span> <span class="title class_">Person</span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Student</span><span class="params">()</span> &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Student</span><span class="params">(String name)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">wakeup</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(StrUtil.format(<span class="string">&quot;学生[&#123;&#125;]早晨醒来啦&quot;</span>,name));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">sleep</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(StrUtil.format(<span class="string">&quot;学生[&#123;&#125;]晚上睡觉啦&quot;</span>,name));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/07/03/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/07/01/%E6%89%8B%E5%86%99RPC/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="Jing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangHao&博客">
+      <meta itemprop="description" content="Stay hungry,stay foolish">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | WangHao&博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/07/01/%E6%89%8B%E5%86%99RPC/" class="post-title-link" itemprop="url">手写RPC</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-07-01 17:36:12" itemprop="dateCreated datePublished" datetime="2022-07-01T17:36:12+08:00">2022-07-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-07-03 20:12:57" itemprop="dateModified" datetime="2022-07-03T20:12:57+08:00">2022-07-03</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="网络通信"><a href="#网络通信" class="headerlink" title="网络通信"></a>网络通信</h1><p>​		将请求对象序列化成字节码，并且压缩体积之后，需要使用网络将字节码传输到服务器。常用网络传输协议有 HTTP 、 TCP 、 WebSocke t等。HTTP、WebSocket 是应用层协议，TCP 是传输层协议。有些追求简洁、易用的 RPC 框架也有选择 HTTP 协议的。TCP传输的高可靠性和极致性能是主流RPC框架选择的最主要原因。谈到 Java 生态的通信领域，<code>Netty </code>的领衔地位短时间内无人能及。选用 Netty 作为网络通信模块， TCP 数据流的粘包、拆包不可避免。</p>
+<p>粘包、拆包</p>
+<p>​	TCP 传输协议是一种面向连接的、可靠的、基于字节流的传输层通信协议。为了最大化传输效率。发送方可能将单个较小数据包合并发送，这种情况就需要接收方来拆包处理数据了。</p>
+<p>Netty 提供了3种类型的解码器来处理 TCP 粘包&#x2F;拆包问题：</p>
+<ul>
+<li>定长消息解码器：<code>FixedLengthFrameDecoder</code> 。发送方和接收方规定一个固定的消息长度，不够用空格等字符补全，这样接收方每次从接受到的字节流中读取固定长度的字节即可，长度不够就保留本次接受的数据，再在下一个字节流中获取剩下数量的字节数据。</li>
+<li>分隔符解码器：<code>LineBasedFrameDecoder</code> 或 <code>DelimiterBasedFrameDecoder</code>。<code>LineBasedFrameDecoder </code>是行分隔符解码器，分隔符为 <code>\n</code> 或 <code>\r\n</code> ； <code>DelimiterBasedFrameDecoder</code> 是自定义分隔符解码器，可以定义一个或多个分隔符。接收端在收到的字节流中查找分隔符，然后返回分隔符之前的数据，没找到就继续从下一个字节流中查找。</li>
+<li>数据长度解码器：<code>LengthFieldBasedFrameDecoder</code>。将发送的消息分为 header 和 body，header 存储消息的长度（字节数），body 是发送的消息的内容。同时发送方和接收方要协商好这个 header 的字节数，因为 int 能表示长度，long 也能表示长度。接收方首先从字节流中读取前n（header的字节数）个字节（header），然后根据长度读取等量的字节，不够就从下一个数据流中查找。</li>
+</ul>
+<p>不想使用内置的解码器也可自定义解码器，自定传输协议。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/06/28/ArrayDeque%E5%92%8CLinkedList%E6%B7%BB%E5%8A%A0null%E5%85%83%E7%B4%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="Jing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangHao&博客">
+      <meta itemprop="description" content="Stay hungry,stay foolish">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | WangHao&博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/06/28/ArrayDeque%E5%92%8CLinkedList%E6%B7%BB%E5%8A%A0null%E5%85%83%E7%B4%A0/" class="post-title-link" itemprop="url">ArrayDeque和LinkedList添加null元素</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-06-28 10:23:52" itemprop="dateCreated datePublished" datetime="2022-06-28T10:23:52+08:00">2022-06-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-08-08 15:06:56" itemprop="dateModified" datetime="2022-08-08T15:06:56+08:00">2022-08-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%AE%B9%E5%99%A8/" itemprop="url" rel="index"><span itemprop="name">Java容器</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="异常场景"><a href="#异常场景" class="headerlink" title="异常场景"></a>异常场景</h1><p>​	 力扣102二叉树的层序遍历中，需要向队列中插入null元素，在队列的操作中，ArrayDeque内部通过数组+双索引的方式，使用&amp;操作来定位对于元素的存放删除，LinkedList内部以链表的形式来保存集合中的元素，ArrayList明显快于LinkedList，所以我一直使用ArrayDeque作为队列的数据结构使用（栈相反），在插入null元素时 ArrayDeque报了空指针异常，而LinkedList则没有异常抛出。</p>
+<h1 id="ArrayDeque的offer源码"><a href="#ArrayDeque的offer源码" class="headerlink" title="ArrayDeque的offer源码"></a>ArrayDeque的offer源码</h1><p><img src="/2022/06/28/ArrayDeque%E5%92%8CLinkedList%E6%B7%BB%E5%8A%A0null%E5%85%83%E7%B4%A0/1.jpg" alt="1"></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/06/28/ArrayDeque%E5%92%8CLinkedList%E6%B7%BB%E5%8A%A0null%E5%85%83%E7%B4%A0/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/06/26/%E5%86%85%E9%83%A8%E7%B1%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="Jing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangHao&博客">
+      <meta itemprop="description" content="Stay hungry,stay foolish">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | WangHao&博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/06/26/%E5%86%85%E9%83%A8%E7%B1%BB/" class="post-title-link" itemprop="url">内部类</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-06-26 15:38:53" itemprop="dateCreated datePublished" datetime="2022-06-26T15:38:53+08:00">2022-06-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-08-08 15:05:16" itemprop="dateModified" datetime="2022-08-08T15:05:16+08:00">2022-08-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="内部类"><a href="#内部类" class="headerlink" title="内部类"></a>内部类</h1><p>​	Java 类中不仅可以定义变量和方法，还可以定义类，这样定义在类内部的类就被称为内部类。根 据定义的方式不同，内部类分为静态内部类，成员内部类，局部内部类，匿名内部类四种。</p>
+<h2 id="静态内部类"><a href="#静态内部类" class="headerlink" title="静态内部类"></a>静态内部类</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Out</span> &#123;</span><br><span class="line"> 	<span class="keyword">private</span> <span class="keyword">static</span> <span class="type">int</span> a;</span><br><span class="line"> 	<span class="keyword">private</span> <span class="type">int</span> b;</span><br><span class="line"> 	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">Inner</span> &#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">print</span><span class="params">()</span> &#123;</span><br><span class="line">            System.out.println(a);</span><br><span class="line">        &#125;</span><br><span class="line"> 	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<pre><code> 1. 静态内部类可以访问外部类所有的静态变量和方法，即使是 private 的也一样。 
+ 2. 静态内部类和一般类一致，可以定义静态变量、方法，构造方法等。 
+ 3. 其它类使用静态内部类需要使用“外部类.静态内部类”方式，如下所示：Out.Inner inner =  new Out.Inner();inner.print(); 
+ 4.  Java集合类HashMap内部就有一个静态内部类Entry。Entry是HashMap存放元素的抽象， HashMap 内部维护 Entry 数组用来存放键值对元素，但是 Entry 对使用者是透明的。像这种和外部 类关系密切的，且不依赖外部类实例的，都可以使用静态内部类。
+</code></pre>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/06/26/%E5%86%85%E9%83%A8%E7%B1%BB/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/06/24/%E7%BB%A7%E6%89%BF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="Jing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangHao&博客">
+      <meta itemprop="description" content="Stay hungry,stay foolish">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | WangHao&博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/06/24/%E7%BB%A7%E6%89%BF/" class="post-title-link" itemprop="url">继承</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-06-24 22:39:21" itemprop="dateCreated datePublished" datetime="2022-06-24T22:39:21+08:00">2022-06-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-08-09 21:34:22" itemprop="dateModified" datetime="2022-08-09T21:34:22+08:00">2022-08-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>多继承<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43533825/article/details/96574691">https://blog.csdn.net/weixin_43533825/article/details/96574691</a></p>
+<p>java的三大特性 封装</p>
+<p><strong>封装：将数据和操作数据的方法进行有机结合，隐藏对象的属性和实现细节，仅对外公开接口来和对象进行交互.</strong></p>
+<p> 继承 </p>
+<p>多态。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -469,7 +1018,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-09-11 16:02:29" itemprop="dateModified" datetime="2022-09-11T16:02:29+08:00">2022-09-11</time>
+      <time title="修改时间：2022-09-13 10:42:00" itemprop="dateModified" datetime="2022-09-13T10:42:00+08:00">2022-09-13</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -518,584 +1067,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/05/28/%E4%BF%9D%E8%AF%81%E6%8E%A5%E5%8F%A3%E7%9A%84%E5%B9%82%E7%AD%89%E6%80%A7/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="Jing">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="WangHao&博客">
-      <meta itemprop="description" content="Stay hungry,stay foolish">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | WangHao&博客">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/05/28/%E4%BF%9D%E8%AF%81%E6%8E%A5%E5%8F%A3%E7%9A%84%E5%B9%82%E7%AD%89%E6%80%A7/" class="post-title-link" itemprop="url">保证接口的幂等性</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2022-05-28 16:09:50" itemprop="dateCreated datePublished" datetime="2022-05-28T16:09:50+08:00">2022-05-28</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-08-08 16:17:09" itemprop="dateModified" datetime="2022-08-08T16:17:09+08:00">2022-08-08</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E5%AE%9E%E8%B7%B5/" itemprop="url" rel="index"><span itemprop="name">分布式实践</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>​	所谓幂等，其实它是一个数学上的概念，在计算机编程领域中，幂等是指一个方法被多次重复执行的时候产生的影响和第一次执行的影响相同。之所以要考虑到幂等性问题，是因为在网络通信中，存在两种行为可能会导致接口被重复执行。</p>
-<ol>
-<li>用户的重复提交或者用户的恶意攻击，导致这个请求会被多次重复执行。</li>
-<li>在分布式架构中，为了避免网络通信导致的数据丢失，在服务之间进行通信的时候都会设计超时重试的机制，而这种机制有可能导致服务端接口被重复调用。</li>
-</ol>
-<p>所以在程序设计中，对于数据变更类操作的接口，需要保证接口的幂等性。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/05/28/%E4%BF%9D%E8%AF%81%E6%8E%A5%E5%8F%A3%E7%9A%84%E5%B9%82%E7%AD%89%E6%80%A7/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/05/28/Redis%E7%9A%84SetNX%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="Jing">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="WangHao&博客">
-      <meta itemprop="description" content="Stay hungry,stay foolish">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | WangHao&博客">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/05/28/Redis%E7%9A%84SetNX%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" class="post-title-link" itemprop="url">Redis的SetNX实现分布式锁</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2022-05-28 11:16:22" itemprop="dateCreated datePublished" datetime="2022-05-28T11:16:22+08:00">2022-05-28</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-08-08 16:16:02" itemprop="dateModified" datetime="2022-08-08T16:16:02+08:00">2022-08-08</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E5%AE%9E%E8%B7%B5/" itemprop="url" rel="index"><span itemprop="name">分布式实践</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="Redis的SetNX实现分布式锁"><a href="#Redis的SetNX实现分布式锁" class="headerlink" title="Redis的SetNX实现分布式锁"></a>Redis的SetNX实现分布式锁</h1><p>分布式锁：目的是确保在多个线程并发时，只有一个线程在同一时刻操作这个业务或者这个方法、变量。在一个进程中，也就是一个jvm或者说应用中，很容易去处理控制，在<code>java.util</code>并发包中已经为我们提供了这些方法去加锁，比如<code>synchronized</code>关键字或者<code>Lock</code>锁，都可以处理。但是如果在分布式环境下，要保证多个线程同时只有1个能访问某个资源，就需要用到分布式锁。</p>
-<p>SETnx命令：指的是set命令加上nx参数进行使用具体命令如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SET key value [EX seconds] [PX milliseconds] [NX|XX]</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><code>EX second</code> ：设置键的过期时间为 second 秒。<code>SET key value EX second</code>效果等同于 SETEX key second value 。</li>
-<li><code>PX millisecond </code>：设置键的过期时间为 millisecond 毫秒。 <code>SET key value PX millisecond </code>效果等同于<code> PSETEX key millisecond value</code> 。</li>
-<li><code>NX</code> ：只在键不存在时，才对键进行设置操作。 <code>SET key value NX </code>效果等同于 <code>SETNX key value</code> 。</li>
-<li><code>XX</code> ：只在键已经存在时，才对键进行设置操作。</li>
-</ul>
-<p>一般使用<code>setIfAbsent</code>，这个函数实现的功能与<code>setnx</code>命令一样，代表如果没有这个key则set成功获取到锁，否则set失败没有获取到锁。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/05/28/Redis%E7%9A%84SetNX%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/05/27/Java%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="Jing">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="WangHao&博客">
-      <meta itemprop="description" content="Stay hungry,stay foolish">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | WangHao&博客">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/05/27/Java%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/" class="post-title-link" itemprop="url">Java类加载机制</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2022-05-27 22:11:47" itemprop="dateCreated datePublished" datetime="2022-05-27T22:11:47+08:00">2022-05-27</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-08-08 16:16:29" itemprop="dateModified" datetime="2022-08-08T16:16:29+08:00">2022-08-08</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/JVM/" itemprop="url" rel="index"><span itemprop="name">JVM</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="Class类文件的结构"><a href="#Class类文件的结构" class="headerlink" title="Class类文件的结构"></a><strong>Class类文件的结构</strong></h1><p>​	任何一个Class文件都对应着唯一的一个类或接口的定义信息[1]，但是反过来说，类或接口并不一定都得定义在文件里（譬如类或接口也可以动态生成，直接送入类加载器中</p>
-<p>​	根据 Java 虚拟机规范，Class 文件通过 ClassFile 定义，有点类似 C 语言的结构体。这种伪结构中只有两种数据类型：“无符号数”和“表”。后面的解析都要以这两种数据类型为基础无符号数属于基本的数据类型，以u1、u2、u4、u8来分别代表1个字节、2个字节、4个字节和8个字节的无符号数，无符号数可以用来描述数字、索引引用、数量值或者按照UTF-8编码构成字符串值。·表是由多个无符号数或者其他表作为数据项构成的复合数据类型，为了便于区分，所有表的命名都习惯性地以“_info”结尾。表用于描述有层次关系的复合结构的数据，整个Class文件本质上也可以视作是一张表。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">ClassFile &#123;</span><br><span class="line">    u4             magic; <span class="comment">//Class 文件的标志 确定这个文件是否为</span></span><br><span class="line">一个能被虚拟机接受的Class文件</span><br><span class="line">    u2             minor_version;<span class="comment">//Class 的小版本号</span></span><br><span class="line">    u2             major_version;<span class="comment">//Class 的大版本号</span></span><br><span class="line">    u2             constant_pool_count;<span class="comment">//常量池的数量  容量计数值</span></span><br><span class="line">    cp_info        constant_pool[constant_pool_count<span class="number">-1</span>];<span class="comment">//常量池</span></span><br><span class="line">    u2             access_flags;<span class="comment">//Class 的访问标记 权限标志</span></span><br><span class="line">    u2             this_class;<span class="comment">//当前类</span></span><br><span class="line">    u2             super_class;<span class="comment">//父类</span></span><br><span class="line">    u2             interfaces_count;<span class="comment">//接口</span></span><br><span class="line">    u2             interfaces[interfaces_count];<span class="comment">//一个类可以实现多个接口</span></span><br><span class="line">    u2             fields_count;<span class="comment">//Class 文件的字段属性 描述接口或类中声明的变量</span></span><br><span class="line">    field_info     fields[fields_count];<span class="comment">//一个类可以有多个字段</span></span><br><span class="line">    u2             methods_count;<span class="comment">//Class 文件的方法数量</span></span><br><span class="line">    method_info    methods[methods_count];<span class="comment">//一个类可以有个多个方法</span></span><br><span class="line">    u2             attributes_count;<span class="comment">//此类的属性表中的属性数</span></span><br><span class="line">    attribute_info attributes[attributes_count];<span class="comment">//属性表集合</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/05/27/Java%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/05/12/Java%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="Jing">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="WangHao&博客">
-      <meta itemprop="description" content="Stay hungry,stay foolish">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | WangHao&博客">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/05/12/Java%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F/" class="post-title-link" itemprop="url">Java内存区域</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2022-05-12 19:52:17" itemprop="dateCreated datePublished" datetime="2022-05-12T19:52:17+08:00">2022-05-12</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-09-05 11:31:22" itemprop="dateModified" datetime="2022-09-05T11:31:22+08:00">2022-09-05</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/JVM/" itemprop="url" rel="index"><span itemprop="name">JVM</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="java的内存区域"><a href="#java的内存区域" class="headerlink" title="java的内存区域"></a>java的内存区域</h1><h2 id="java的主要运行时数据区域"><a href="#java的主要运行时数据区域" class="headerlink" title="java的主要运行时数据区域"></a>java的主要运行时数据区域</h2><p><strong>堆Heap（线程共有）</strong>：Java 虚拟机所管理的内存中最大的一块，Java 堆是所有线程共享的一块内存区域，在虚拟机启动时创建。<strong>此内存区域的唯一目的就是存放对象实例，（就是新建的对象的实例数据），几乎所有的对象实例以及数组都在这里分配内存。</strong>Java堆是垃圾收集器管理的内存区域（与GC原理相关 分为新生代和老年代再细致一点有：Eden、Survivor、Old），因此一些资料中它也被称作“GC堆”（Garbage CollectedHeap）Java堆可以处于物理上不连续的内存空间中，但在逻辑上它应该被视为连续的  。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/05/12/Java%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/29/%E5%BC%82%E5%B8%B8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="Jing">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="WangHao&博客">
-      <meta itemprop="description" content="Stay hungry,stay foolish">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | WangHao&博客">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/04/29/%E5%BC%82%E5%B8%B8/" class="post-title-link" itemprop="url">异常</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-04-29 16:42:40" itemprop="dateCreated datePublished" datetime="2021-04-29T16:42:40+08:00">2021-04-29</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-08-08 15:05:37" itemprop="dateModified" datetime="2022-08-08T15:05:37+08:00">2022-08-08</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="异常概念"><a href="#异常概念" class="headerlink" title="异常概念"></a>异常概念</h1><p>实际上，当java程序执行时出现错误时，jvm会把执行时出错的信息(例如出错原因、类型、 位置)收集，然后打包成为1个对象(object)，程序员可以对这种对象进行处理。这种对象就是所谓的异常。<strong>可能出现的异常的代码并不是肯定会出现异常, 还取决于执行环境和数据</strong>。</p>
-<p>在Java中，所有的异常都有一个共同的超类Throwable（可抛出类）。Throwable类有两个重要的子类：Exception（异常）和 Error（错误），二者都是Java异常处理的重要子类，各自都包含大量子类。异常和错误的区别是：异常能被程序本身可以处理，错误是无法处理。</p>
-<h1 id="异常分类：两种分类方法"><a href="#异常分类：两种分类方法" class="headerlink" title="异常分类：两种分类方法"></a>异常分类：两种分类方法</h1><h2 id="Error-和-Exception"><a href="#Error-和-Exception" class="headerlink" title="Error 和 Exception"></a>Error 和 Exception</h2><ul>
-<li><strong>Error</strong>：表示程序在运行期间出现了非常严重的错误，并且该错误是不可恢复的，由于这属于JVM层次的严重错误，因此这种错误是会导致程序终止执行的。此外，编译器不会检查Error是否被处理，因此在程序中不推荐去捕获Error类型的异常，主要原因是运行时异常多是由于逻辑错误导致的，属于应该解决的错误，也就是说，一个正确的程序中是不应该存在Error的。OutOfMemoryError、ThreadDeath等都属于错误。当这些异常发生时，JVM一般会选择将线程终止。</li>
-<li><strong>Exception</strong>：表示可恢复的异常，是编译器可以捕捉到的。可分为运行时异常（RuntimeException）和非运行时异常。</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/04/29/%E5%BC%82%E5%B8%B8/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/25/%E5%AE%B9%E5%99%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="Jing">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="WangHao&博客">
-      <meta itemprop="description" content="Stay hungry,stay foolish">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | WangHao&博客">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/04/25/%E5%AE%B9%E5%99%A8/" class="post-title-link" itemprop="url">容器</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-04-25 09:25:00" itemprop="dateCreated datePublished" datetime="2021-04-25T09:25:00+08:00">2021-04-25</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-08-08 15:06:44" itemprop="dateModified" datetime="2022-08-08T15:06:44+08:00">2022-08-08</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Java%E5%AE%B9%E5%99%A8/" itemprop="url" rel="index"><span itemprop="name">Java容器</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="Collection-与-Collections"><a href="#Collection-与-Collections" class="headerlink" title="Collection 与 Collections"></a>Collection 与 Collections</h1><ul>
-<li>java.util.Collection 是一个集合接口，是描述所有序列容器的共性的根接口。它提供了对集合对象进行基本操作的通用接口方法。Collection 接口在 Java 类库中有很多具体的实现。Collection 接口的意义是为各种具体的集合提供了最大化的统一操作方式。如下图所示，基本包含了常用的容器的关系。</li>
-<li>java.util.Collections 是一个包装类。它包含有各种有关集合操作的静态多态方法。此类不能实例化，就像一个工具类，服务于 Java 的 Collection 框架。</li>
-</ul>
-<p><img src="/2021/04/25/%E5%AE%B9%E5%99%A8/7.jpg" alt="1"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/04/25/%E5%AE%B9%E5%99%A8/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" href="/page/5/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/7/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
@@ -1115,7 +1086,7 @@
   </span>
   <span class="author" itemprop="copyrightHolder">Jing</span>
 </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
   </div>
 
     </div>

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="JDK 提供的这些容器大部分在 java.util.concurrent 包中。如下具体容器：  ConcurrentHashMap : 线程安全的 HashMap CopyOnWriteArrayList : 线程安全的 List，在读多写少的场合性能非常好。 ConcurrentLinkedQueue : 高效的并发队列，使用链表实现。可以看做一个线程安全的 LinkedList，这是一个非阻">
+<meta property="og:type" content="article">
+<meta property="og:title" content="并发-常见并发容器">
+<meta property="og:url" content="http://example.com/2022/09/13/%E5%B9%B6%E5%8F%91-%E5%B8%B8%E8%A7%81%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/index.html">
+<meta property="og:site_name" content="WangHao&amp;博客">
+<meta property="og:description" content="JDK 提供的这些容器大部分在 java.util.concurrent 包中。如下具体容器：  ConcurrentHashMap : 线程安全的 HashMap CopyOnWriteArrayList : 线程安全的 List，在读多写少的场合性能非常好。 ConcurrentLinkedQueue : 高效的并发队列，使用链表实现。可以看做一个线程安全的 LinkedList，这是一个非阻">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2022/09/13/%E5%B9%B6%E5%8F%91-%E5%B8%B8%E8%A7%81%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/%E5%B9%B6%E5%8F%91-%E5%B8%B8%E8%A7%81%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8%5C1.jpg">
+<meta property="og:image" content="http://example.com/2022/09/13/%E5%B9%B6%E5%8F%91-%E5%B8%B8%E8%A7%81%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/%E5%B9%B6%E5%8F%91-%E5%B8%B8%E8%A7%81%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8%5C2.jpg">
+<meta property="og:image" content="http://example.com/2022/09/13/%E5%B9%B6%E5%8F%91-%E5%B8%B8%E8%A7%81%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/%E5%B9%B6%E5%8F%91-%E5%B8%B8%E8%A7%81%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8%5C3.jpg">
+<meta property="og:image" content="http://example.com/2022/09/13/%E5%B9%B6%E5%8F%91-%E5%B8%B8%E8%A7%81%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/%E5%B9%B6%E5%8F%91-%E5%B8%B8%E8%A7%81%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8%5C1.png">
+<meta property="og:image" content="http://example.com/2022/09/13/%E5%B9%B6%E5%8F%91-%E5%B8%B8%E8%A7%81%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/%E5%B9%B6%E5%8F%91-%E5%B8%B8%E8%A7%81%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8%5C4.jpg">
+<meta property="og:image" content="http://example.com/2022/09/13/%E5%B9%B6%E5%8F%91-%E5%B8%B8%E8%A7%81%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/%E5%B9%B6%E5%8F%91-%E5%B8%B8%E8%A7%81%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8%5C5.jpg">
+<meta property="article:published_time" content="2022-09-13T08:37:03.000Z">
+<meta property="article:modified_time" content="2022-09-15T14:43:18.161Z">
+<meta property="article:author" content="Jing">
+<meta property="article:tag" content="并发容器">
+<meta property="article:tag" content="JUC">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2022/09/13/%E5%B9%B6%E5%8F%91-%E5%B8%B8%E8%A7%81%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/%E5%B9%B6%E5%8F%91-%E5%B8%B8%E8%A7%81%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8%5C1.jpg">
+
+
+<link rel="canonical" href="http://example.com/2022/09/13/%E5%B9%B6%E5%8F%91-%E5%B8%B8%E8%A7%81%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2022/09/13/%E5%B9%B6%E5%8F%91-%E5%B8%B8%E8%A7%81%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/","path":"2022/09/13/并发-常见并发容器/","title":"并发-常见并发容器"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>并发-常见并发容器 | WangHao&博客</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">WangHao&博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Welcome to the home of WangHao</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ConcurrentHashMap"><span class="nav-number">1.</span> <span class="nav-text">ConcurrentHashMap</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ConcurrentHashMap%E5%92%8CHashMap%E4%BB%A5%E5%8F%8AHashtable%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.1.</span> <span class="nav-text">ConcurrentHashMap和HashMap以及Hashtable的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ConcurrentHashMap%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E5%8E%9F%E7%90%86"><span class="nav-number">1.2.</span> <span class="nav-text">ConcurrentHashMap线程安全原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-7%E7%89%88%E6%9C%AC"><span class="nav-number">1.3.</span> <span class="nav-text">1.7版本</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#put"><span class="nav-number">1.3.1.</span> <span class="nav-text">put</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#get"><span class="nav-number">1.3.2.</span> <span class="nav-text">get</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JDK-1-8"><span class="nav-number">1.4.</span> <span class="nav-text">JDK 1.8</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#initTable"><span class="nav-number">1.4.1.</span> <span class="nav-text">initTable()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#put-%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="nav-number">1.4.2.</span> <span class="nav-text">put 方法：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#casTabAt-%E5%86%99%E5%85%A5%E6%96%B9%E6%B3%95"><span class="nav-number">1.4.3.</span> <span class="nav-text">casTabAt()写入方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#get%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="nav-number">1.4.4.</span> <span class="nav-text">get方法：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.5.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CopyOnWriteArrayList"><span class="nav-number">2.</span> <span class="nav-text">CopyOnWriteArrayList</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CopyOnWriteArrayList-%E8%AF%BB%E5%8F%96%E5%92%8C%E5%86%99%E5%85%A5%E6%BA%90%E7%A0%81"><span class="nav-number">2.1.</span> <span class="nav-text">CopyOnWriteArrayList 读取和写入源码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CopyOnWriteArrayList-%E8%AF%BB%E5%8F%96%E6%93%8D%E4%BD%9C%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.1.1.</span> <span class="nav-text">CopyOnWriteArrayList 读取操作的实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CopyOnWriteArrayList-%E5%86%99%E5%85%A5%E6%93%8D%E4%BD%9C%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.1.2.</span> <span class="nav-text">CopyOnWriteArrayList 写入操作的实现</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ConcurrentLinkedQueue"><span class="nav-number">3.</span> <span class="nav-text">ConcurrentLinkedQueue</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ConcurrentLinkedQueue%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="nav-number">3.1.</span> <span class="nav-text">ConcurrentLinkedQueue源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#offer"><span class="nav-number">3.1.1.</span> <span class="nav-text">offer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#poll"><span class="nav-number">3.1.2.</span> <span class="nav-text">poll</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#BlockingQueue"><span class="nav-number">4.</span> <span class="nav-text">BlockingQueue</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ArrayBlockingQueue"><span class="nav-number">4.1.</span> <span class="nav-text">ArrayBlockingQueue</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LinkedBlockingQueue"><span class="nav-number">4.2.</span> <span class="nav-text">LinkedBlockingQueue</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PriorityBlockingQueue"><span class="nav-number">4.3.</span> <span class="nav-text">PriorityBlockingQueue</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ConcurrentSkipListMap"><span class="nav-number">4.4.</span> <span class="nav-text">ConcurrentSkipListMap</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Jing"
+      src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">Jing</p>
+  <div class="site-description" itemprop="description">Stay hungry,stay foolish</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">69</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">82</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/09/13/%E5%B9%B6%E5%8F%91-%E5%B8%B8%E8%A7%81%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="Jing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangHao&博客">
+      <meta itemprop="description" content="Stay hungry,stay foolish">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="并发-常见并发容器 | WangHao&博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          并发-常见并发容器
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-09-13 16:37:03" itemprop="dateCreated datePublished" datetime="2022-09-13T16:37:03+08:00">2022-09-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-09-15 22:43:18" itemprop="dateModified" datetime="2022-09-15T22:43:18+08:00">2022-09-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">Java并发编程</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>JDK 提供的这些容器大部分在 <code>java.util.concurrent</code> 包中。如下具体容器：</p>
+<ul>
+<li><strong><code>ConcurrentHashMap</code></strong> : 线程安全的 <code>HashMap</code></li>
+<li><strong><code>CopyOnWriteArrayList</code></strong> : 线程安全的 <code>List</code>，在读多写少的场合性能非常好。</li>
+<li><strong><code>ConcurrentLinkedQueue</code></strong> : 高效的并发队列，使用链表实现。可以看做一个线程安全的 <code>LinkedList</code>，这是一个非阻塞队列。</li>
+<li><strong><code>BlockingQueue</code></strong> : 这是一个接口，JDK 内部通过链表、数组等方式实现了这个接口。表示阻塞队列，非常适合用于作为数据共享的通道。</li>
+<li><strong><code>ConcurrentSkipListMap</code></strong> : 跳表的实现。这是一个 Map，使用跳表的数据结构进行快速查找。</li>
+</ul>
+<span id="more"></span>
+
+<h1 id="ConcurrentHashMap"><a href="#ConcurrentHashMap" class="headerlink" title="ConcurrentHashMap"></a>ConcurrentHashMap</h1><p>​		在 <code>ConcurrentHashMap</code> 中，无论是读操作还是写操作都能保证很高的性能：在进行读操作时(几乎)不需要加锁，而在写操作时通过<strong>锁分段</strong>技术只对所操作的段加锁而不影响客户端对其它段的访问。</p>
+<h2 id="ConcurrentHashMap和HashMap以及Hashtable的区别"><a href="#ConcurrentHashMap和HashMap以及Hashtable的区别" class="headerlink" title="ConcurrentHashMap和HashMap以及Hashtable的区别"></a>ConcurrentHashMap和HashMap以及Hashtable的区别</h2><p><strong>HashMap</strong></p>
+<p><code>HashMap</code>是线程不安全的，因为<code>HashMap</code>中操作都没有加锁，因此在多线程环境下会导致数据覆盖之类的问题，所以，在多线程中使用<code>HashMap</code>是会抛出异常的。</p>
+<p><strong>HashTable</strong></p>
+<p><code>HashTable</code>是线程安全的,但是<code>HashTable</code>只是单纯的在<code>put()</code>方法上加上<code>synchronized</code>。保证插入时阻塞其他线程的插入操作。虽然安全，但因为设计简单，所以性能低下。</p>
+<p><strong>ConcurrentHashMap</strong></p>
+<p><code>ConcurrentHashMap</code>是线程安全的，<code>ConcurrentHashMap</code>并非锁住整个方法，而是通过原子操作和局部加锁的方法保证了多线程的线程安全，且尽可能减少了性能损耗。</p>
+<h2 id="ConcurrentHashMap线程安全原理"><a href="#ConcurrentHashMap线程安全原理" class="headerlink" title="ConcurrentHashMap线程安全原理"></a>ConcurrentHashMap线程安全原理</h2><h2 id="1-7版本"><a href="#1-7版本" class="headerlink" title="1.7版本"></a>1.7版本</h2><p>​		ConcurrentHashMap 采用分段锁（Segment 数组，一个 Segment 就是一个锁）技术，每当一个线程访问 HashEntry 中存储的数据从而占用一个 Segment 锁时，并不会影响到其他的 Segment</p>
+<p><img src="/2022/09/13/%E5%B9%B6%E5%8F%91-%E5%B8%B8%E8%A7%81%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/%E5%B9%B6%E5%8F%91-%E5%B8%B8%E8%A7%81%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8%5C1.jpg"></p>
+<h3 id="put"><a href="#put" class="headerlink" title="put"></a>put</h3><p>首先，既然 ConcurrentHashMap 使用分段锁 Segment 来保护不同段的数据，那么在插入和获取元素的时候，必须先通过 Hash 算法定位到 Segment：然后在对应的 Segment 中进行真正的 put：</p>
+<p>1）尝试获取锁，如果获取失败则利用 scanAndLockForPut() 进行自旋</p>
+<p>2）遍历该 HashEntry 数组：</p>
+<p>如果当前遍历到的 HashEntry 不为空则判断传入的 key 和当前遍历到的 key 是否相等，相等则覆盖旧的 value<br>为空则新建一个 HashEntry 并加入到 Segment 中（先判断是否需要对 Segment 数组进行扩容）</p>
+<h3 id="get"><a href="#get" class="headerlink" title="get"></a>get</h3><p>1）将 Key 通过 Hash 定位到具体的 Segment</p>
+<p>2）再通过一次 Hash 定位到具体的元素上</p>
+<h2 id="JDK-1-8"><a href="#JDK-1-8" class="headerlink" title="JDK 1.8"></a>JDK 1.8</h2><p>​		不同于 JDK 1.7 版本的 Segment 数组 + HashEntry 链表，JDK 1.8 版本中的 ConcurrentHashMap 直接抛弃了 Segment 锁，一个 ConcurrentHashMap 包含一个 Node 数组（和 HashEntry 实现差不多），每个 Node 是一个链表结构，并且在链表长度大于一定值时会转换为红黑树结构（TreeBin）。</p>
+<p><img src="/2022/09/13/%E5%B9%B6%E5%8F%91-%E5%B8%B8%E8%A7%81%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/%E5%B9%B6%E5%8F%91-%E5%B8%B8%E8%A7%81%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8%5C2.jpg"></p>
+<p>​		1.8版本中是使用synchronized + CAS来保证插入元素的线程安全性，简单来说，Node 数组其实就是一个哈希桶数组，每个 Node 头节点及其所有的 next 节点组成的链表就是一个桶，只要锁住这个桶的头结点，就不会影响其他哈希桶数组元素的读写。桶级别的粒度显然比 1.7 版本的 Segment 段要细。</p>
+<p>ConcurrentHashMap底层初始化的时候是懒加载，并没有初始化，是在插入数据的时候才进行初始化操作。Node数组初始化的时候采用了CAS+自旋，让抢到资格的线程给Node数组初始化。</p>
+<h3 id="initTable"><a href="#initTable" class="headerlink" title="initTable()"></a>initTable()</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Node&lt;K,V&gt;[] initTable() &#123;</span><br><span class="line">    Node&lt;K,V&gt;[] tab; <span class="type">int</span> sc;</span><br><span class="line">    <span class="comment">//可能同时有多个线程同时初始化，自旋CAS来初始化，判断依据是sc</span></span><br><span class="line">    <span class="comment">//如果sc = -1，说明有其他线程在初始化</span></span><br><span class="line">    <span class="comment">//如果sc &gt; 0 说明初始化完成了</span></span><br><span class="line">    <span class="keyword">while</span> ((tab = table) == <span class="literal">null</span> || tab.length == <span class="number">0</span>) &#123;</span><br><span class="line">         </span><br><span class="line">        <span class="keyword">if</span> ((sc = sizeCtl) &lt; <span class="number">0</span>)</span><br><span class="line">            Thread.yield(); <span class="comment">//有其他线程在初始化了，当前线程可以停止了</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (U.compareAndSwapInt(<span class="built_in">this</span>, SIZECTL, sc, -<span class="number">1</span>)) &#123;<span class="comment">//如果CAS成功将sizeCtl更新成了-1</span></span><br><span class="line">            <span class="keyword">try</span> &#123;<span class="comment">//如果table为空</span></span><br><span class="line">                <span class="keyword">if</span> ((tab = table) == <span class="literal">null</span> || tab.length == <span class="number">0</span>) &#123;</span><br><span class="line">                    <span class="comment">//如果初始化容量了，则设置为sc，否则设置为默认容量16</span></span><br><span class="line">                    <span class="type">int</span> <span class="variable">n</span> <span class="operator">=</span> (sc &gt; <span class="number">0</span>) ? sc : DEFAULT_CAPACITY;</span><br><span class="line">                    <span class="meta">@SuppressWarnings(&quot;unchecked&quot;)</span></span><br><span class="line">                    <span class="comment">//初始化table</span></span><br><span class="line">                    Node&lt;K,V&gt;[] nt = (Node&lt;K,V&gt;[])<span class="keyword">new</span> <span class="title class_">Node</span>&lt;?,?&gt;[n];</span><br><span class="line">                    table = tab = nt;</span><br><span class="line">                    <span class="comment">//将sc设置为0.75*n，下一次扩容的阈值</span></span><br><span class="line">                    sc = n - (n &gt;&gt;&gt; <span class="number">2</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                <span class="comment">//扩容的阈值</span></span><br><span class="line">                sizeCtl = sc;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> tab;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="put-方法："><a href="#put-方法：" class="headerlink" title="put 方法："></a>put 方法：</h3><p>1）根据要 put 数据的 key 计算出 hashcode</p>
+<p>2）遍历 table 数组，根据 hashcode 定位 Node：</p>
+<p>如果 Node 为空表示当前位置可以写入数据，利用 CAS 尝试写入(失败则自旋)<br>如果当前位置的 hashcode &#x3D;&#x3D; MOVED &#x3D;&#x3D; -1，则需要对 Node 数组进行扩容<br>如果 Node 不为空并且也不需要进行扩容，则利用 synchronized 锁写入数据</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> V <span class="title function_">putVal</span><span class="params">(K key, V value, <span class="type">boolean</span> onlyIfAbsent)</span> &#123;</span><br><span class="line"> </span><br><span class="line">       <span class="comment">// 这里跟HashMap不一样，这里不运行key和value存在null值。</span></span><br><span class="line">        <span class="keyword">if</span> (key == <span class="literal">null</span> || value == <span class="literal">null</span>) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">NullPointerException</span>();</span><br><span class="line"> </span><br><span class="line">       <span class="comment">// hash算法，这里算出来的值为正整数，因为需要来判断正负来决定干不同的事。</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">hash</span> <span class="operator">=</span> spread(key.hashCode());</span><br><span class="line"> </span><br><span class="line">       <span class="comment">// 这个是个计数器，来记录插入的次数，因为扩容需要他</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">binCount</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"> </span><br><span class="line">       <span class="comment">// 插入的死循环，为什么需要死循环后面代码会出答案</span></span><br><span class="line">        <span class="keyword">for</span> (Node&lt;K,V&gt;[] tab = table;;) &#123;</span><br><span class="line"> </span><br><span class="line">           <span class="comment">// 创建一些临时变量</span></span><br><span class="line">            Node&lt;K,V&gt; f; <span class="type">int</span> n, i, fh;</span><br><span class="line">    </span><br><span class="line">           <span class="comment">// 判断是否是null或者长度为0，也就是是否需要初始化</span></span><br><span class="line">            <span class="keyword">if</span> (tab == <span class="literal">null</span> || (n = tab.length) == <span class="number">0</span>)</span><br><span class="line"> </span><br><span class="line">               <span class="comment">// 初始化的方法，默认长度是16，负载因子的阈值是16*0.75=12，负载因子决定扩容时机</span></span><br><span class="line">               <span class="comment">// 这里初始化的时候，因为会存在并发初始化的情况，所以内部使用unsafe的cas操作保证</span></span><br><span class="line">               <span class="comment">// 初始化的原子性</span></span><br><span class="line">                tab = initTable();</span><br><span class="line"> </span><br><span class="line">           <span class="comment">// 这里使用hash值在通过算法获取到插入位置，再获取到插入位置是否有值。没值就直接添加。</span></span><br><span class="line">           <span class="comment">// 因为要保证线程安全，所以ConcurrentHashMap内部维护了一个Unsafe使用cas操作保证</span></span><br><span class="line">           <span class="comment">// 原子性，所以多线程的情况下是安全的</span></span><br><span class="line">           <span class="comment">// tabAt()方法取值也是通过unsafe的取值。</span></span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> ((f = tabAt(tab, i = (n - <span class="number">1</span>) &amp; hash)) == <span class="literal">null</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (casTabAt(tab, i, <span class="literal">null</span>,</span><br><span class="line">                             <span class="keyword">new</span> <span class="title class_">Node</span>&lt;K,V&gt;(hash, key, value, <span class="literal">null</span>)))</span><br><span class="line">                    <span class="keyword">break</span>;                   <span class="comment">// no lock when adding to empty bin</span></span><br><span class="line">            &#125;</span><br><span class="line"> </span><br><span class="line">           <span class="comment">// ForwardingNode节点MOVED为-1，达标已经有线程在移动扩容了，此时我们帮助移动</span></span><br><span class="line">           <span class="comment">// 帮助移动完毕就产生新的Node数组，这里就再进入For循环找位置插入</span></span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> ((fh = f.hash) == MOVED)</span><br><span class="line">                tab = helpTransfer(tab, f);</span><br><span class="line"> </span><br><span class="line">           <span class="comment">// 能进到else中，就代表当前进来的值已经是hash冲撞了</span></span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">               <span class="comment">// 临时变量</span></span><br><span class="line">                <span class="type">V</span> <span class="variable">oldVal</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">        </span><br><span class="line">               <span class="comment">// 同步锁，但是这个同步锁锁的对象是冲撞的head节点，所以他的锁的力度不大</span></span><br><span class="line">               <span class="comment">// 对于其他数组节点、数组链表、数组红黑树的添加操作不影响。</span></span><br><span class="line">                <span class="keyword">synchronized</span> (f) &#123;</span><br><span class="line"> </span><br><span class="line">                   <span class="comment">// double check操作，因为之前获取的可能数组扩容变换位置了。</span></span><br><span class="line">                    <span class="keyword">if</span> (tabAt(tab, i) == f) &#123;</span><br><span class="line">                </span><br><span class="line">                       <span class="comment">// fh是啥？  没错他就是hash值，从上一个else if判断中获取到的</span></span><br><span class="line">                       <span class="comment">// hash值为正数就代表是非红黑树的添加</span></span><br><span class="line">                        <span class="keyword">if</span> (fh &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">                    </span><br><span class="line">                           <span class="comment">// 计数器+1，计数器为了后面的扩容做计数</span></span><br><span class="line">                            binCount = <span class="number">1</span>;</span><br><span class="line"> </span><br><span class="line">                           <span class="comment">// 因为进到这里肯定是hash冲撞了，所以需要判断是否是同一个key</span></span><br><span class="line">                           <span class="comment">// 因为map集合是无序不重复，所以相同的key就是替换value值。</span></span><br><span class="line">                           <span class="comment">// 但是也有可能只是hash值冲撞了，但是key值并不相同</span></span><br><span class="line">                           <span class="comment">// 所以就产生了单Node链表,所以这里循环也是在遍历链表</span></span><br><span class="line">                            <span class="keyword">for</span> (Node&lt;K,V&gt; e = f;; ++binCount) &#123;</span><br><span class="line">                                </span><br><span class="line">                               <span class="comment">// 存储已经存在链表的的key值，并非本次添加的key值。</span></span><br><span class="line">                                K ek;</span><br><span class="line"> </span><br><span class="line">                               <span class="comment">// 判断是否相等，相等就替换</span></span><br><span class="line">                               <span class="comment">// 其实从这里就可以得出hashcode相等，equals不相等</span></span><br><span class="line">                               <span class="comment">// 但是equals相等他的hashcode必然相等</span></span><br><span class="line">                                <span class="keyword">if</span> (e.hash == hash &amp;&amp;</span><br><span class="line">                                    ((ek = e.key) == key ||</span><br><span class="line">                                     (ek != <span class="literal">null</span> &amp;&amp; key.equals(ek)))) &#123;</span><br><span class="line">                </span><br><span class="line">                                   <span class="comment">// 如果是相等了就把旧值赋值给临时变量，并且作为返回值返回</span></span><br><span class="line">                                    oldVal = e.val;</span><br><span class="line"> </span><br><span class="line">                                   <span class="comment">// 对于concurrentHashMap来说默认是不重复，</span></span><br><span class="line">                                   <span class="comment">// 但是可以通过onlyIfAbsent变量来控制新来的值是否替换</span></span><br><span class="line">                                   <span class="comment">// 是使用之前的还是新的</span></span><br><span class="line">                                    <span class="keyword">if</span> (!onlyIfAbsent)</span><br><span class="line">                                        e.val = value;</span><br><span class="line">                                    <span class="keyword">break</span>;</span><br><span class="line">                                &#125;</span><br><span class="line"> </span><br><span class="line">                               <span class="comment">// 走到这里就达标hashcode冲撞了，但是key值并不相等</span></span><br><span class="line">                               <span class="comment">// 所以这里就判断链表的next节点是否为null，为null就添加</span></span><br><span class="line">                               <span class="comment">// 不为null就进入到下一次循环，下一次循环就继续走上面的代码</span></span><br><span class="line">                               <span class="comment">// 继续判断是否key值相等，不相等又来到这里，直到next节点为null</span></span><br><span class="line">                               <span class="comment">// 大家都知道链表长度为8转红黑树，所以这里又可以得出是大于等于8</span></span><br><span class="line">                                Node&lt;K,V&gt; pred = e;</span><br><span class="line">                                <span class="keyword">if</span> ((e = e.next) == <span class="literal">null</span>) &#123;</span><br><span class="line">                                    pred.next = <span class="keyword">new</span> <span class="title class_">Node</span>&lt;K,V&gt;(hash, key,</span><br><span class="line">                                                              value, <span class="literal">null</span>);</span><br><span class="line">                                    <span class="keyword">break</span>;</span><br><span class="line">                                &#125;</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;</span><br><span class="line"> </span><br><span class="line">                       <span class="comment">// 红黑树的添加node节点</span></span><br><span class="line">                        <span class="keyword">else</span> <span class="keyword">if</span> (f <span class="keyword">instanceof</span> TreeBin) &#123;</span><br><span class="line">                            Node&lt;K,V&gt; p;</span><br><span class="line">                            binCount = <span class="number">2</span>;</span><br><span class="line">                            <span class="keyword">if</span> ((p = ((TreeBin&lt;K,V&gt;)f).putTreeVal(hash, key,</span><br><span class="line">                                                           value)) != <span class="literal">null</span>) &#123;</span><br><span class="line">                                oldVal = p.val;</span><br><span class="line">                                <span class="keyword">if</span> (!onlyIfAbsent)</span><br><span class="line">                                    p.val = value;</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line"> </span><br><span class="line">               <span class="comment">// 判断是否从链表转成红黑树结构</span></span><br><span class="line">               <span class="comment">// 条件是单链表大于等于8切数组长度为64，如果数组长度不满足64就扩容</span></span><br><span class="line">                <span class="keyword">if</span> (binCount != <span class="number">0</span>) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (binCount &gt;= TREEIFY_THRESHOLD)</span><br><span class="line">                        treeifyBin(tab, i);</span><br><span class="line"> </span><br><span class="line">                   <span class="comment">// 判断是否key值重复，重复了就返回旧的value值</span></span><br><span class="line">                    <span class="keyword">if</span> (oldVal != <span class="literal">null</span>)</span><br><span class="line">                        <span class="keyword">return</span> oldVal;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">       <span class="comment">// 这里是添加一次计数器的值，并且达到负载因子的阈值就会进行扩容</span></span><br><span class="line">        addCount(<span class="number">1L</span>, binCount);</span><br><span class="line">         </span><br><span class="line">       <span class="comment">// 如果是没有key值重复的情况就是返回null，如果key值重复就是返回旧的value值</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="casTabAt-写入方法"><a href="#casTabAt-写入方法" class="headerlink" title="casTabAt()写入方法"></a>casTabAt()写入方法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> &lt;K,V&gt; <span class="type">boolean</span> <span class="title function_">casTabAt</span><span class="params">(Node&lt;K,V&gt;[] tab, <span class="type">int</span> i,</span></span><br><span class="line"><span class="params">                                    Node&lt;K,V&gt; c, Node&lt;K,V&gt; v)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> U.compareAndSwapObject(tab, ((<span class="type">long</span>)i &lt;&lt; ASHIFT) + ABASE, c, v);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​		多个线程来同时竞争到Node数组的同一插槽时通过cas来竞争，没抢到的就返回false，就进入到下次循环，下次进来通过hash算法还是同一个插槽所以就进入到else中的循环来看是否是key值重复或者是hash冲撞添加到链表尾部。</p>
+<h3 id="get方法："><a href="#get方法：" class="headerlink" title="get方法："></a>get方法：</h3><p>1）根据 key 对应 hashcode 找到对应的桶，如果正好是桶的头节点，则直接返回值</p>
+<p>2）如果不是桶的头节点，并且是红黑树结构，那就按照树的方式去查找值</p>
+<p>3）如果既不是桶的头节点，也不是红黑树结构，那就按照链表的方式去查找值（也就是遍历）</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>​		通过源码可以看出，ConcurrentHashMap和HashMap的区别就是<br>1、引入了sizeCtl，sizeCtl有三种状态<br>1.1、0：还未初始化<br>1.2、-1：正在初始化<br>1.3、&lt;0但是不等于-1，此时表示正在扩容。第一个扩容的线程会将sizeCtl设置为sizeStamp(n)&lt;&lt;16+2<br>1.4、大于0.这时为扩容的阈值，为n*0.75<br>2、通过Synchronized将对应的槽位的第一个节点锁住，只会锁住一个槽，而不是一整个table</p>
+<p>3、扩容：<br>        是将n个槽分为若干个连续的组，一个组的长度为固定的stride，stride&#x3D;n&#x2F;8&#x2F;cpu个数，如果小于16会将其赋值为16。</p>
+<p>​		并允许多个线程同时扩容，每个线程都有其搬运的上下界区间。上界由一个transferIndex变量控制，transferIndex初始值为n，每个线程再申请搬运区间的时候，会将transfer -&#x3D; stride，其对应的区间为[transferIndex -stride,transferIndex],然后开始搬运区间中对应的槽位。搬运完这stride个槽位后，如果发现transferIndex&gt;0,还会继续搬运，直到transderIndex &lt; 0 说明搬运区间已经被申请完了，但是这时未必全部都搬运完成了，申请搬运区间到搬运完成是需要一个过程的。</p>
+<p>​		sizeCtl与扩容状态也有关,sizeCtl的高16位代表着扩容的时间戳，后16位对应着搬运的线程数。第一个扩容的线程会将sizeCtl设置为sizeStamp(n)&lt;&lt;16+2，当线程插入或者删除的时候，发现正在扩容，首先会帮助扩容，当扩容完毕后才会执行插入或者删除操作。具体做法是将sizeCtl+1，然后申请搬运区间并搬运，当线程申请不到搬运区间的时候，将sizeCtl-1,当sizeCtl &#x3D;&#x3D; sizeStamp(n)&lt;&lt;16+2的时候，说明搬运完成。</p>
+<p>参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_43799161/article/details/122814374">https://blog.csdn.net/qq_43799161/article/details/122814374</a></p>
+<h1 id="CopyOnWriteArrayList"><a href="#CopyOnWriteArrayList" class="headerlink" title="CopyOnWriteArrayList"></a>CopyOnWriteArrayList</h1><p>​		<code>CopyOnWriteArrayList</code> 读取是完全不用加锁的，并且在写入的时候也不会阻塞读取操作，只有写入和写入之间需要进行同步等待。</p>
+<p><img src="/2022/09/13/%E5%B9%B6%E5%8F%91-%E5%B8%B8%E8%A7%81%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/%E5%B9%B6%E5%8F%91-%E5%B8%B8%E8%A7%81%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8%5C3.jpg"></p>
+<p>可以看到CopyOnWriteArrayList的继承体系·：</p>
+<ul>
+<li>实现了List, RandomAccess, Cloneable, java.io.Serializable等接口。</li>
+<li>实现了List，提供了基础的添加、删除、遍历等操作。</li>
+<li>实现了RandomAccess，提供了随机访问的能力。</li>
+<li>实现了Cloneable，可以被克隆。</li>
+<li>实现了Serializable，可以被序列化。</li>
+</ul>
+<p><code>		CopyOnWriteArrayList</code> 类的所有可变操作（add，set 等等）都是通过创建底层数组的<strong>新副本</strong>来实现的。当 List 需要被修改的时候，我并不修改原有内容，而是对原有数据进行一次复制，将修改的内容写入副本。写完之后，再将修改完的副本<strong>替换原来的数据</strong>，这样就可以保证写操作不会影响读操作了。</p>
+<h2 id="CopyOnWriteArrayList-读取和写入源码"><a href="#CopyOnWriteArrayList-读取和写入源码" class="headerlink" title="CopyOnWriteArrayList 读取和写入源码"></a>CopyOnWriteArrayList 读取和写入源码</h2><h3 id="CopyOnWriteArrayList-读取操作的实现"><a href="#CopyOnWriteArrayList-读取操作的实现" class="headerlink" title="CopyOnWriteArrayList 读取操作的实现"></a>CopyOnWriteArrayList 读取操作的实现</h3><p>​		读取操作没有任何同步控制和锁操作，理由就是内部数组 <code>array</code> 不会发生修改，只会被另外一个 <code>array</code> 替换，因此可以保证数据安全。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** The array, accessed only via getArray/setArray. */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">transient</span> <span class="keyword">volatile</span> Object[] array;</span><br><span class="line"><span class="keyword">public</span> E <span class="title function_">get</span><span class="params">(<span class="type">int</span> index)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> get(getArray(), index);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@SuppressWarnings(&quot;unchecked&quot;)</span></span><br><span class="line"><span class="keyword">private</span> E <span class="title function_">get</span><span class="params">(Object[] a, <span class="type">int</span> index)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> (E) a[index];</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">final</span> Object[] getArray() &#123;</span><br><span class="line">    <span class="keyword">return</span> array;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="CopyOnWriteArrayList-写入操作的实现"><a href="#CopyOnWriteArrayList-写入操作的实现" class="headerlink" title="CopyOnWriteArrayList 写入操作的实现"></a>CopyOnWriteArrayList 写入操作的实现</h3><p>​		<code>CopyOnWriteArrayList</code> 写入操作 <code>add()</code>方法在添加集合的时候加了锁，保证了同步，避免了多线程写的时候会 copy 出多个副本出来。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Appends the specified element to the end of this list.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> e element to be appended to this list</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> &#123;<span class="doctag">@code</span> true&#125; (as specified by &#123;<span class="doctag">@link</span> Collection#add&#125;)</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">add</span><span class="params">(E e)</span> &#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">ReentrantLock</span> <span class="variable">lock</span> <span class="operator">=</span> <span class="built_in">this</span>.lock;</span><br><span class="line">    lock.lock();<span class="comment">//加锁</span></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        Object[] elements = getArray();</span><br><span class="line">        <span class="type">int</span> <span class="variable">len</span> <span class="operator">=</span> elements.length;</span><br><span class="line">        Object[] newElements = Arrays.copyOf(elements, len + <span class="number">1</span>);<span class="comment">//拷贝新数组</span></span><br><span class="line">        newElements[len] = e;<span class="comment">//将元素添加到新数组的末尾</span></span><br><span class="line">        setArray(newElements);<span class="comment">//将新数组替换了array数组</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        lock.unlock();<span class="comment">//释放锁</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="ConcurrentLinkedQueue"><a href="#ConcurrentLinkedQueue" class="headerlink" title="ConcurrentLinkedQueue"></a>ConcurrentLinkedQueue</h1><p>​		</p>
+<p>Java 提供的线程安全的 <code>Queue</code> 可以分为<strong>阻塞队列</strong>和<strong>非阻塞队列</strong>，阻塞队列与普通队列的区别在于，当队列是空的时，从队列中获取元素的操作将会被阻塞，或者当队列是满时，往队列里添加元素的操作会被阻塞。其中阻塞队列的典型例子是 <code>BlockingQueue</code>，非阻塞队列的典型例子是 <code>ConcurrentLinkedQueue</code><strong>，阻塞队列可以通过加锁来实现，非阻塞队列可以通过 CAS 操作实现。</strong></p>
+<p>​		<code>ConcurrentLinkedQueue</code>这个队列使用<strong>链表</strong>作为其数据结构，并使用无锁方案： <strong>CAS 非阻塞算法</strong>来实现线程安全，适合在对性能要求相对较高，同时对队列的<strong>读写存在多个线程同时进行</strong>的场景。</p>
+<h2 id="ConcurrentLinkedQueue源码分析"><a href="#ConcurrentLinkedQueue源码分析" class="headerlink" title="ConcurrentLinkedQueue源码分析"></a>ConcurrentLinkedQueue源码分析</h2><p>​		CoucurrentLinkedQueue的结构由head节点和tail节点组成，每个节点由<strong>节点元素item</strong>和<strong>指向下一个节点的next引用</strong>组成，而节点与节点之间的关系就是通过该next关联起来的，从而组成一张链表的队列。节点Node为ConcurrentLinkedQueue的内部类，定义如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">Node</span>&lt;E&gt; &#123;</span><br><span class="line">      <span class="comment">/** 节点元素域 */</span></span><br><span class="line">      <span class="keyword">volatile</span> E item;</span><br><span class="line">      <span class="keyword">volatile</span> Node&lt;E&gt; next;</span><br><span class="line">    </span><br><span class="line">      <span class="comment">//初始化,获得item 和 next 的偏移量,为后期的CAS做准备</span></span><br><span class="line">    	</span><br><span class="line">      Node(E item) &#123;</span><br><span class="line">          UNSAFE.putObject(<span class="built_in">this</span>, itemOffset, item);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="type">boolean</span> <span class="title function_">casItem</span><span class="params">(E cmp, E val)</span> &#123;</span><br><span class="line">          <span class="keyword">return</span> UNSAFE.compareAndSwapObject(<span class="built_in">this</span>, itemOffset, cmp, val);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">void</span> <span class="title function_">lazySetNext</span><span class="params">(Node&lt;E&gt; val)</span> &#123;</span><br><span class="line">          UNSAFE.putOrderedObject(<span class="built_in">this</span>, nextOffset, val);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="type">boolean</span> <span class="title function_">casNext</span><span class="params">(Node&lt;E&gt; cmp, Node&lt;E&gt; val)</span> &#123;</span><br><span class="line">          <span class="keyword">return</span> UNSAFE.compareAndSwapObject(<span class="built_in">this</span>, nextOffset, cmp, val);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// Unsafe mechanics</span></span><br><span class="line"></span><br><span class="line">      <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> sun.misc.Unsafe UNSAFE;</span><br><span class="line">      <span class="comment">/** 偏移量 */</span></span><br><span class="line">      <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">long</span> itemOffset;</span><br><span class="line">      <span class="comment">/** 下一个元素的偏移量 */</span></span><br><span class="line"></span><br><span class="line">     <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">long</span> nextOffset;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">static</span> &#123;</span><br><span class="line">          <span class="keyword">try</span> &#123;</span><br><span class="line">              UNSAFE = sun.misc.Unsafe.getUnsafe();</span><br><span class="line">              Class&lt;?&gt; k = Node.class;</span><br><span class="line">              itemOffset = UNSAFE.objectFieldOffset</span><br><span class="line">                      (k.getDeclaredField(<span class="string">&quot;item&quot;</span>));</span><br><span class="line">              nextOffset = UNSAFE.objectFieldOffset</span><br><span class="line">                      (k.getDeclaredField(<span class="string">&quot;next&quot;</span>));</span><br><span class="line">          &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">              <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(e);</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="offer"><a href="#offer" class="headerlink" title="offer"></a>offer</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">offer</span><span class="params">(E e)</span> &#123;</span><br><span class="line">        <span class="comment">//检查节点是否为null</span></span><br><span class="line">        checkNotNull(e);</span><br><span class="line">        <span class="comment">// 创建新节点</span></span><br><span class="line">        <span class="keyword">final</span> Node&lt;E&gt; newNode = <span class="keyword">new</span> <span class="title class_">Node</span>&lt;E&gt;(e);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//死循环 直到成功为止</span></span><br><span class="line">        <span class="keyword">for</span> (Node&lt;E&gt; t = tail, p = t;;) &#123;</span><br><span class="line">            Node&lt;E&gt; q = p.next;</span><br><span class="line">            <span class="comment">// q == null 表示 p已经是最后一个节点了，尝试加入到队列尾</span></span><br><span class="line">            <span class="comment">// 如果插入失败，则表示其他线程已经修改了p的指向</span></span><br><span class="line">            <span class="keyword">if</span> (q == <span class="literal">null</span>) &#123;                                <span class="comment">// --- 1</span></span><br><span class="line">                <span class="comment">// casNext：t节点的next指向当前节点</span></span><br><span class="line">                <span class="comment">// casTail：设置tail 尾节点</span></span><br><span class="line">                <span class="keyword">if</span> (p.casNext(<span class="literal">null</span>, newNode)) &#123;             <span class="comment">// --- 2</span></span><br><span class="line">                    <span class="comment">// node 加入节点后会导致tail距离最后一个节点相差大于一个，需要更新tail</span></span><br><span class="line">                    <span class="keyword">if</span> (p != t)                             <span class="comment">// --- 3</span></span><br><span class="line">                        casTail(t, newNode);                    <span class="comment">// --- 4</span></span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// p == q 等于自身</span></span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (p == q)                                <span class="comment">// --- 5</span></span><br><span class="line">                <span class="comment">// p == q 代表着该节点已经被删除了</span></span><br><span class="line">                <span class="comment">// 由于多线程的原因，我们offer()的时候也会poll()，如果offer()的时候正好该节点已经poll()了</span></span><br><span class="line">                <span class="comment">// 那么在poll()方法中的updateHead()方法会将head指向当前的q，而把p.next指向自己，即：p.next == p</span></span><br><span class="line">                <span class="comment">// 这样就会导致tail节点滞后head（tail位于head的前面），则需要重新设置p</span></span><br><span class="line">                p = (t != (t = tail)) ? t : head;           <span class="comment">// --- 6</span></span><br><span class="line">            <span class="comment">// tail并没有指向尾节点</span></span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                <span class="comment">// tail已经不是最后一个节点，将p指向最后一个节点</span></span><br><span class="line">                p = (p != t &amp;&amp; t != (t = tail)) ? t : q;    <span class="comment">// --- 7</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="poll"><a href="#poll" class="headerlink" title="poll"></a>poll</h3><p>​		ConcurrentLinkedQueue提供了poll()方法进行出列操作。入列主要是涉及到tail，出列则涉及到head。源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> E <span class="title function_">poll</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 如果出现p被删除的情况需要从head重新开始</span></span><br><span class="line">        restartFromHead: </span><br><span class="line">        <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">            <span class="keyword">for</span> (Node&lt;E&gt; h = head, p = h, q;;) &#123;</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 节点 item</span></span><br><span class="line">                <span class="type">E</span> <span class="variable">item</span> <span class="operator">=</span> p.item;</span><br><span class="line"></span><br><span class="line">                <span class="comment">// item 不为null，则将item 设置为null</span></span><br><span class="line">                <span class="keyword">if</span> (item != <span class="literal">null</span> &amp;&amp; p.casItem(item, <span class="literal">null</span>)) &#123;                    <span class="comment">// --- 1</span></span><br><span class="line">                    <span class="comment">// p != head 则更新head</span></span><br><span class="line">                    <span class="keyword">if</span> (p != h)                                                 <span class="comment">// --- 2</span></span><br><span class="line">                        <span class="comment">// p.next != null，则将head更新为p.next ,否则更新为p</span></span><br><span class="line">                        updateHead(h, ((q = p.next) != <span class="literal">null</span>) ? q : p);          <span class="comment">// --- 3</span></span><br><span class="line">                    <span class="keyword">return</span> item;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">// p.next == null 队列为空</span></span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span> ((q = p.next) == <span class="literal">null</span>) &#123;                                <span class="comment">// --- 4</span></span><br><span class="line">                    updateHead(h, p);</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">// 当一个线程在poll的时候，另一个线程已经把当前的p从队列中删除——将p.next = p，p已经被移除不能继续，需要重新开始</span></span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span> (p == q)                                                <span class="comment">// --- 5</span></span><br><span class="line">                    <span class="keyword">continue</span> restartFromHead;</span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                    p = q;                                                      <span class="comment">// --- 6</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>上诉有一个很重要的方法：updateHead()，该方法用于CAS更新head节点，如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title function_">updateHead</span><span class="params">(Node&lt;E&gt; h, Node&lt;E&gt; p)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (h != p &amp;&amp; casHead(h, p))</span><br><span class="line">        h.lazySetNext(h);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​		ConcurrentLinkedQueue中规定，p &#x3D;&#x3D;  q表明，该节点已经被删除了，也就说tail滞后于head，head无法通过succ()方法遍历到tail，怎么做？ (t !&#x3D; (t &#x3D;  tail))? t : head;这段代码主要是来判读tail节点是否已经发生了改变，如果发生了改变，则说明tail已经重新定位了，只需要重新找到tail即可，否则就只能指向head了。</p>
+<h1 id="BlockingQueue"><a href="#BlockingQueue" class="headerlink" title="BlockingQueue"></a>BlockingQueue</h1><p>​		阻塞队列（<code>BlockingQueue</code>）被广泛使用在“生产者-消费者”问题中，其原因是 <code>BlockingQueue</code> 提供了可阻塞的插入和移除的方法。当队列容器已满，生产者线程会被阻塞，直到队列未满；当队列容器为空时，消费者线程会被阻塞，直至队列非空时为止。</p>
+<p>​		<code>BlockingQueue</code> 是一个接口，继承自 <code>Queue</code>，所以其实现类也可以作为 <code>Queue</code> 的实现来使用，而 <code>Queue</code> 又继承自 <code>Collection</code> 接口。下面是 <code>BlockingQueue</code> 的相关实现类：</p>
+<p><img src="/2022/09/13/%E5%B9%B6%E5%8F%91-%E5%B8%B8%E8%A7%81%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/%E5%B9%B6%E5%8F%91-%E5%B8%B8%E8%A7%81%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8%5C1.png"></p>
+<p>BlockingQueue 对插入操作、移除操作、获取元素操作提供了四种不同的方法用于不同的场景中使用：1、抛出异常；2、返回特殊值（null 或 true&#x2F;false，取决于具体的操作）；3、阻塞等待此操作，直到这个操作成功；4、阻塞等待此操作，直到成功或者超时指定时间。总结如下：</p>
+<p><img src="/2022/09/13/%E5%B9%B6%E5%8F%91-%E5%B8%B8%E8%A7%81%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/%E5%B9%B6%E5%8F%91-%E5%B8%B8%E8%A7%81%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8%5C4.jpg"></p>
+<h2 id="ArrayBlockingQueue"><a href="#ArrayBlockingQueue" class="headerlink" title="ArrayBlockingQueue"></a>ArrayBlockingQueue</h2><p><code>ArrayBlockingQueue</code> 是 <code>BlockingQueue</code> 接口的有界队列实现类，底层采用数组来实现。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ArrayBlockingQueue</span>&lt;E&gt;</span><br><span class="line"><span class="keyword">extends</span> <span class="title class_">AbstractQueue</span>&lt;E&gt;</span><br><span class="line"><span class="keyword">implements</span> <span class="title class_">BlockingQueue</span>&lt;E&gt;, Serializable&#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​		<code>ArrayBlockingQueue</code> <strong>一旦创建，容量不能改变</strong>。其并发控制采用<strong>可重入锁 ReentrantLock</strong> ，不管是插入操作还是读取操作，都需要获取到锁才能进行操作。当队列容量满时，尝试将元素放入队列将导致操作阻塞;尝试从一个空队列中取一个元素也会同样阻塞。</p>
+<p>​		<code>ArrayBlockingQueue</code> 默认情况下不能保证线程访问队列的公平性，所谓公平性是指严格按照线程等待的绝对时间顺序，即最先等待的线程能够最先访问到 <code>ArrayBlockingQueue</code>。而非公平性则是指访问 <code>ArrayBlockingQueue</code> 的顺序不是遵守严格的时间顺序，有可能存在，当 <code>ArrayBlockingQueue</code> 可以被访问时，长时间阻塞的线程依然无法访问到 <code>ArrayBlockingQueue</code>。如果保证公平性，通常会降低吞吐量。如果需要获得公平性的 <code>ArrayBlockingQueue</code>，可采用如下代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> ArrayBlockingQueue&lt;Integer&gt; blockingQueue = <span class="keyword">new</span> <span class="title class_">ArrayBlockingQueue</span>&lt;Integer&gt;(<span class="number">10</span>,<span class="literal">true</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="LinkedBlockingQueue"><a href="#LinkedBlockingQueue" class="headerlink" title="LinkedBlockingQueue"></a>LinkedBlockingQueue</h2><p><code>LinkedBlockingQueue</code> 底层基于<strong>单向链表</strong>实现的阻塞队列，可以当做无界队列也可以当做有界队列来使用，同样满足 FIFO 的特性，与 <code>ArrayBlockingQueue</code> 相比起来具有更高的吞吐量，为了防止 <code>LinkedBlockingQueue</code> 容量迅速增，损耗大量内存。通常在创建 <code>LinkedBlockingQueue</code> 对象时，会指定其大小，如果未指定，容量等于 <code>Integer.MAX_VALUE</code> 。</p>
+<h2 id="PriorityBlockingQueue"><a href="#PriorityBlockingQueue" class="headerlink" title="PriorityBlockingQueue"></a>PriorityBlockingQueue</h2><p>​		<code>PriorityBlockingQueue</code> 是一个支持优先级的无界阻塞队列。默认情况下元素采用自然顺序进行排序，也可以通过自定义类实现 <code>compareTo()</code> 方法来指定元素排序规则，或者初始化时通过构造器参数 <code>Comparator</code> 来指定排序规则。</p>
+<p><code>PriorityBlockingQueue</code> 并发控制采用的是可重入锁 <code>ReentrantLock</code>，队列为无界队列（<code>ArrayBlockingQueue</code> 是有界队列，<code>LinkedBlockingQueue</code> 也可以通过在构造函数中传入 <code>capacity</code> 指定队列最大的容量，但是 <code>PriorityBlockingQueue</code> 只能指定初始的队列大小，后面插入元素的时候，<strong>如果空间不够的话会自动扩容</strong>）。</p>
+<p>简单地说，<strong>它就是 <code>PriorityQueue</code> 的线程安全版本</strong>。不可以插入 null 值，同时，插入队列的对象必须是可比较大小的（comparable），否则报 <code>ClassCastException</code> 异常。它的插入操作 put 方法不会 block，因为它是无界队列（take 方法在队列为空的时候会阻塞）。</p>
+<h2 id="ConcurrentSkipListMap"><a href="#ConcurrentSkipListMap" class="headerlink" title="ConcurrentSkipListMap"></a>ConcurrentSkipListMap</h2><p>​		跳表是一种可以用来快速查找的数据结构，有点类似于平衡树。它们都可以对元素进行快速的查找。但一个重要的区别是：对平衡树的插入和删除往往很可能导致平衡树进行一次全局的调整。而对跳表的插入和删除只需要对整个数据结构的局部进行操作即可。这样带来的好处是：在高并发的情况下，你会需要一个全局锁来保证整个平衡树的线程安全。而对于跳表，你只需要部分锁即可。这样，在高并发环境下，你就可以拥有更好的性能。</p>
+<p><img src="/2022/09/13/%E5%B9%B6%E5%8F%91-%E5%B8%B8%E8%A7%81%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/%E5%B9%B6%E5%8F%91-%E5%B8%B8%E8%A7%81%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8%5C5.jpg"></p>
+<p>​		最低层的链表维护了跳表内所有的元素，每上面一层链表都是下面一层的子集。</p>
+<p>​		跳表内的所有链表的元素都是排序的。查找时，可以从顶级链表开始找。一旦发现被查找的元素大于当前链表中的取值，就会转入下一层链表继续找。这也就是说在查找过程中，搜索是跳跃式的。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/" rel="tag"># 并发容器</a>
+              <a href="/tags/JUC/" rel="tag"># JUC</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/09/13/%E5%B9%B6%E5%8F%91-ThreadLocal/" rel="prev" title="并发-ThreadLocal">
+                  <i class="fa fa-chevron-left"></i> 并发-ThreadLocal
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/09/15/%E5%B9%B6%E5%8F%91-Atomic%E5%8E%9F%E5%AD%90%E7%B1%BB/" rel="next" title="并发-Atomic原子类">
+                  并发-Atomic原子类 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jing</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
