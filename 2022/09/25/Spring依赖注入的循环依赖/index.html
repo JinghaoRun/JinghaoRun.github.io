@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="循环依赖简介A对象创建时依赖了B对象，B对象创建时依赖了A对象，如下举例： 123456789public class A &amp;#123;       @Autowired       private B b;   &amp;#125;   public class B &amp;#123;       @Autowired       private A a;   &amp;#125;  在 Spring 中，一个对象并">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring依赖注入的循环依赖">
+<meta property="og:url" content="http://example.com/2022/09/25/Spring%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E7%9A%84%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/index.html">
+<meta property="og:site_name" content="WangHao&amp;博客">
+<meta property="og:description" content="循环依赖简介A对象创建时依赖了B对象，B对象创建时依赖了A对象，如下举例： 123456789public class A &amp;#123;       @Autowired       private B b;   &amp;#125;   public class B &amp;#123;       @Autowired       private A a;   &amp;#125;  在 Spring 中，一个对象并">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2022/09/25/Spring%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E7%9A%84%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/blog/source_posts/Spring依赖注入的循环依赖/1.jpg">
+<meta property="og:image" content="http://example.com/2022/09/25/Spring%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E7%9A%84%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/blog/source_posts/Spring依赖注入的循环依赖/2.jpg">
+<meta property="article:published_time" content="2022-09-25T13:40:08.000Z">
+<meta property="article:modified_time" content="2022-09-25T14:14:03.665Z">
+<meta property="article:author" content="Jing">
+<meta property="article:tag" content="Spring循环依赖">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2022/09/25/Spring%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E7%9A%84%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/blog/source_posts/Spring依赖注入的循环依赖/1.jpg">
+
+
+<link rel="canonical" href="http://example.com/2022/09/25/Spring%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E7%9A%84%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2022/09/25/Spring%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E7%9A%84%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/","path":"2022/09/25/Spring依赖注入的循环依赖/","title":"Spring依赖注入的循环依赖"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Spring依赖注入的循环依赖 | WangHao&博客</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">WangHao&博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Welcome to the home of WangHao</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">循环依赖简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Bean%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-number">2.</span> <span class="nav-text">Bean的生命周期</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Bean-%E7%9A%84%E7%94%9F%E6%88%90%E6%AD%A5%E9%AA%A4"><span class="nav-number">3.</span> <span class="nav-text">Bean 的生成步骤</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98%E8%A7%A3%E5%86%B3%E9%83%A8%E5%88%86%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96%E9%97%AE%E9%A2%98"><span class="nav-number">4.</span> <span class="nav-text">三级缓存解决部分循环依赖问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%A6%E6%9C%89AOP%E7%9A%84%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="nav-number">4.1.</span> <span class="nav-text">带有AOP的循环依赖问题：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AOP-Bean%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86%EF%BC%9A"><span class="nav-number">4.2.</span> <span class="nav-text">AOP Bean注入原理：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3AOP%E4%B8%8B%E7%9A%84%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="nav-number">4.3.</span> <span class="nav-text">如何解决AOP下的循环依赖问题：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93%E4%B8%80%E4%B8%8B%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98%EF%BC%9A"><span class="nav-number">4.4.</span> <span class="nav-text">总结一下三级缓存：</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Jing"
+      src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">Jing</p>
+  <div class="site-description" itemprop="description">Stay hungry,stay foolish</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">89</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/09/25/Spring%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E7%9A%84%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="Jing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangHao&博客">
+      <meta itemprop="description" content="Stay hungry,stay foolish">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Spring依赖注入的循环依赖 | WangHao&博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Spring依赖注入的循环依赖
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-09-25 21:40:08 / 修改时间：22:14:03" itemprop="dateCreated datePublished" datetime="2022-09-25T21:40:08+08:00">2022-09-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E6%A1%86%E6%9E%B6/" itemprop="url" rel="index"><span itemprop="name">Java框架</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="循环依赖简介"><a href="#循环依赖简介" class="headerlink" title="循环依赖简介"></a>循环依赖简介</h1><p>A对象创建时依赖了B对象，B对象创建时依赖了A对象，如下举例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line">       <span class="meta">@Autowired</span></span><br><span class="line">       <span class="keyword">private</span> B b;</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">B</span> &#123;</span><br><span class="line">       <span class="meta">@Autowired</span></span><br><span class="line">       <span class="keyword">private</span> A a;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 Spring 中，一个对象并不是简单 new 出来了，而是会经过一系列的 Bean 的生命周期，因为 Bean 的生命周期才会出现循环依赖问题。</p>
+<span id="more"></span>
+
+<h1 id="Bean的生命周期"><a href="#Bean的生命周期" class="headerlink" title="Bean的生命周期"></a>Bean的生命周期</h1><p>参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_44129618/article/details/121989474">https://blog.csdn.net/weixin_44129618/article/details/121989474</a></p>
+<ol>
+<li>Spring 启动，查找并加载需要被 Spring 管理的 Bean，进行 Bean 的实例化；</li>
+<li>Bean 实例化后，对 Bean 的引入和值注入到 Bean 的属性中；</li>
+<li>如果 Bean 实现了 BeanNameAware 接口的话，Spring 将 Bean 的 Id 传递给 setBeanName() 方法；</li>
+<li>如果 Bean 实现了 BeanFactoryAware 接口的话，Spring 将调用 setBeanFactory() 方法，将 BeanFactory 容器实例传入；</li>
+<li>如果 Bean 实现了 ApplicationContextAware 接口的话，Spring 将调用 Bean 的 setApplicationContext() 方法，将 Bean 所在应用上下文引用传入进来；</li>
+<li>如果 Bean 实现了 BeanPostProcessor 接口，Spring 就将调用它们的postProcessBeforeInitialization() 方法；</li>
+<li>如果 Bean 实现了 InitializingBean 接口，Spring 将调用它们的 afterPropertiesSet() 方法。类似地，如果 Bean 使用 init-method 声明了初始化方法，该方法也会被调用；</li>
+<li>如果 Bean 实现了 BeanPostProcessor 接口，Spring 就将调用它们的 postProcessAfterInitialization() 方法；</li>
+<li>此时，Bean 已经准备就绪，可以被应用程序使用了。它们将一直驻留在应用上下文中，直到应用上下文被销毁；</li>
+<li>如果 Bean 实现了 DisposableBean 接口，Spring 将调用它的 destory() 接口方法，同样，如果 Bean 使用了 destory-method 声明销毁方法，该方法也会被调用。</li>
+</ol>
+<h1 id="Bean-的生成步骤"><a href="#Bean-的生成步骤" class="headerlink" title="Bean 的生成步骤"></a>Bean 的生成步骤</h1><p>被 Spring 管理的对象叫做 Bean 。Bean的生成步骤如下：</p>
+<ol>
+<li>Spring 扫描 class 得到 BeanDefinition；</li>
+<li>根据得到的 BeanDefinition 去生成 bean；</li>
+<li>首先根据 class 推断构造方法；</li>
+<li>根据推断出来的构造方法，反射，得到一个对象（暂时叫做原始对象）；</li>
+<li>填充原始对象中的属性（依赖注入）；</li>
+<li>如果原始对象中的某个方法被 AOP 了，那么则需要根据原始对象生成一个代理对象；</li>
+<li>把最终生成的代理对象放入单例池（源码中叫做 singletonObjects）中，下次 getBean 时就直接从单例池拿即可；</li>
+</ol>
+<p>上面例子中的依赖注入过程中A 类存在一个 B 类的 b 属性，所以，当 A 类生成了一个原始对象之后，就会去给 b 属性去赋值，此时就会根据 b 属性的类型和属性名去 BeanFactory 中去获取 B 类所对应的单例bean。</p>
+<ol>
+<li>如果此时 BeanFactory 中存在 B 对应的 Bean，那么直接拿来赋值给 b 属性；</li>
+<li>如果此时 BeanFactory 中不存在 B 对应的 Bean，则需要生成一个 B 对应的 Bean，然后赋值给 b属性。</li>
+</ol>
+<p>但是如果此时 B 类在 BeanFactory 中还没有生成对应的 Bean，那么就需要去生成，就会经过 B 的 Bean 的生命周期。那么在创建 B 类的 Bean 的过程中，如果 B 类中存在一个 A 类的 a 属性，那么在创建 B 的 Bean 的过程中就需要 A 类对应的 Bean，但是，触发 B 类 Bean 的创建的条件是 A 类 Bean 在创建过程中的依赖注入，所以这里就出现了循环依赖：</p>
+<p><strong>从而导致 A Bean 创建不出来，B Bean 也创建不出来。</strong></p>
+<h1 id="三级缓存解决部分循环依赖问题"><a href="#三级缓存解决部分循环依赖问题" class="headerlink" title="三级缓存解决部分循环依赖问题"></a>三级缓存解决部分循环依赖问题</h1><p>在 Spring 中，通过三级缓存机制帮开发者解决了部分循环依赖的问题。</p>
+<ul>
+<li><strong>一级缓存为</strong>：singletonObjects；</li>
+<li><strong>二级缓存为</strong>：earlySingletonObjects；</li>
+<li><strong>三级缓存为</strong>：singletonFactories；</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** Cache of singleton objects: bean name –&gt; bean instance */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="type">Map</span> <span class="variable">singletonObjects</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ConcurrentHashMap</span>(<span class="number">256</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">/** Cache of singleton factories: bean name –&gt; ObjectFactory */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Map&gt; singletonFactories = <span class="keyword">new</span> <span class="title class_">HashMap</span>&gt;(<span class="number">16</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">/** Cache of early singleton objects: bean name –&gt; bean instance */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="type">Map</span> <span class="variable">earlySingletonObjects</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">HashMap</span>(<span class="number">16</span>);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>「singletonObjects」中缓存的是已经经历了完整生命周期的bean对象。</p>
+<p>「earlySingletonObjects」比 singletonObjects 多了一个 early ，表示缓存的是早期的 bean对象。早期指的是 Bean 的生命周期还没走完就把这个 Bean 放入了 earlySingletonObjects。</p>
+<p>「singletonFactories」中缓存的是 ObjectFactory，表示对象工厂，用来创建某个对象的。</p>
+<p><strong>解决循环依赖问题原理：</strong></p>
+<p>​		A 的 Bean 在创建过程中，在进行依赖注入之前，先把 A 的原始 Bean 放入缓存（提早暴露，只要放到缓存了，其他 Bean 需要时就可以从缓存中拿了），放入缓存后，再进行依赖注入，此时 A 的Bean 依赖了 B 的 Bean 。</p>
+<p>​		如果 B 的 Bean 不存在，则需要创建 B 的 Bean，而创建 B 的 Bean 的过程和 A 一样，也是先创建一个 B 的原始对象，然后把 B 的原始对象提早暴露出来放入缓存中，然后在对 B 的原始对象进行依赖注入 A，此时能从缓存中拿到 A 的原始对象（虽然是 A 的原始对象，还不是最终的 Bean），B 的原始对象依赖注入完了之后，B 的生命周期结束，那么 A 的生命周期也能结束。</p>
+<p>​		因为整个过程中，都只有一个 A 原始对象，所以对于 B 而言，就算在属性注入时，注入的是 A 原始对<br>象，也没有关系，因为A 原始对象在后续的生命周期中在堆中没有发生变化。</p>
+<h2 id="带有AOP的循环依赖问题："><a href="#带有AOP的循环依赖问题：" class="headerlink" title="带有AOP的循环依赖问题："></a>带有AOP的循环依赖问题：</h2><p>​		如果 A 的原始对象注入给 B 的属性之后，<strong>A 的原始对象进行了 AOP 产生了一个代理对象</strong>，此时就会出现，对于 A 而言，它的 Bean 对象其实应该是 AOP 之后的代理对象，而 B 的 a 属性对应的并不是 AOP 之后的代理对象，这就产生了冲突。</p>
+<p><strong>B 依赖的 A 和最终的 A 不是同一个对象。</strong></p>
+<p>在一个 Bean 的生命周期最后，Spring提供了 BeanPostProcessor 可以去对 Bean 进行加工，这个加工不仅仅只是能修改 Bean 的属性值，也可以替换掉当前 Bean 。</p>
+<p>在BeanPostProcessor 中可以完全替换掉某个 beanName 对应的 bean 对象。</p>
+<p>而 BeanPostProcessor 的执行在 Bean 的生命周期中是处于属性注入之后的，循环依赖是发生在属性注入过程中的，所以很有可能导致，注入给 B 对象的 A 对象和经历过完整生命周期之后的 A 对象，不是一个对象。这就是有问题的。</p>
+<h2 id="AOP-Bean注入原理："><a href="#AOP-Bean注入原理：" class="headerlink" title="AOP Bean注入原理："></a>AOP Bean注入原理：</h2><p>​		AOP 就是通过一个 BeanPostProcessor 来实现的，在 Spring 中 AOP 利用的要么是 JDK 动态代理，要么 CGLib 的动态代理，所以如果给一个类中的某个方法设置了切面，那么这个类最终就需要生成一个代理对象。</p>
+<p>​		一般过程就是：A 类—&gt;生成一个普通对象–&gt;属性注入–&gt;基于切面生成一个代理对象–&gt;把代理对象<br>放入 singletonObjects 单例池中。<br><img src="/2022/09/25/Spring%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E7%9A%84%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/blog\source_posts\Spring依赖注入的循环依赖\1.jpg"></p>
+<p>​		所以在这种情况下的循环依赖，Spring 是解决不了循环依赖问题的，因为在属性注入时，Spring 也不知道 A 对象后续会经过哪些 BeanPostProcessor 以及会对 A 对象做什么处理。</p>
+<h2 id="如何解决AOP下的循环依赖问题："><a href="#如何解决AOP下的循环依赖问题：" class="headerlink" title="如何解决AOP下的循环依赖问题："></a>如何解决AOP下的循环依赖问题：</h2><p>​		首先，<strong>singletonFactories 中存的是某个 beanName 对应的 ObjectFactory，在 bean 的生命周期中，生成完原始对象之后，就会构造一个 ObjectFactory 存入 singletonFactories 中。</strong></p>
+<p><img src="/2022/09/25/Spring%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E7%9A%84%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/blog\source_posts\Spring依赖注入的循环依赖\2.jpg"></p>
+<p>​		这个 ObjectFactory 是一个函数式接口，支持Lambda表达式：() -&gt;getEarlyBeanReference(beanName, mbd, bean)</p>
+<p>​	上面的Lambda表达式就是一个ObjectFactory，执行该Lambda表达式就会去执行getEarlyBeanReference方法.</p>
+<p>图中的 ObjectFactory 就是上文说的 labmda 表达式，中间有 getEarlyBeanReference 方法。</p>
+<p>注意存入 singletonFactories 时并不会执行 lambda 表达式，也就是不会执行getEarlyBeanReference 方法。</p>
+<p>从 singletonFactories 根据 beanName 得到一个 ObjectFactory ，然后执行 ObjectFactory ，也就是执行 getEarlyBeanReference 方法，此时会得到一个 A 原始对象经过 AOP 之后的代理对象，然后把该代理对象放入 earlySingletonObjects 中。</p>
+<p>此时并没有把代理对象放入 singletonObjects 中，那什么时候放入到 singletonObjects 中呢？</p>
+<p>此时，我们只得到了 A 原始对象的代理对象，这个对象还不完整，因为 A 原始对象还没有进行属性填充，所以此时不能直接把A的代理对象放入 singletonObjects 中，所以只能把代理对象放入earlySingletonObjects 。</p>
+<p>假设现在有其他对象依赖了 A，那么则可以从 earlySingletonObjects 中得到 A 原始对象的代理对象了，并且是A的同一个代理对象。</p>
+<p>当 B 创建完了之后，A 继续进行生命周期，而 A 在完成属性注入后，会按照它本身的逻辑去进行AOP，而此时我们知道 A 原始对象已经经历过了 AOP ，所以对于 A 本身而言，不会再去进行 AOP了，那么怎么判断一个对象是否经历过了 AOP 呢？</p>
+<p>会利用上文提到的 earlyProxyReferences，在 AbstractAutoProxyCreator 的 postProcessAfterInitialization 方法中，会去判断当前 beanName 是否<br>在 earlyProxyReferences，如果在则表示已经提前进行过 AO P了，无需再次进行 AOP。</p>
+<p>对于 A 而言，进行了 AOP 的判断后，以及 BeanPostProcessor 的执行之后，就需要把 A 对应的对象放入 singletonObjects 中了，但是我们知道，应该是要 A 的代理对象放入 singletonObjects 中，所以此时需要从 earlySingletonObjects 中得到代理对象，然后入 singletonObjects 中。</p>
+<p>至此，整个循环依赖解决完毕。</p>
+<h2 id="总结一下三级缓存："><a href="#总结一下三级缓存：" class="headerlink" title="总结一下三级缓存："></a>总结一下三级缓存：</h2><ol>
+<li>「singletonObjects」：缓存某个 beanName 对应的经过了完整生命周期的bean；</li>
+<li>「earlySingletonObjects」：缓存提前拿原始对象进行了 AOP 之后得到的代理对象，原始对象还没有进行属性注入和后续的 BeanPostProcessor等生命周期；</li>
+<li>「singletonFactories」：缓存的是一个 ObjectFactory ，主要用来<strong>去生成原始对象进行了 AOP之后得到的「代理对象」</strong>，在每个 Bean 的生成过程中，都会提前暴露一个工厂，这个工厂可能用到，也可能用不到，如果没有出现循环依赖依赖本 bean，那么这个工厂无用，本 bean 按照自己的生命周期执行，执行完后直接把本 bean 放入 singletonObjects 中即可，如果出现了循环依赖依赖了本 bean，则另外那个 bean 执行 ObjectFactory 提交得到一个 AOP 之后的代理对象（如果有 AOP 的话，如果无需 AOP ，则直接得到一个原始对象）。</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Spring%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/" rel="tag"># Spring循环依赖</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/09/23/Spring%E4%BB%8B%E7%BB%8D/" rel="prev" title="Spring介绍">
+                  <i class="fa fa-chevron-left"></i> Spring介绍
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/09/25/SpringBoot%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3/" rel="next" title="SpringBoot常用注解">
+                  SpringBoot常用注解 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jing</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
