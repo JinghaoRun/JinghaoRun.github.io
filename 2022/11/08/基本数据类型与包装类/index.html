@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="数据类型Java的数据类型分为：基本类型、引用类型。引用类型可以赋值为null。  String不是基本数据类型，是引用类型，是lang包下的类。所以比较字符串时用equals(),不能用“&#x3D;&#x3D;”** “&#x3D;&#x3D;”比较引用数据类型，比较的是地址是否相等；&#x3D;&#x3D;”比较基本数据类型，比较的是值是否相等 基本数据类型及对应包装类Java提供了八种基本">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基本数据类型与包装类">
+<meta property="og:url" content="http://example.com/2022/11/08/%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%8C%85%E8%A3%85%E7%B1%BB/index.html">
+<meta property="og:site_name" content="WangHao&amp;博客">
+<meta property="og:description" content="数据类型Java的数据类型分为：基本类型、引用类型。引用类型可以赋值为null。  String不是基本数据类型，是引用类型，是lang包下的类。所以比较字符串时用equals(),不能用“&#x3D;&#x3D;”** “&#x3D;&#x3D;”比较引用数据类型，比较的是地址是否相等；&#x3D;&#x3D;”比较基本数据类型，比较的是值是否相等 基本数据类型及对应包装类Java提供了八种基本">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-11-08T13:19:10.000Z">
+<meta property="article:modified_time" content="2022-11-08T13:52:24.246Z">
+<meta property="article:author" content="Jing">
+<meta property="article:tag" content="基本数据类型与包装类">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2022/11/08/%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%8C%85%E8%A3%85%E7%B1%BB/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2022/11/08/%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%8C%85%E8%A3%85%E7%B1%BB/","path":"2022/11/08/基本数据类型与包装类/","title":"基本数据类型与包装类"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>基本数据类型与包装类 | WangHao&博客</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">WangHao&博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Welcome to the home of WangHao</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">数据类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%8F%8A%E5%AF%B9%E5%BA%94%E5%8C%85%E8%A3%85%E7%B1%BB"><span class="nav-number">2.</span> <span class="nav-text">基本数据类型及对应包装类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%85%E8%A3%85%E7%B1%BB%E4%B8%8E%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">3.</span> <span class="nav-text">包装类与基本数据类型的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%8C%85%E8%A3%85%E7%B1%BB%E7%9A%84%E5%A5%BD%E5%A4%84"><span class="nav-number">4.</span> <span class="nav-text">使用包装类的好处</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E6%B1%A0"><span class="nav-number">4.1.</span> <span class="nav-text">缓存池</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#String%E7%B1%BB%E7%9A%84%E4%B8%8D%E5%8F%AF%E5%8F%98%E6%80%A7%E8%B4%A8"><span class="nav-number">5.</span> <span class="nav-text">String类的不可变性质</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88String%E8%A6%81%E8%AE%BE%E8%AE%A1%E6%88%90%E4%B8%8D%E5%8F%AF%E5%8F%98"><span class="nav-number">5.0.1.</span> <span class="nav-text">为什么String要设计成不可变</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#String-s1-x3D-%E2%80%9Chhh%E2%80%9D-%E5%92%8CString-s1-x3D-new-String-%E2%80%9Chhh%E2%80%9D-%E5%9C%A8%E5%86%85%E5%AD%98%E4%B8%AD%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">5.1.</span> <span class="nav-text">String s1 &#x3D; “hhh”;和String s1 &#x3D; new String(“hhh”);在内存中的区别</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Jing"
+      src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">Jing</p>
+  <div class="site-description" itemprop="description">Stay hungry,stay foolish</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">81</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">95</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/11/08/%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%8C%85%E8%A3%85%E7%B1%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="Jing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangHao&博客">
+      <meta itemprop="description" content="Stay hungry,stay foolish">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="基本数据类型与包装类 | WangHao&博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          基本数据类型与包装类
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-11-08 21:19:10 / 修改时间：21:52:24" itemprop="dateCreated datePublished" datetime="2022-11-08T21:19:10+08:00">2022-11-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><p>Java的数据类型分为：基本类型、引用类型。引用类型可以赋值为null。</p>
+<p> String不是基本数据类型，是引用类型，是lang包下的类。所以比较字符串时用<strong>equals(),不能用</strong>“&#x3D;&#x3D;”**</p>
+<p>“&#x3D;&#x3D;”比较<strong>引用数据类型，</strong>比较的是<strong>地址</strong>是否相等；&#x3D;&#x3D;”比较<strong>基本数据类型</strong>，比较的是<strong>值</strong>是否相等</p>
+<h2 id="基本数据类型及对应包装类"><a href="#基本数据类型及对应包装类" class="headerlink" title="基本数据类型及对应包装类"></a>基本数据类型及对应包装类</h2><p>Java提供了八种基本数据类型：byte、short、int、long、float、double、boolean、char，以及其对应的包装类：Byte，Short，Integer，Long，Flout，Double，Boolean，Character。</p>
+<span id="more"></span>
+
+<h2 id="包装类与基本数据类型的区别"><a href="#包装类与基本数据类型的区别" class="headerlink" title="包装类与基本数据类型的区别"></a>包装类与基本数据类型的区别</h2><p>包装类是对象，而基本数据类型不是。所以包装类的引用存放在stack中，实例存放在heap中；而基本数据类型直接存放在stack中。包装类需要先初始化再赋值，而基本数据类型可以直接赋值。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Integer</span> n1 = <span class="keyword">new</span> <span class="title class_">Integer</span>(<span class="number">1145</span>);<span class="comment">//需要先用new初始化</span></span><br><span class="line">int n2 = <span class="number">1145</span>;<span class="comment">//可以直接赋值</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="使用包装类的好处"><a href="#使用包装类的好处" class="headerlink" title="使用包装类的好处"></a>使用包装类的好处</h2><p>首先Java 是基于面向对象设计的，每创建一次包装类型就会放到堆里，然后通过栈中的地址来找寻堆中的对象。那么像经常使用的 int、double、float 等基础类型，每次都创建为对象会变的效率低下。因此就出现了基本类型，直接将变量值存在栈中，就不用在去堆中浪费空间去创建一个对象了。但是基本类型不具有对象性质，当我们使用集合的时候，又可以使用其包装类型。当然，我们每次使用的时候，例如往集合中添加基本类型，Java 会自动装箱为包装类。并且包装类提供了一些常用方法。例如，要使用int的最大值，可以直接使用Integer.MAX_VALUE方法；</p>
+<p>其次，有些类型，如集合类型，要求容器的数据类型必须是Object，所以无法直接使用int或者double等，我们可以直接使用Integer、Double等代替。</p>
+<p>并且Java类型间的转换可以通过包装类的方法实现，基本数据类型没有类的属性方法。</p>
+<h3 id="缓存池"><a href="#缓存池" class="headerlink" title="缓存池"></a>缓存池</h3><p>缓存池：在类中预先创建频繁使用的包装类对象。<br>1、包装器类提供了对象的缓存，String类提供了常量池，都有final修饰，对象一经创建后不可修改。<br>2、节省创建对象的时间开销。对象可以自由共享。<br>3、缓存范围：<br>数字类型（Byte、Short、Integer、Long）都是-128<del>127；<br>Character类：0</del>127；<br>Boolean类：true和false都有；<br>浮点类型（Float、Double）：没有缓存值。<br>4、缓存池的概念是针对包装类的，不同包装类的对象比较要用equals()，基本数据类型没有类的方法，比较用&#x3D;&#x3D;</p>
+<h2 id="String类的不可变性质"><a href="#String类的不可变性质" class="headerlink" title="String类的不可变性质"></a>String类的不可变性质</h2><p>String类是final类型的，String一旦创建，其内容和长度是不可改变的，String不可变的原因并不仅仅是因为字符数组被final修饰。</p>
+<p>因为final修饰引用类型，它保存的仅仅是一个引用，final只保证这个引用类型变量所引用的地址不会改变，也就是一直引用同一个对象，但这个对象内的内容完全可以发生改变。比如一直指向一个数组，但是可以改变数组内的内容。真正的原因是因为<strong>存储String的字符数组被private修饰。而且String也没有提供可以修改字符数组的api，外界不可访问value[]，自然String就不能被修改。</strong></p>
+<h4 id="为什么String要设计成不可变"><a href="#为什么String要设计成不可变" class="headerlink" title="为什么String要设计成不可变"></a>为什么String要设计成不可变</h4><p><strong>1、方便实现字符串对象池</strong></p>
+<p>我们使字面量进行创建字符串时，会在常量池中查找是否有相同值的字符串，如果有则会返回其引用，否则会创建新的字符串，并返回新字符串的引用。所以字符串设计成不可变，可以保证数据的准确性。如果String可变的话，会导致别人在使用时，出现结果不一致的情况。<strong>字符串常量池本来就是提供字符串复用的</strong>，如果字符串可变，那么复用也就是无稽之谈了。</p>
+<p><strong>2、更方便缓存hashCode</strong> </p>
+<p>只有String是不可变的，在它创建的时候<strong>HashCode</strong>就被缓存了，不需要重新计算。这就使得字符串很适合作为Map中的键，字符串的处理速度要快过其它的键对象。这就是HashMap中的键往往都使用字符串。</p>
+<p><strong>3、线程安全</strong></p>
+<p>只有String是不可变的，同一个字符串实例可以被多个线程共享。这样便不用因为线程安全问题而使用同步。字符串自己便是线程安全的。</p>
+<h3 id="String-s1-x3D-“hhh”-和String-s1-x3D-new-String-“hhh”-在内存中的区别"><a href="#String-s1-x3D-“hhh”-和String-s1-x3D-new-String-“hhh”-在内存中的区别" class="headerlink" title="String s1 &#x3D; “hhh”;和String s1 &#x3D; new String(“hhh”);在内存中的区别"></a>String s1 &#x3D; “hhh”;和String s1 &#x3D; new String(“hhh”);在内存中的区别</h3><p><strong>一、String s1 &#x3D; “hhh”;</strong></p>
+<p>1.在编译期，JVM会去常量池查找是否存在”hhh”</p>
+<p>2.如果不存在，就在常量池开辟一个空间来存储”hhh”，把地址赋给栈指针</p>
+<p>3.如果存在，就不用开辟新的空间，直接把地址赋给栈指针</p>
+<p>4.然后在栈内存中开辟一个名为s1的空间，来存储”hhh”在常量池中的地址</p>
+<p>总结：因此无论是”&#x3D;&#x3D;”还是equals()判断都相等，&#x3D;&#x3D;：因为在常量池中只有一份内存空间，地址全部相同。</p>
+<pre><code>//以下方法创建字符串对象，可能创建了一个对象，也可能一个对象也没有创建
+String s1 = &quot;hhh&quot;;
+String s2 = &quot;hhh&quot;;
+System.out.println(s1 == s2);//true
+System.out.println(s1.equals(s2));//true
+</code></pre>
+<p><strong>二、String s1 &#x3D; new String(“hhh”);</strong></p>
+<p>1.在编译期，JVM会去常量池查找是否存在”hhh”</p>
+<p>2.如果不存在，就在常量池开辟一个空间来存储”hhh”</p>
+<p>3.如果存在，就不用开辟新的空间</p>
+<p>4.在运行期，通过String的构造器在<strong>堆内存</strong>中new了一个新的空间（new Sring(“hhh”)）</p>
+<p>5.然后将常量池中的”hhh”对象的地址复制一份到该堆内存的空间中</p>
+<p>6.在<strong>栈内存中</strong>开辟一个名为s1的空间，存放<strong>堆内存中</strong>新空间的地址</p>
+<p>总结：只要是new String()，则，栈中的地址都是指向最新new出来的堆中的地址，”&#x3D;&#x3D;”判断的是地址，当然不等的。</p>
+<p>至于equals，String类重写了equals，判断内容是否相同，明显相同，因此equals是相等的。</p>
+<pre><code>//以下方法创建字符串对象，至少创建了一个对象，也可能创建两个对象
+String s3 = new String(&quot;yyy&quot;);
+String s4 = new String(&quot;yyy&quot;);
+System.out.println(s3 == s4);//false
+System.out.println(s3.equals(s4));//true
+</code></pre>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%8C%85%E8%A3%85%E7%B1%BB/" rel="tag"># 基本数据类型与包装类</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/10/30/SpringAOP%E7%94%A8%E6%B3%95/" rel="prev" title="SpringAOP用法">
+                  <i class="fa fa-chevron-left"></i> SpringAOP用法
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jing</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

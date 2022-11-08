@@ -128,18 +128,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">78</span>
+          <span class="site-state-item-count">81</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-count">13</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">92</span>
+        <span class="site-state-item-count">95</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -168,6 +168,290 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/09/01/MySQL%E7%9A%84%E8%81%94%E7%BB%93%EF%BC%88Join%EF%BC%89%E7%AE%97%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="Jing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangHao&博客">
+      <meta itemprop="description" content="Stay hungry,stay foolish">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | WangHao&博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/09/01/MySQL%E7%9A%84%E8%81%94%E7%BB%93%EF%BC%88Join%EF%BC%89%E7%AE%97%E6%B3%95/" class="post-title-link" itemprop="url">MySQL的联结（Join）算法</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-09-01 15:18:54" itemprop="dateCreated datePublished" datetime="2022-09-01T15:18:54+08:00">2022-09-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-09-02 09:47:20" itemprop="dateModified" datetime="2022-09-02T09:47:20+08:00">2022-09-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">MySQL数据库</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="笛卡尔积"><a href="#笛卡尔积" class="headerlink" title="笛卡尔积"></a>笛卡尔积</h3><p>​		所有的广义内连接的核心和共同点是完全基于<strong>笛卡尔积</strong>原理的，两个表进行笛卡尔积运算得到的结果表是由第一个表的每一行与第二个表的每一行拼接后形成的表，称为‘笛卡尔积表’，结果表的行数等于两个表的行数之积。如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * from 表1 [CROSS] JOIN 表2；</span><br></pre></td></tr></table></figure>
+
+<p>这里没有任何限制和条件，这种联结称为<strong>交叉连接</strong>，得到的结果就是两个表的笛卡尔积，所有广义内连接在原理上都是通过在笛卡尔积的基础上进行过滤得到的。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/09/01/MySQL%E7%9A%84%E8%81%94%E7%BB%93%EF%BC%88Join%EF%BC%89%E7%AE%97%E6%B3%95/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/31/MySQL%E4%B8%BB%E5%A4%87%E4%B8%80%E8%87%B4%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="Jing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangHao&博客">
+      <meta itemprop="description" content="Stay hungry,stay foolish">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | WangHao&博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/08/31/MySQL%E4%B8%BB%E5%A4%87%E4%B8%80%E8%87%B4%E5%8E%9F%E7%90%86/" class="post-title-link" itemprop="url">MySQL主备一致原理</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-08-31 16:17:53" itemprop="dateCreated datePublished" datetime="2022-08-31T16:17:53+08:00">2022-08-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-09-02 09:47:04" itemprop="dateModified" datetime="2022-09-02T09:47:04+08:00">2022-09-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">MySQL数据库</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>​		之前介绍的binlog可以用来归档，也可以用来做主备同步。</p>
+<h1 id="MySQL主备的基本原理"><a href="#MySQL主备的基本原理" class="headerlink" title="MySQL主备的基本原理"></a>MySQL主备的基本原理</h1><h2 id="主备切换流程"><a href="#主备切换流程" class="headerlink" title="主备切换流程"></a>主备切换流程</h2><ol>
+<li>原先的状态时客户端的读写都是直接访问A节点，而节点B是A的备库，B被设置为只读（readonly）模式，只是将A的更新都同步过来，到本地执行。这样可以保持节点B和A的数据是相同的。</li>
+<li>当需要切换的时候，将客户端读写访问的都切换成节点B，而节点A是B的备库。</li>
+</ol>
+<h2 id="主备延迟"><a href="#主备延迟" class="headerlink" title="主备延迟"></a>主备延迟</h2><p>​		所谓主备延迟，就是同一个事务，在备库执行完成的时间和主库执行完成的时间之间的差值，可以在备库上执行show slave status命令，它的返回结果里面会显示seconds_behind_master，用于表示当前备库延迟了多少秒。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/08/31/MySQL%E4%B8%BB%E5%A4%87%E4%B8%80%E8%87%B4%E5%8E%9F%E7%90%86/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/30/MySQL%E6%9F%A5%E8%AF%A2%E5%8A%A0%E9%94%81%E8%A7%84%E5%88%99/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="Jing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangHao&博客">
+      <meta itemprop="description" content="Stay hungry,stay foolish">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | WangHao&博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/08/30/MySQL%E6%9F%A5%E8%AF%A2%E5%8A%A0%E9%94%81%E8%A7%84%E5%88%99/" class="post-title-link" itemprop="url">MySQL查询加锁规则</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-08-30 16:14:27" itemprop="dateCreated datePublished" datetime="2022-08-30T16:14:27+08:00">2022-08-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-09-02 09:49:32" itemprop="dateModified" datetime="2022-09-02T09:49:32+08:00">2022-09-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">MySQL数据库</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>​		间隙锁是一种加在两个索引之间的锁，例如(10, 20)；或者加在第一个索引之前，例如(-∞, 10)；或最后一个索引之后的间隙，例如(20, ∞)。这个间隙可以跨一个索引记录，多个索引记录，甚至是空的。另：间隙锁在可重复读隔离级别下才有效，而在别的隔离级别下只有行锁。<strong>在读提交隔离级别下语句执行过程中加上的行锁，在语句执行完成后，就要把“不满足条件的行”上的行锁直接释放了</strong>，不需要等到事务提交。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/08/30/MySQL%E6%9F%A5%E8%AF%A2%E5%8A%A0%E9%94%81%E8%A7%84%E5%88%99/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -801,290 +1085,8 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/19/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="Jing">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="WangHao&博客">
-      <meta itemprop="description" content="Stay hungry,stay foolish">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | WangHao&博客">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/08/19/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95/" class="post-title-link" itemprop="url">MySQL数据库的索引</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2022-08-19 22:49:40" itemprop="dateCreated datePublished" datetime="2022-08-19T22:49:40+08:00">2022-08-19</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-08-21 13:54:55" itemprop="dateModified" datetime="2022-08-21T13:54:55+08:00">2022-08-21</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">MySQL数据库</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="索引的定义"><a href="#索引的定义" class="headerlink" title="索引的定义"></a>索引的定义</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>MySQL官方对索引的定义：索引（Index）是帮助MySQL 高效获取数据的数据结构。可以得到索引的本质是数据结构，可以简单理解为<strong>排好序的快速查找数据结构</strong>。这种数据结构往往空间很大，是存在硬盘里的，又称为磁盘级索引。</p>
-<h2 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h2><p>优势：</p>
-<ul>
-<li>提高数据检索的效率，降低数据库的IO成本。</li>
-<li>通过索引列对数据进行排序，降低数据排序的成本，降低了CPU的消耗。</li>
-</ul>
-<p>劣势：</p>
-<ul>
-<li>虽然索引提高了查询速度，但同时会降低更新表的速度。在更新表时，MySQL不仅要更新数据，也要维护索引，调整因为更新所带来的键值变化后的索引信息（所以说在频繁更新的列上不建议建索引）。</li>
-<li>实际上索引也是一张表，该表保存了主键与索引字段，并指向实体表的记录，所以索引列也是要占用空间的。</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/08/19/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/19/MySQL%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="Jing">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="WangHao&博客">
-      <meta itemprop="description" content="Stay hungry,stay foolish">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | WangHao&博客">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/08/19/MySQL%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/" class="post-title-link" itemprop="url">MySQL事务隔离级别</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2022-08-19 14:00:56 / 修改时间：22:49:45" itemprop="dateCreated datePublished" datetime="2022-08-19T14:00:56+08:00">2022-08-19</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">MySQL数据库</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h1><p>事务就是要保证一组数据库操作，要么全部成功，要么全部失败。在MySQL中，事务支持是在引擎层实现的。</p>
-<p>ACID（Atomicity、Consistency、Isolation、Durability，即原子性、一致性、隔离性、持久性）</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/08/19/MySQL%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/18/MySQL%E7%9A%84%E6%97%A5%E5%BF%97/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="Jing">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="WangHao&博客">
-      <meta itemprop="description" content="Stay hungry,stay foolish">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | WangHao&博客">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/08/18/MySQL%E7%9A%84%E6%97%A5%E5%BF%97/" class="post-title-link" itemprop="url">MySQL的日志</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2022-08-18 21:21:45" itemprop="dateCreated datePublished" datetime="2022-08-18T21:21:45+08:00">2022-08-18</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-08-31 16:18:10" itemprop="dateModified" datetime="2022-08-31T16:18:10+08:00">2022-08-31</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">MySQL数据库</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="redo-log（重做日志）"><a href="#redo-log（重做日志）" class="headerlink" title="redo log（重做日志）"></a>redo log（重做日志）</h1><p>​		在MySQL里，如果每一次的更新操作都需要写进磁盘，然后磁盘也要找到对应的那条记录，然后再更新，整个过程IO成本、查找成本都很高。为了解决这个问题，MySQL的设计者就用了类似酒店掌柜粉板的思路来提升更新效率。redo log是InnoDB引擎特有的日志。</p>
-<p>​		而粉板和账本配合的整个过程，其实就是MySQL里经常说到的WAL技术，WAL的全称是Write-Ahead Logging，它的关键点就是<strong>先写日志，再写磁盘</strong>，也就是先写粉板，等不忙的时候再写账本，这样就可以让<strong>数据库将随机写转换成了顺序写，大大提升了数据库的性能</strong>。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/08/18/MySQL%E7%9A%84%E6%97%A5%E5%BF%97/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 </div>
