@@ -128,7 +128,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">81</span>
+          <span class="site-state-item-count">83</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -139,7 +139,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">95</span>
+        <span class="site-state-item-count">96</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -168,6 +168,185 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/09/11/%E5%B9%B6%E5%8F%91-ReentrantLock%E7%9A%84%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="Jing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangHao&博客">
+      <meta itemprop="description" content="Stay hungry,stay foolish">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | WangHao&博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/09/11/%E5%B9%B6%E5%8F%91-ReentrantLock%E7%9A%84%E5%8E%9F%E7%90%86/" class="post-title-link" itemprop="url">并发-ReentrantLock的原理</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-09-11 16:34:13 / 修改时间：20:30:54" itemprop="dateCreated datePublished" datetime="2022-09-11T16:34:13+08:00">2022-09-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">Java并发编程</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="ReentrantLock-简介"><a href="#ReentrantLock-简介" class="headerlink" title="ReentrantLock 简介"></a>ReentrantLock 简介</h1><p>​		ReentrantLock 又被称为显式锁，它是基于 AQS 原理继承 Lock 接口实现的，简而言之，就是用 Java 实现的锁，而 synchronized 是用 c++ 实现的，所以被称为隐式锁。它们都支持可重入，相对于 synchronized 它还具备如下特点</p>
+<ul>
+<li>可中断（指的是当线程竞争锁失败时，被动避免死等）</li>
+<li>可以设置超时时间（主动避免死等，可以避免死锁）</li>
+<li>可以设置为公平锁</li>
+<li>支持多个条件变量（可理解成多个条件多个WaitSet，可以提高唤醒的准确性）</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/09/11/%E5%B9%B6%E5%8F%91-ReentrantLock%E7%9A%84%E5%8E%9F%E7%90%86/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/09/11/%E5%B9%B6%E5%8F%91-JMM-Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E4%B8%8Ehappen%20before/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="Jing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangHao&博客">
+      <meta itemprop="description" content="Stay hungry,stay foolish">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | WangHao&博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/09/11/%E5%B9%B6%E5%8F%91-JMM-Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E4%B8%8Ehappen%20before/" class="post-title-link" itemprop="url">并发-JMM:Java内存模型与happen-before</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-09-11 12:12:02 / 修改时间：14:58:12" itemprop="dateCreated datePublished" datetime="2022-09-11T12:12:02+08:00">2022-09-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">Java并发编程</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="CPU-缓存模型"><a href="#CPU-缓存模型" class="headerlink" title="CPU 缓存模型"></a>CPU 缓存模型</h1><p>​		CPU Cache 缓存的是内存数据用于解决 CPU 处理速度和内存不匹配的问题，内存缓存的是硬盘数据用于解决硬盘访问速度过慢的问题。现代的 CPU Cache 通常分为三层，分别叫 L1,L2,L3 Cache。</p>
+<p>​		<strong>CPU Cache 的工作方式：</strong> 先复制一份数据到 CPU Cache 中，当 CPU 需要用到的时候就可以直接从 CPU Cache 中读取数据，当运算完成后，再将运算得到的数据写回 Main Memory 中。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/09/11/%E5%B9%B6%E5%8F%91-JMM-Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E4%B8%8Ehappen%20before/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -879,7 +1058,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-10-05 21:55:04" itemprop="dateModified" datetime="2022-10-05T21:55:04+08:00">2022-10-05</time>
+      <time title="修改时间：2022-11-10 19:57:07" itemprop="dateModified" datetime="2022-11-10T19:57:07+08:00">2022-11-10</time>
     </span>
 
   
@@ -902,264 +1081,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2022/09/03/Docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/09/03/Docker%E7%9B%B8%E5%85%B3%E4%BD%BF%E7%94%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="Jing">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="WangHao&博客">
-      <meta itemprop="description" content="Stay hungry,stay foolish">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | WangHao&博客">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/09/03/Docker%E7%9B%B8%E5%85%B3%E4%BD%BF%E7%94%A8/" class="post-title-link" itemprop="url">Docker相关使用</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2022-09-03 16:16:19" itemprop="dateCreated datePublished" datetime="2022-09-03T16:16:19+08:00">2022-09-03</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-09-04 19:46:56" itemprop="dateModified" datetime="2022-09-04T19:46:56+08:00">2022-09-04</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/docker/" itemprop="url" rel="index"><span itemprop="name">docker</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="Docker概述"><a href="#Docker概述" class="headerlink" title="Docker概述"></a>Docker概述</h1><h2 id="Docker简介"><a href="#Docker简介" class="headerlink" title="Docker简介"></a>Docker简介</h2><p>Docker 是一个开源的应用容器引擎，基于 Go 语言 并遵从 Apache2.0 协议开源。</p>
-<p>Docker 可以让开发者打包他们的应用以及依赖包到一个轻量级、可移植的容器中，然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。</p>
-<p>容器是完全使用沙箱机制，相互之间不会有任何接口（类似 iPhone 的 app）,更重要的是容器性能开销极低。</p>
-<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><ol>
-<li>Web 应用的自动化打包和发布。</li>
-<li>自动化测试和持续集成、发布。</li>
-<li>在服务型环境中部署和调整数据库或其他的后台应用。</li>
-<li>从头编译或者扩展现有的 Openshellift 或 Cloud Foundry 平台来搭建自己的 PaaS 环境。</li>
-</ol>
-<h2 id="Docker的基本组成"><a href="#Docker的基本组成" class="headerlink" title="Docker的基本组成"></a>Docker的基本组成</h2><p><strong>镜像（image)</strong></p>
-<p>​		docker镜像就好比是一个<strong>只读</strong>的模板，可以通过这个模板来创建容器服务，tomcat镜像&#x3D;&gt;run &#x3D;&gt;tomcat01容器(提供服务器)，通过这个镜像可以创建多个容器（最终服务运行或者项目运行就是在容器中的)。</p>
-<p><strong>容器（Container）</strong></p>
-<p>Docker 利用容器（Container）独立运行的一个或一组应用，应用程序或服务运行在容器里面，容器就类似于一个虚拟化的运行环境，容器为镜像提供了一个标准的和隔离的运行环境，它可以被启动、开始、停止、删除。每个容器都是相互隔离的、保证安全的平台.</p>
-<p><strong>仓库（Repository）</strong></p>
-<p>仓库（Repository）是集中存放镜像文件的场所。仓库分为公开仓库（Public）和私有仓库（Private）两种形式。Docker公司提供的官方registry被称为Docker Hub，存放各种镜像模板的地方。</p>
-<h1 id="Docker镜像的结构"><a href="#Docker镜像的结构" class="headerlink" title="Docker镜像的结构"></a>Docker镜像的结构</h1><p>​		镜像是采用分层的结构，镜像分层最大的一个好处就是共享资源，方便复制迁移，就是为了复用。比如说有多个镜像都从相同的 base 镜像构建而来，那么 Docker Host 只需在磁盘上保存一份 base 镜像；同时内存中也只需加载一份 base 镜像，就可以为所有容器服务了。而且镜像的每一层都可以被共享。</p>
-<h2 id="UnionFS（联合文件系统）"><a href="#UnionFS（联合文件系统）" class="headerlink" title="UnionFS（联合文件系统）"></a>UnionFS（联合文件系统）</h2><p>​		Union文件系统（UnionFS）是一种分层、轻量级并且高性能的文件系统，它支持对文件系统的修改作为一次提交来一层层的叠加，同时可以将不同目录挂载到同一个虚拟文件系统下(unite several directories into a single virtual filesystem)。Union 文件系统是 Docker 镜像的基础。镜像可以通过分层来进行继承，基于基础镜像（没有父镜像），可以制作各种具体的应用镜像。</p>
-<h2 id="Docker镜像加载原理"><a href="#Docker镜像加载原理" class="headerlink" title="Docker镜像加载原理"></a>Docker镜像加载原理</h2><p>​		docker的镜像实际上由一层一层的文件系统组成，这种层级的文件系统UnionFS。</p>
-<p>​		bootfs(boot file system)主要包含bootloader和kernel, bootloader主要是引导加载kernel, Linux刚启动时会加载bootfs文件系统，在Docker镜像的最底层是引导文件系统bootfs。</p>
-<p>​		rootfs (root file system) ，在bootfs之上。包含的就是典型 Linux 系统中的 &#x2F;dev, &#x2F;proc, &#x2F;bin, &#x2F;etc 等标准目录和文件。rootfs就是各种不同的操作系统发行版</p>
-<p><img src="/2022/09/03/Docker%E7%9B%B8%E5%85%B3%E4%BD%BF%E7%94%A8/Docker%E7%9B%B8%E5%85%B3%E4%BD%BF%E7%94%A8%5C1.png"></p>
-<h2 id="镜像与容器的关系"><a href="#镜像与容器的关系" class="headerlink" title="镜像与容器的关系"></a>镜像与容器的关系</h2><p>​		Docker镜像层都是只读的，容器层是可写的，当容器启动时，一个新的可写层被加载到镜像的顶部。这一层通常被称作“容器层”，“容器层”之下的都叫“镜像层”。所有对容器的改动 - 无论添加、删除、还是修改文件都只会发生在容器层中。只有容器层是可写的，容器层下面的所有镜像层都是只读的。</p>
-<p><strong>容器提交为镜像：</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker commit 提交容器副本使之成为一个新的镜像</span><br><span class="line"></span><br><span class="line">docker commit -m=&quot;提交的描述信息&quot; -a=&quot;作者&quot;容器ID要创建的目标镜像名:[标签名]</span><br></pre></td></tr></table></figure>
-
-<h1 id="Docker容器数据卷"><a href="#Docker容器数据卷" class="headerlink" title="Docker容器数据卷"></a>Docker容器数据卷</h1><p>​		卷就是目录或文件，存在于一个或多个容器中，由docker挂载到容器，但不属于联合文件系统，因此能够绕过Union File System提供一些用于持续存储或共享数据的特性：</p>
-<p>​		卷的设计目的就是数据的持久化，完全独立于容器的生存周期，<strong>因此Docker不会在容器删除时删除其挂载的数据卷</strong></p>
-<p>​		使用数据卷的优点：</p>
-<ol>
-<li>数据卷可在容器之间共享或重用数据</li>
-<li>卷中的更改可以直接实时生效。</li>
-<li>数据卷中的更改不会包含在镜像的更新中</li>
-<li>数据卷的生命周期一直持续到没有容器使用它为止</li>
-</ol>
-<p>​		如在启动redis容器时指定数据卷，那么生成的redis容器的配置就是安装映射的数据卷的配置来的，并且数据是保存在，宿主机定义的数据卷地址上。这样即使删掉这个容器，数据仍然存在。</p>
-<p><strong>运行一个带有容器卷存储功能的容器实例</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it --privileged=true -v /宿主机绝对路径目录:/容器内目录﹐镜像名</span><br></pre></td></tr></table></figure>
-
-<h1 id="DockerFile"><a href="#DockerFile" class="headerlink" title="DockerFile"></a>DockerFile</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><ol>
-<li><p>Dockerfile，需要定义一个Dockerfile，Dockerfile定义了进程需要的一切东西。Dockerfile涉及的内容包括执行代码或者是文件、环境变量、依赖包、运行时环境、动态链接库、操作系统的发行版、服务进程和内核进程(当应用进程需要和系统服务和内核进程打交道，这时需要考虑如何设计namespace的权限控制)等等;</p>
-</li>
-<li><p>Docker镜像，在用Dockerfile定义一个文件之后，docker build时会产生一个Docker镜像，当运行 Docker镜像时会真正开始提供服务;</p>
-</li>
-<li><p>Docker容器，容器是直接提供服务的。</p>
-</li>
-</ol>
-<p>		</p>
-<p>Dockerfile是用来构建Docker镜像的文本文件，是由一条条构建镜像所需的指令和参数构成的脚本。</p>
-<p>​		我的理解就是，上面讲过镜像是一层一层构成的，在启动容器之前，根据需求定制镜像，这个DockerFile就是需求描述，使用docker build命令来构建镜像，之后在run的容器就是我们定制后需要的容器。</p>
-<h2 id="常用指令"><a href="#常用指令" class="headerlink" title="常用指令"></a><strong>常用指令</strong></h2><p><img src="/2022/09/03/Docker%E7%9B%B8%E5%85%B3%E4%BD%BF%E7%94%A8/Docker%E7%9B%B8%E5%85%B3%E4%BD%BF%E7%94%A8%5C2.png"></p>
-<h2 id="项目发布到Docker步骤"><a href="#项目发布到Docker步骤" class="headerlink" title="项目发布到Docker步骤"></a>项目发布到<strong>Docker</strong>步骤</h2><ol>
-<li>使用Maven中Clean  Complie  Package将项目打包成jar包</li>
-<li>将编写的DockerFile和jar包上川岛宿主机的同一个目录下</li>
-<li>构建镜像 docker build -t 名字:版本</li>
-<li>启动镜像docker run -d -p 8080:8080 镜像名字：版本</li>
-</ol>
-<h2 id="Docker执行Dockerfile的大致流程"><a href="#Docker执行Dockerfile的大致流程" class="headerlink" title="Docker执行Dockerfile的大致流程"></a>Docker执行Dockerfile的大致流程</h2><p>DockerFile中每条指令都会创建—个新的镜像层并对镜像进行提交，</p>
-<ol>
-<li>docker从基础镜像运行一个容器</li>
-<li>执行一条指令并对容器作出修改</li>
-<li>执行类似docker commit的操作提交一个新的镜像层</li>
-<li>docker再基于刚提交的镜像运行一个新容器</li>
-<li>执行dockerfile中的下—条指令直到所有指令都执行完成</li>
-</ol>
-<h1 id="Mysql安装"><a href="#Mysql安装" class="headerlink" title="Mysql安装"></a>Mysql安装</h1><ol>
-<li><strong>新建mysql容器实例</strong>:</li>
-</ol>
-<p>​		这里制指定了具体的数据卷，指定了数据持久化的地址。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p 3306:3306 --privileged=true -v /wanghao/mysql/log:/var/log/mysql -v /wanghao/mysql/data:/var/lib/mysql -v /wanghao/mysql/conf:/etc/mysql/conf.d -e MYSQL_ROOT_PASSWORD=123456 --name mysql mysql:5.7</span><br></pre></td></tr></table></figure>
-
-<p>​		mysq相关文件放置在&#x2F;wanghao下</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/09/03/Docker%E7%9B%B8%E5%85%B3%E4%BD%BF%E7%94%A8/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/09/01/MySQL%E4%B8%AD%E7%9A%84%E5%88%86%E5%8C%BA%E8%A1%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="Jing">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="WangHao&博客">
-      <meta itemprop="description" content="Stay hungry,stay foolish">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | WangHao&博客">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/09/01/MySQL%E4%B8%AD%E7%9A%84%E5%88%86%E5%8C%BA%E8%A1%A8/" class="post-title-link" itemprop="url">MySQL中的分区表</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2022-09-01 21:56:55" itemprop="dateCreated datePublished" datetime="2022-09-01T21:56:55+08:00">2022-09-01</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-09-02 09:46:38" itemprop="dateModified" datetime="2022-09-02T09:46:38+08:00">2022-09-02</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">MySQL数据库</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="分区概述"><a href="#分区概述" class="headerlink" title="分区概述"></a>分区概述</h2><ul>
-<li>分区是一种表的设计模式。分区功能并不是在存储引擎层完成的，因此不只有InnoDB存储引擎支持分区。</li>
-<li>分区的过程是将一个表或索引分解为多个更小、更可管理的部分。就访问数据库的应用而言，从逻辑上讲，只有一个表或一个索引，但是在物理上这个表或索引可能由数十个物理分区组成。每个分区都是独立的对象，可以独自处理，也可以作为一个更大对象的一部分进行处理。</li>
-<li>MySQL数据库支持的分区类型为水平分区（分行），并不支持垂直分区（分列）。此外，MySQL数据库的分区是局部分区索引，一个分区中既存放数据又存放索引。全局分区是指，数据存放各个分区中，但是所有数据的索引放在一个对象中。目前，MySQL数据库暂时不支持全局分区。</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/09/01/MySQL%E4%B8%AD%E7%9A%84%E5%88%86%E5%8C%BA%E8%A1%A8/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
