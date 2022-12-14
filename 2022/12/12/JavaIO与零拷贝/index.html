@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="零拷贝零拷贝定义：​		零拷贝是指计算机执行IO操作时，CPU不需要将数据从一个存储区域复制到另一个存储区域，从而可以减少上下文切换以及CPU的拷贝时间。它是一种I&#x2F;O操作优化技术。 虚拟内存与物理内存​		操作系统为每个进程分配了独立的虚拟地址空间，也就是虚拟内存，虚拟地址空间又分为用户空间和内核空间，操作系统的位数不同，虚拟地址空间的大小也不同，32位操作系统虚拟地址内核空间为1G(2的32次">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaIO与零拷贝">
+<meta property="og:url" content="http://example.com/2022/12/12/JavaIO%E4%B8%8E%E9%9B%B6%E6%8B%B7%E8%B4%9D/index.html">
+<meta property="og:site_name" content="WangHao&amp;博客">
+<meta property="og:description" content="零拷贝零拷贝定义：​		零拷贝是指计算机执行IO操作时，CPU不需要将数据从一个存储区域复制到另一个存储区域，从而可以减少上下文切换以及CPU的拷贝时间。它是一种I&#x2F;O操作优化技术。 虚拟内存与物理内存​		操作系统为每个进程分配了独立的虚拟地址空间，也就是虚拟内存，虚拟地址空间又分为用户空间和内核空间，操作系统的位数不同，虚拟地址空间的大小也不同，32位操作系统虚拟地址内核空间为1G(2的32次">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2022/12/12/JavaIO%E4%B8%8E%E9%9B%B6%E6%8B%B7%E8%B4%9D/blog/source_posts/JavaIO与零拷贝/1.jpg">
+<meta property="og:image" content="http://example.com/2022/12/12/JavaIO%E4%B8%8E%E9%9B%B6%E6%8B%B7%E8%B4%9D/blog/source_posts/JavaIO与零拷贝/2.jpg">
+<meta property="og:image" content="http://example.com/2022/12/12/JavaIO%E4%B8%8E%E9%9B%B6%E6%8B%B7%E8%B4%9D/blog/source_posts/JavaIO与零拷贝/3.jpg">
+<meta property="og:image" content="http://example.com/2022/12/12/JavaIO%E4%B8%8E%E9%9B%B6%E6%8B%B7%E8%B4%9D/blog/source_posts/JavaIO与零拷贝/4.jpg">
+<meta property="og:image" content="http://example.com/2022/12/12/JavaIO%E4%B8%8E%E9%9B%B6%E6%8B%B7%E8%B4%9D/blog/source_posts/JavaIO与零拷贝/5.jpg">
+<meta property="og:image" content="http://example.com/2022/12/12/JavaIO%E4%B8%8E%E9%9B%B6%E6%8B%B7%E8%B4%9D/blog/source_posts/JavaIO与零拷贝/6.jpg">
+<meta property="og:image" content="http://example.com/2022/12/12/JavaIO%E4%B8%8E%E9%9B%B6%E6%8B%B7%E8%B4%9D/blog/source_posts/JavaIO与零拷贝/7.jpg">
+<meta property="og:image" content="http://example.com/2022/12/12/JavaIO%E4%B8%8E%E9%9B%B6%E6%8B%B7%E8%B4%9D/blog/source_posts/JavaIO与零拷贝/8.jpg">
+<meta property="article:published_time" content="2022-12-12T15:11:34.000Z">
+<meta property="article:modified_time" content="2022-12-14T12:44:58.328Z">
+<meta property="article:author" content="Jing">
+<meta property="article:tag" content="JavaIO与零拷贝">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2022/12/12/JavaIO%E4%B8%8E%E9%9B%B6%E6%8B%B7%E8%B4%9D/blog/source_posts/JavaIO与零拷贝/1.jpg">
+
+
+<link rel="canonical" href="http://example.com/2022/12/12/JavaIO%E4%B8%8E%E9%9B%B6%E6%8B%B7%E8%B4%9D/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2022/12/12/JavaIO%E4%B8%8E%E9%9B%B6%E6%8B%B7%E8%B4%9D/","path":"2022/12/12/JavaIO与零拷贝/","title":"JavaIO与零拷贝"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>JavaIO与零拷贝 | WangHao&博客</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">WangHao&博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Welcome to the home of WangHao</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9B%B6%E6%8B%B7%E8%B4%9D"><span class="nav-number">1.</span> <span class="nav-text">零拷贝</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9B%B6%E6%8B%B7%E8%B4%9D%E5%AE%9A%E4%B9%89%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">零拷贝定义：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98%E4%B8%8E%E7%89%A9%E7%90%86%E5%86%85%E5%AD%98"><span class="nav-number">1.2.</span> <span class="nav-text">虚拟内存与物理内存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E6%A0%B8%E7%A9%BA%E9%97%B4%E4%B8%8E%E7%94%A8%E6%88%B7%E7%A9%BA%E9%97%B4"><span class="nav-number">1.3.</span> <span class="nav-text">内核空间与用户空间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2"><span class="nav-number">1.4.</span> <span class="nav-text">上下文切换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%99%AE%E9%80%9A%E7%9A%84%E6%96%87%E4%BB%B6%E7%BC%93%E5%AD%98I-x2F-O"><span class="nav-number">1.5.</span> <span class="nav-text">普通的文件缓存I&#x2F;O</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JVM%E7%9A%84%E5%A0%86%E5%86%85%E5%86%85%E5%AD%98%E4%B8%8E%E5%A0%86%E5%A4%96%E5%86%85%E5%AD%98"><span class="nav-number">1.6.</span> <span class="nav-text">JVM的堆内内存与堆外内存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E6%98%A0%E5%B0%84%E5%8E%9F%E7%90%86%EF%BC%88mmap%EF%BC%89"><span class="nav-number">1.7.</span> <span class="nav-text">内存映射原理（mmap）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%A0%E7%BB%9F%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%96%87%E4%BB%B6%E4%B8%8B%E8%BD%BDIO%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="nav-number">1.8.</span> <span class="nav-text">传统服务端文件下载IO执行流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9B%B6%E6%8B%B7%E8%B4%9D%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="nav-number">1.9.</span> <span class="nav-text">零拷贝实现方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mmap%E5%AE%9E%E7%8E%B0%E7%9A%84%E9%9B%B6%E6%8B%B7%E8%B4%9D"><span class="nav-number">1.9.1.</span> <span class="nav-text">mmap实现的零拷贝</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sendfile%E5%AE%9E%E7%8E%B0%E7%9A%84%E9%9B%B6%E6%8B%B7%E8%B4%9D"><span class="nav-number">1.9.2.</span> <span class="nav-text">sendfile实现的零拷贝</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sendfile-gather%E5%AE%9E%E7%8E%B0%E7%9A%84%E9%9B%B6%E6%8B%B7%E8%B4%9D"><span class="nav-number">1.9.3.</span> <span class="nav-text">sendfile+gather实现的零拷贝</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#java%E6%8F%90%E4%BE%9B%E7%9A%84%E9%9B%B6%E6%8B%B7%E8%B4%9D%E6%96%B9%E5%BC%8F"><span class="nav-number">1.10.</span> <span class="nav-text">java提供的零拷贝方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Java-NIO%E5%AF%B9mmap%E7%9A%84%E6%94%AF%E6%8C%81"><span class="nav-number">1.10.1.</span> <span class="nav-text">Java NIO对mmap的支持</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java-NIO%E5%AF%B9sendfile%E7%9A%84%E6%94%AF%E6%8C%81%EF%BC%88%E7%9C%9F%E6%AD%A3%E7%9A%84%E9%9B%B6%E6%8B%B7%E8%B4%9D%EF%BC%89"><span class="nav-number">1.10.2.</span> <span class="nav-text">Java NIO对sendfile的支持（真正的零拷贝）</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Jing"
+      src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">Jing</p>
+  <div class="site-description" itemprop="description">Stay hungry,stay foolish</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">85</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">98</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/12/12/JavaIO%E4%B8%8E%E9%9B%B6%E6%8B%B7%E8%B4%9D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="Jing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangHao&博客">
+      <meta itemprop="description" content="Stay hungry,stay foolish">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="JavaIO与零拷贝 | WangHao&博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JavaIO与零拷贝
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-12-12 23:11:34" itemprop="dateCreated datePublished" datetime="2022-12-12T23:11:34+08:00">2022-12-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-12-14 20:44:58" itemprop="dateModified" datetime="2022-12-14T20:44:58+08:00">2022-12-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="零拷贝"><a href="#零拷贝" class="headerlink" title="零拷贝"></a>零拷贝</h1><h2 id="零拷贝定义："><a href="#零拷贝定义：" class="headerlink" title="零拷贝定义："></a>零拷贝定义：</h2><p>​		零拷贝是指计算机执行IO操作时，CPU不需要将数据从一个存储区域复制到另一个存储区域，从而可以减少上下文切换以及CPU的拷贝时间。它是一种<code>I/O</code>操作优化技术。</p>
+<h2 id="虚拟内存与物理内存"><a href="#虚拟内存与物理内存" class="headerlink" title="虚拟内存与物理内存"></a>虚拟内存与物理内存</h2><p>​		操作系统为每个进程分配了独立的虚拟地址空间，也就是虚拟内存，<strong>虚拟地址空间又分为用户空间和内核空间</strong>，操作系统的位数不同，虚拟地址空间的大小也不同，32位操作系统虚拟地址内核空间为1G(2的32次方)，用户空间大小为3G，64位操作系统用户空间和内核空间大小各为128T：</p>
+<span id="more"></span>
+
+<ul>
+<li>虚拟内存空间可以远远大于物理内存空间</li>
+<li>多个虚拟内存可以指向同一个物理地址</li>
+</ul>
+<p>正是多个虚拟内存可以指向同一个物理地址，可以把内核空间和用户空间的虚拟地址映射到同一个物理地址，这样的话，就可以减少IO的数据拷贝次数啦，如mmap内存映射方式</p>
+<h2 id="内核空间与用户空间"><a href="#内核空间与用户空间" class="headerlink" title="内核空间与用户空间"></a>内核空间与用户空间</h2><p><strong>用户空间：</strong>是运行用户程序代码的地方，为了保证系统内核的安全，它不能直接访问内存等硬件设备，必须通过系统调用进入到内核空间来访问那些受限的资源。</p>
+<p><strong>内核空间：</strong>是运行内核代码的地方，可以执行任意的指令访问系统资源，既可以访问内核空间也可以访问用户空间。</p>
+<h2 id="上下文切换"><a href="#上下文切换" class="headerlink" title="上下文切换"></a>上下文切换</h2><p><strong>上下文</strong> CPU 寄存器，是CPU内置的，容量小、但速度极快的内存。而程序计数器，则是用来存储 CPU 正在执行的指令位置、或者即将执行的下一条指令位置。它们都是 CPU 在运行任何任务前，必须的依赖环境，因此叫做CPU上下文。</p>
+<p><strong>上下文切换</strong> 先把前一个任务的CPU上下文（也就是CPU寄存器和程序计数器）保存起来，然后加载新任务的上下文到这些寄存器和程序计数器，最后再跳转到程序计数器所指的新位置，运行新任务。一般我们说的上下文切换，就是指内核（操作系统的核心）在CPU上对进程或者线程进行切换。进程从<strong>用户态到内核态的转变</strong>，需要通过系统调用来完成。系统调用的过程，会发生CPU上下文的切换。</p>
+<h2 id="普通的文件缓存I-x2F-O"><a href="#普通的文件缓存I-x2F-O" class="headerlink" title="普通的文件缓存I&#x2F;O"></a>普通的文件缓存I&#x2F;O</h2><p>​		因为磁盘I&#x2F;O是比较耗时的操作,每次读文件的时候不能总是去磁盘中读，可以增加一层内核空间内存Page Cache，用于缓存读取的文件数据，用户空间进行系统调用读取文件内容时，首先会判断Page Cache中是否缓存了文件的内容，如果缓存了直接读取即可，否则再从磁盘读取。</p>
+<p>读取过程如下：</p>
+<ol>
+<li>应用程序调用read函数发起系统调用，此时由用户空间切换到内核空间;</li>
+<li>内核通过DMA从磁盘拷贝数据到内核缓冲区（DMA复制，CPU耗时很少）;</li>
+<li>将内核缓冲区的数据拷贝到用户空间的缓冲区（CPU复制），切换回用户空间;</li>
+</ol>
+<p><img src="/2022/12/12/JavaIO%E4%B8%8E%E9%9B%B6%E6%8B%B7%E8%B4%9D/blog\source_posts\JavaIO与零拷贝\1.jpg"></p>
+<h2 id="JVM的堆内内存与堆外内存"><a href="#JVM的堆内内存与堆外内存" class="headerlink" title="JVM的堆内内存与堆外内存"></a>JVM的堆内内存与堆外内存</h2><p>​		在JAVA中，JVM划分了堆内存，平时创建的对象基本都在堆中，不过也可以通过NIO包下的<code>ByteBuffer</code>申请堆外内存<code>DirectByteBuffer</code>:也就是在堆内放了块</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ByteBuffer.allocateDirect(size);</span><br></pre></td></tr></table></figure>
+
+<p>​		无论是普通IO或者是NIO，在进行文件读写的时候一般都会创建一个buffer作为数据的缓冲区，读写相关方法底层是通过调用native函数（JNI调用）来实现的，在进行读写时将buffer传递给JNI。<br>​		 JNI一般使用C&#x2F;C++代码实现，JNI底层调用C函数库时，要求buffer所在内存地址上的内容不能失效，但是<strong>JVM在进行垃圾回收的时候有可能对对象进行移动</strong>，导致地址发生变化，所以通过NIO进行文件读取的时候，从源码中可以明显看到对buffer的对象类型进行了判断，如果buffer是<code>DirectByteBuffer</code>类型，使用的是堆外内存，直接使用即可，反之则认为使用的是堆内内存，此时需要先申请一块堆外内存作为堆外内存buffer，然后进行系统调用，进行数据读取，读取完毕后将堆外内存buffer的内容再拷回JVM堆内内存buffer中。</p>
+<p><img src="/2022/12/12/JavaIO%E4%B8%8E%E9%9B%B6%E6%8B%B7%E8%B4%9D/blog\source_posts\JavaIO与零拷贝\2.jpg"></p>
+<p>详细过程：</p>
+<ol>
+<li>发起JNI调用，创建堆外缓冲区；</li>
+<li>JNI中发起read系统调用，此时需要由用户空间切换到内核空间；</li>
+<li>进入到内核空间，DMA读取文件数据到内核缓冲区；</li>
+<li>将内核缓冲区的数据拷贝到用户缓冲区，切换回用户空间；</li>
+<li>将堆外缓冲区的数据拷贝到JVM堆内缓冲区中；</li>
+</ol>
+<p>实际中发生了三次拷贝。其中DMA一次，CPU两次</p>
+<h2 id="内存映射原理（mmap）"><a href="#内存映射原理（mmap）" class="headerlink" title="内存映射原理（mmap）"></a>内存映射原理（mmap）</h2><p>​		内存映射就是将<strong>内核空间和用户空间的虚拟地址</strong>映射到物理空间地址，每个进程维护了一张页表，记录<strong>虚拟地址和物理地址之间的映射关系</strong>，当进程访问的虚拟地址在页表中无法查到映射关系时，系统产生缺页异常，<strong>进入内核空间为虚拟地址分配物理内存</strong>，并更新页表，记录映射关系。</p>
+<p><img src="/2022/12/12/JavaIO%E4%B8%8E%E9%9B%B6%E6%8B%B7%E8%B4%9D/blog\source_posts\JavaIO与零拷贝\3.jpg"></p>
+<ol>
+<li>进行mmap系统调用，将文件和虚拟地址空间建立映射，注意此时还没有分配物理内存空间，只是在逻辑上建立了虚拟地址和文件之间的映射关系，物理内存只有真正使用的时候才会分配。</li>
+<li>应用程序访问用户空间虚拟内存中的某个地址，发现无法在页表中查到数据，产生缺页异常，此时进入内核空间</li>
+<li><strong>因为不能直接使用物理地址，所以需要使用内核的虚拟地址临时建立与物理内存的映射关系，将文件内容读取到物理内存中，待数据读取完毕之后取消临时映射即可。</strong></li>
+<li>缺页异常处理完毕，物理内存中已经加载了文件的数据，此时用户空间就可以通过虚拟地址直接访问物理内存中映射的文件数据。</li>
+</ol>
+<p>从内存映射整个过程看，与缓存I&#x2F;O相比，少了从内核缓冲区将数据拷贝到用户缓冲区的步骤，减少了一次拷贝。</p>
+<h2 id="传统服务端文件下载IO执行流程"><a href="#传统服务端文件下载IO执行流程" class="headerlink" title="传统服务端文件下载IO执行流程"></a>传统服务端文件下载IO执行流程</h2><p>接收前端请求将服务daunt主机磁盘中的文件从已连接的socket发出去，实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>((n = read(diskfd, buf, BUF_SIZE)) &amp;gt; <span class="number">0</span>)</span><br><span class="line">    write(sockfd, buf , n);</span><br></pre></td></tr></table></figure>
+
+<p>传统的IO流程，包括read和write的过程。</p>
+<ul>
+<li><code>read</code>：把数据从磁盘读取到内核缓冲区，再拷贝到用户缓冲区</li>
+<li><code>write</code>：先把数据写入到socket缓冲区，最后写入网卡设备。</li>
+</ul>
+<p><img src="/2022/12/12/JavaIO%E4%B8%8E%E9%9B%B6%E6%8B%B7%E8%B4%9D/blog\source_posts\JavaIO与零拷贝\4.jpg"></p>
+<p>j具体实现流程：</p>
+<ul>
+<li>用户应用进程调用read函数，向操作系统发起IO调用， 上下文从用户态转为内核态（切换1）</li>
+<li>DMA控制器把数据从磁盘中，读取到内核缓冲区。</li>
+<li>CPU把内核缓冲区数据，拷贝到用户应用缓冲区， 上下文从内核态转为用户态（切换2），read函数返回</li>
+<li>用户应用进程通过write函数，发起IO调用， 上下文从用户态转为内核态（切换3）</li>
+<li>CPU将用户缓冲区中的数据，拷贝到socket缓冲区</li>
+<li>DMA控制器把数据从socket缓冲区，拷贝到网卡设备， 上下文从内核态切换回用户态（切换4），write函数返回</li>
+</ul>
+<p>从流程图可以看出，传统IO的读写流程，包括了4次上下文切换（4次用户态和内核态的切换），4次数据拷贝（两次CPU拷贝以及两次的DMA拷贝)，</p>
+<h2 id="零拷贝实现方式"><a href="#零拷贝实现方式" class="headerlink" title="零拷贝实现方式"></a>零拷贝实现方式</h2><p>首先零拷贝并不是没有拷贝数据，而是减少用户态&#x2F;内核态的切换次数以及CPU拷贝的次数。零拷贝实现有多种方式，分别是</p>
+<ul>
+<li>mmap</li>
+<li>sendfile</li>
+<li>带有DMA收集拷贝功能的sendfile</li>
+</ul>
+<h3 id="mmap实现的零拷贝"><a href="#mmap实现的零拷贝" class="headerlink" title="mmap实现的零拷贝"></a>mmap实现的零拷贝</h3><p>​	mmap实现零拷贝是基于虚拟内存原理，即把内核空间和用户空间的虚拟地址映射到同一个物理地址，节省一次将内核缓存区数据拷贝到用户空间。</p>
+<p><img src="/2022/12/12/JavaIO%E4%B8%8E%E9%9B%B6%E6%8B%B7%E8%B4%9D/blog\source_posts\JavaIO与零拷贝\5.jpg"></p>
+<ul>
+<li>用户进程通过 <code>mmap方法</code>向操作系统内核发起IO调用， 上下文从用户态切换为内核态。</li>
+<li>CPU利用DMA控制器，把数据从硬盘中拷贝到内核缓冲区，这里用户空间就可以访问到数据。</li>
+<li>上下文从内核态切换回用户态，mmap方法返回。</li>
+<li>用户进程通过 <code>write</code>方法向操作系统内核发起IO调用， 上下文从用户态切换为内核态。</li>
+<li>CPU将内核缓冲区的数据拷贝到的socket缓冲区。</li>
+<li>CPU利用DMA控制器，把数据从socket缓冲区拷贝到网卡， 上下文从内核态切换回用户态，write调用返回。</li>
+</ul>
+<p>可以发现，<code>mmap</code>实现的零拷贝，I&#x2F;O发生了4次用户空间与内核空间的上下文切换，以及3次数据拷贝。其中3次数据拷贝中，包括了2次DMA拷贝和1次CPU拷贝。</p>
+<p><code>mmap</code>是将读缓冲区的地址和用户缓冲区的地址进行映射，内核缓冲区和应用缓冲区共享，所以节省了一次CPU拷贝‘’并且用户进程内存是虚拟的，只是映射到内核的读缓冲区，可以<strong>节省一半的内存空间</strong>。</p>
+<h3 id="sendfile实现的零拷贝"><a href="#sendfile实现的零拷贝" class="headerlink" title="sendfile实现的零拷贝"></a>sendfile实现的零拷贝</h3><p><code>sendfile</code>是Linux2.1内核版本后引入的一个系统调用函数，API如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssize_t sendfile(int out_fd, int in_fd, off_t *offset, size_t count);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>out_fd:为待写入内容的文件描述符（文件描述符就是内核为了高效管理已被打开的文件所创建的索引，用来指向被打开的文件），一个socket描述符。，</li>
+<li>in_fd:为待读出内容的文件描述符，必须是真实的文件，不能是socket和管道。</li>
+<li>offset：指定从读入文件的哪个位置开始读，如果为NULL，表示文件的默认起始位置。</li>
+<li>count：指定在fdout和fdin之间传输的字节数。</li>
+</ul>
+<p>​	sendfile表示在两个文件描述符之间传输数据，它是在操作系统内核中操作的，<strong>避免了数据从内核缓冲区和用户缓冲区之间的拷贝操作</strong>，因此可以使用它来实现零拷贝。</p>
+<p><img src="/2022/12/12/JavaIO%E4%B8%8E%E9%9B%B6%E6%8B%B7%E8%B4%9D/blog\source_posts\JavaIO与零拷贝\6.jpg"></p>
+<h3 id="sendfile-gather实现的零拷贝"><a href="#sendfile-gather实现的零拷贝" class="headerlink" title="sendfile+gather实现的零拷贝"></a>sendfile+gather实现的零拷贝</h3><p>linux 2.4版本之后，对<code>sendfile</code>做了优化升级，引入SG-DMA技术，其实就是对DMA拷贝加入了<code>scatter/gather</code>操作，它可以直接从内核空间缓冲区中将数据读取到网卡。使用这个特点，即还可以多省去一次CPU拷贝。</p>
+<p><img src="/2022/12/12/JavaIO%E4%B8%8E%E9%9B%B6%E6%8B%B7%E8%B4%9D/blog\source_posts\JavaIO与零拷贝\7.jpg"></p>
+<p>详细流程：</p>
+<ul>
+<li>用户进程发起sendfile系统调用， 上下文（切换1）从用户态转向内核态</li>
+<li>DMA控制器，把数据从硬盘中拷贝到内核缓冲区。</li>
+<li>CPU把内核缓冲区中的 文件描述符信息（包括内核缓冲区的内存地址和偏移量）发送到socket缓冲区</li>
+<li>DMA控制器根据文件描述符信息，直接把数据从内核缓冲区拷贝到网卡</li>
+<li>上下文（切换2）从内核态切换回用户态，sendfile调用返回。</li>
+</ul>
+<p>可以发现，<code>sendfile+DMA scatter/gather</code>实现的零拷贝，I&#x2F;O发生了2次用户空间与内核空间的上下文切换，以及2次数据拷贝。其中2次数据拷贝都是包DMA拷贝。这<strong>就是真正的 零拷贝（Zero-copy) 技术，全程都没有通过CPU来搬运数据，所有的数据都是通过DMA来进行传输的</strong>。</p>
+<h2 id="java提供的零拷贝方式"><a href="#java提供的零拷贝方式" class="headerlink" title="java提供的零拷贝方式"></a>java提供的零拷贝方式</h2><ul>
+<li>Java NIO对mmap的支持</li>
+<li>Java NIO对sendfile的支持</li>
+</ul>
+<h3 id="Java-NIO对mmap的支持"><a href="#Java-NIO对mmap的支持" class="headerlink" title="Java NIO对mmap的支持"></a>Java NIO对mmap的支持</h3><p><strong>MappedByteBuffer</strong>：Java NIO有一个<code>MappedByteBuffer</code>的类，可以用来实现内存映射。它的底层是调用了Linux内核的mmap的API。</p>
+<p>使用<code>MappedByteBuffer</code>向网络中发送数据的过程如下：</p>
+<ol>
+<li>使用MappedByteBuffer建立文件映射，用户空间可以通过虚拟地址直接访问映射的文件数据；</li>
+<li>将映射的文件数据拷贝到socket网络缓冲区（CPU复制）；</li>
+<li>DMA将socket缓冲区的数据拷贝到网卡（DMA复制）；</li>
+</ol>
+<p><img src="/2022/12/12/JavaIO%E4%B8%8E%E9%9B%B6%E6%8B%B7%E8%B4%9D/blog\source_posts\JavaIO与零拷贝\8.jpg"></p>
+<p><strong>举例</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MmapTest</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">FileChannel</span> <span class="variable">readChannel</span> <span class="operator">=</span> FileChannel.open(Paths.get(<span class="string">&quot;./jay.txt&quot;</span>), StandardOpenOption.READ);</span><br><span class="line">            <span class="type">MappedByteBuffer</span> <span class="variable">data</span> <span class="operator">=</span> readChannel.map(FileChannel.MapMode.READ_ONLY, <span class="number">0</span>, <span class="number">1024</span> * <span class="number">1024</span> * <span class="number">40</span>);</span><br><span class="line">            <span class="type">FileChannel</span> <span class="variable">writeChannel</span> <span class="operator">=</span> FileChannel.open(Paths.get(<span class="string">&quot;./siting.txt&quot;</span>), StandardOpenOption.WRITE, StandardOpenOption.CREATE);</span><br><span class="line">            <span class="comment">//数据传输</span></span><br><span class="line">            writeChannel.write(data);</span><br><span class="line">            readChannel.close();</span><br><span class="line">            writeChannel.close();</span><br><span class="line">        &#125;<span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">            System.out.println(e.getMessage());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Java-NIO对sendfile的支持（真正的零拷贝）"><a href="#Java-NIO对sendfile的支持（真正的零拷贝）" class="headerlink" title="Java NIO对sendfile的支持（真正的零拷贝）"></a>Java NIO对sendfile的支持（真正的零拷贝）</h3><p>FileChannel的<code>transferTo()/transferFrom()</code>，底层就是sendfile() 系统调用函数。<strong>Kafka 这个开源项目就用到它</strong>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="type">long</span> <span class="title function_">transferFrom</span><span class="params">(FileChannel fileChannel, <span class="type">long</span> position, <span class="type">long</span> count)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">   <span class="keyword">return</span> fileChannel.transferTo(position, count, socketChannel);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>举例如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SendFileTest</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">FileChannel</span> <span class="variable">readChannel</span> <span class="operator">=</span> FileChannel.open(Paths.get(<span class="string">&quot;./jay.txt&quot;</span>), StandardOpenOption.READ);</span><br><span class="line">            <span class="type">long</span> <span class="variable">len</span> <span class="operator">=</span> readChannel.size();</span><br><span class="line">            <span class="type">long</span> <span class="variable">position</span> <span class="operator">=</span> readChannel.position();</span><br><span class="line">            </span><br><span class="line">            <span class="type">FileChannel</span> <span class="variable">writeChannel</span> <span class="operator">=</span> FileChannel.open(Paths.get(<span class="string">&quot;./siting.txt&quot;</span>), StandardOpenOption.WRITE, StandardOpenOption.CREATE);</span><br><span class="line">            <span class="comment">//sendfile方式的数据传输 真正的零拷贝，即不需要CPU进行数据的复制</span></span><br><span class="line">            readChannel.transferTo(position, len, writeChannel);</span><br><span class="line">            readChannel.close();</span><br><span class="line">            writeChannel.close();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            System.out.println(e.getMessage());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JavaIO%E4%B8%8E%E9%9B%B6%E6%8B%B7%E8%B4%9D/" rel="tag"># JavaIO与零拷贝</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/11/20/JavaIO%E8%AF%A6%E8%A7%A3/" rel="prev" title="JavaIO详解">
+                  <i class="fa fa-chevron-left"></i> JavaIO详解
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jing</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
