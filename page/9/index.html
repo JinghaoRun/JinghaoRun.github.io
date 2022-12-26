@@ -128,7 +128,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">89</span>
+          <span class="site-state-item-count">90</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -139,7 +139,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">102</span>
+        <span class="site-state-item-count">104</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -168,6 +168,99 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/06/02/%E5%B9%B6%E5%8F%91-%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B%E7%9A%84%E5%B8%B8%E8%A7%81%E6%96%B9%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="Jing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangHao&博客">
+      <meta itemprop="description" content="Stay hungry,stay foolish">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | WangHao&博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/06/02/%E5%B9%B6%E5%8F%91-%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B%E7%9A%84%E5%B8%B8%E8%A7%81%E6%96%B9%E5%BC%8F/" class="post-title-link" itemprop="url">创建线程的常见方式</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-06-02 22:53:18" itemprop="dateCreated datePublished" datetime="2022-06-02T22:53:18+08:00">2022-06-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-12-17 17:28:02" itemprop="dateModified" datetime="2022-12-17T17:28:02+08:00">2022-12-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">Java并发编程</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="方式一：新建class继承Thread类"><a href="#方式一：新建class继承Thread类" class="headerlink" title="方式一：新建class继承Thread类"></a>方式一：新建class继承Thread类</h1><p>​	新建class继承Thread类，并重写run()方法，调用 线程实例名.start开启线程，开始之后，线程并不一定立即执行，仍然由CPU调度安排。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Thread1</span> <span class="keyword">extends</span> <span class="title class_">Thread</span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">20</span>; i++) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;新建的线程-&quot;</span>+i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">startThread1</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="comment">//创建一个线程对象，调用start方法，开启多线程</span></span><br><span class="line">    <span class="comment">//注：线程开启不一定立即执行，由CPU调度安排</span></span><br><span class="line">    <span class="type">Thread1</span> <span class="variable">testThread1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread1</span>();</span><br><span class="line">    testThread1.start();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/06/02/%E5%B9%B6%E5%8F%91-%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B%E7%9A%84%E5%B8%B8%E8%A7%81%E6%96%B9%E5%BC%8F/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -412,7 +505,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-09-22 11:22:05" itemprop="dateModified" datetime="2022-09-22T11:22:05+08:00">2022-09-22</time>
+      <time title="修改时间：2022-12-25 12:19:07" itemprop="dateModified" datetime="2022-12-25T12:19:07+08:00">2022-12-25</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -434,7 +527,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="Class类文件的结构"><a href="#Class类文件的结构" class="headerlink" title="Class类文件的结构"></a><strong>Class类文件的结构</strong></h1><p>​	任何一个Class文件都对应着唯一的一个类或接口的定义信息[1]，但是反过来说，类或接口并不一定都得定义在文件里（譬如类或接口也可以动态生成，直接送入类加载器中</p>
+          <h1 id="Class类文件的结构"><a href="#Class类文件的结构" class="headerlink" title="Class类文件的结构"></a><strong>Class类文件的结构</strong></h1><p>​	任何一个Class文件都对应着唯一的一个类或接口的定义信息，但是反过来说，类或接口并不一定都得定义在文件里（譬如类或接口也可以动态生成，直接送入类加载器中</p>
 <p>​	根据 Java 虚拟机规范，Class 文件通过 ClassFile 定义，有点类似 C 语言的结构体。这种伪结构中只有两种数据类型：“无符号数”和“表”。后面的解析都要以这两种数据类型为基础无符号数属于基本的数据类型，以u1、u2、u4、u8来分别代表1个字节、2个字节、4个字节和8个字节的无符号数，无符号数可以用来描述数字、索引引用、数量值或者按照UTF-8编码构成字符串值。·表是由多个无符号数或者其他表作为数据项构成的复合数据类型，为了便于区分，所有表的命名都习惯性地以“_info”结尾。表用于描述有层次关系的复合结构的数据，整个Class文件本质上也可以视作是一张表。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">ClassFile &#123;</span><br><span class="line">    u4             magic; <span class="comment">//Class 文件的标志 确定这个文件是否为</span></span><br><span class="line">一个能被虚拟机接受的Class文件</span><br><span class="line">    u2             minor_version;<span class="comment">//Class 的小版本号</span></span><br><span class="line">    u2             major_version;<span class="comment">//Class 的大版本号</span></span><br><span class="line">    u2             constant_pool_count;<span class="comment">//常量池的数量  容量计数值</span></span><br><span class="line">    cp_info        constant_pool[constant_pool_count<span class="number">-1</span>];<span class="comment">//常量池</span></span><br><span class="line">    u2             access_flags;<span class="comment">//Class 的访问标记 权限标志</span></span><br><span class="line">    u2             this_class;<span class="comment">//当前类</span></span><br><span class="line">    u2             super_class;<span class="comment">//父类</span></span><br><span class="line">    u2             interfaces_count;<span class="comment">//接口</span></span><br><span class="line">    u2             interfaces[interfaces_count];<span class="comment">//一个类可以实现多个接口</span></span><br><span class="line">    u2             fields_count;<span class="comment">//Class 文件的字段属性 描述接口或类中声明的变量</span></span><br><span class="line">    field_info     fields[fields_count];<span class="comment">//一个类可以有多个字段</span></span><br><span class="line">    u2             methods_count;<span class="comment">//Class 文件的方法数量</span></span><br><span class="line">    method_info    methods[methods_count];<span class="comment">//一个类可以有个多个方法</span></span><br><span class="line">    u2             attributes_count;<span class="comment">//此类的属性表中的属性数</span></span><br><span class="line">    attribute_info attributes[attributes_count];<span class="comment">//属性表集合</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
           <!--noindex-->
@@ -506,7 +599,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-11-18 10:21:04" itemprop="dateModified" datetime="2022-11-18T10:21:04+08:00">2022-11-18</time>
+      <time title="修改时间：2022-12-26 23:10:08" itemprop="dateModified" datetime="2022-12-26T23:10:08+08:00">2022-12-26</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -528,7 +621,21 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="java的内存区域"><a href="#java的内存区域" class="headerlink" title="java的内存区域"></a>java的内存区域</h1><h2 id="java的主要运行时数据区域"><a href="#java的主要运行时数据区域" class="headerlink" title="java的主要运行时数据区域"></a>java的主要运行时数据区域</h2><p><strong>堆Heap（线程共有）</strong>：Java 虚拟机所管理的内存中最大的一块，Java 堆是所有线程共享的一块内存区域，在虚拟机启动时创建。<strong>此内存区域的唯一目的就是存放对象实例，（就是新建的对象的实例数据），几乎所有的对象实例以及数组都在这里分配内存。</strong>Java堆是垃圾收集器管理的内存区域（与GC原理相关 分为新生代和老年代再细致一点有：Eden、Survivor、Old），因此一些资料中它也被称作“GC堆”（Garbage CollectedHeap）Java堆可以处于物理上不连续的内存空间中，但在逻辑上它应该被视为连续的  。</p>
+          <h1 id="java的内存区域"><a href="#java的内存区域" class="headerlink" title="java的内存区域"></a>java的内存区域</h1><h2 id="java的主要运行时数据区域"><a href="#java的主要运行时数据区域" class="headerlink" title="java的主要运行时数据区域"></a>java的主要运行时数据区域</h2><h3 id="堆Heap（线程共有）："><a href="#堆Heap（线程共有）：" class="headerlink" title="堆Heap（线程共有）："></a><strong>堆Heap（线程共有）</strong>：</h3><p>Java 虚拟机所管理的内存中最大的一块，Java 堆是所有线程共享的一块内存区域，在虚拟机启动时创建。<strong>此内存区域的唯一目的就是存放对象实例，（就是新建的对象的实例数据），几乎所有的对象实例以及数组都在这里分配内存。</strong>Java堆是垃圾收集器管理的内存区域（与GC原理相关分为新生代和老年代再细致一点有：Eden、Survivor、Old），因此一些资料中它也被称作“GC堆”（Garbage CollectedHeap）Java堆可以处于物理上不连续的内存空间中，但在逻辑上它应该被视为连续的  。</p>
+<p>在 JDK 7 版本及 JDK 7 版本之前，堆内存被通常分为下面三部分：</p>
+<ol>
+<li>新生代内存(Young Generation)</li>
+<li>老生代(Old Generation)</li>
+<li>永久代(Permanent Generation)</li>
+</ol>
+<p>1.8之后堆被分为四区，分别为eden区、s0(“From)区、s1(“To”)和tentired，永久代被元空间代替，并从堆中分离存放于直接内存中。</p>
+<ul>
+<li>在初始阶段，新创建的对象被分配到Eden区，survivor的两块空间都为空。</li>
+<li>当Eden区满了的时候，minor GC触发</li>
+<li>经过扫描与标记，存活的对象被复制到S0，不存活的对象被回收</li>
+<li>在下一次的Minor  GC中，Eden区的情况和上面一致，没有引用的对象被回收，存活的对象被复制到survivor区。然而在survivor区，S0的所有的数据都被复制到S1，需要注意的是，在上次minor  GC过程中移动到S0中的相同存活的对象在复制到S1后其年龄要加1。此时Eden区S0区被清空，所有存活的数据都复制到了S1区，并且S1区存在着年龄不一样的对象（重点）</li>
+<li>再下一次MinorGC则重复这个过程，这一次survivor的两个区对换，存活的对象被复制到S0，存活的对象年龄加1，Eden区和另一个survivor区被清空。</li>
+</ul>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2022/05/12/Java%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F/#more" rel="contents">

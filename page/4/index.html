@@ -128,7 +128,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">89</span>
+          <span class="site-state-item-count">90</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -139,7 +139,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">102</span>
+        <span class="site-state-item-count">104</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -168,6 +168,96 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/09/07/%E5%B9%B6%E5%8F%91-%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="Jing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangHao&博客">
+      <meta itemprop="description" content="Stay hungry,stay foolish">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | WangHao&博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/09/07/%E5%B9%B6%E5%8F%91-%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98/" class="post-title-link" itemprop="url">线程安全问题</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-09-07 11:26:45 / 修改时间：11:51:36" itemprop="dateCreated datePublished" datetime="2022-09-07T11:26:45+08:00">2022-09-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">Java并发编程</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="线程安全问题"><a href="#线程安全问题" class="headerlink" title="线程安全问题"></a>线程安全问题</h1><h2 id="临界区（Critical-Section）"><a href="#临界区（Critical-Section）" class="headerlink" title="临界区（Critical Section）"></a>临界区（Critical Section）</h2><ul>
+<li>一个程序运行多个线程本身是没有问题，问题出在多个线程访问共享资源。</li>
+<li>多个线程读共享资源其实也没有问题，在多个线程对共享资源读写操作时发生<strong>指令交错</strong>，就会出现问题。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="type">int</span> <span class="variable">counter</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">increment</span><span class="params">()</span> </span><br><span class="line"><span class="comment">// 临界区 </span></span><br><span class="line">&#123;</span><br><span class="line">    counter++; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">decrement</span><span class="params">()</span> </span><br><span class="line"><span class="comment">// 临界区 </span></span><br><span class="line">&#123;</span><br><span class="line">    counter--; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/09/07/%E5%B9%B6%E5%8F%91-%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1069,103 +1159,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2022/09/01/MySQL%E7%9A%84%E8%81%94%E7%BB%93%EF%BC%88Join%EF%BC%89%E7%AE%97%E6%B3%95/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/31/MySQL%E4%B8%BB%E5%A4%87%E4%B8%80%E8%87%B4%E5%8E%9F%E7%90%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="Jing">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="WangHao&博客">
-      <meta itemprop="description" content="Stay hungry,stay foolish">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | WangHao&博客">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/08/31/MySQL%E4%B8%BB%E5%A4%87%E4%B8%80%E8%87%B4%E5%8E%9F%E7%90%86/" class="post-title-link" itemprop="url">MySQL主备一致原理</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2022-08-31 16:17:53" itemprop="dateCreated datePublished" datetime="2022-08-31T16:17:53+08:00">2022-08-31</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-09-02 09:47:04" itemprop="dateModified" datetime="2022-09-02T09:47:04+08:00">2022-09-02</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">MySQL数据库</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>​		之前介绍的binlog可以用来归档，也可以用来做主备同步。</p>
-<h1 id="MySQL主备的基本原理"><a href="#MySQL主备的基本原理" class="headerlink" title="MySQL主备的基本原理"></a>MySQL主备的基本原理</h1><h2 id="主备切换流程"><a href="#主备切换流程" class="headerlink" title="主备切换流程"></a>主备切换流程</h2><ol>
-<li>原先的状态时客户端的读写都是直接访问A节点，而节点B是A的备库，B被设置为只读（readonly）模式，只是将A的更新都同步过来，到本地执行。这样可以保持节点B和A的数据是相同的。</li>
-<li>当需要切换的时候，将客户端读写访问的都切换成节点B，而节点A是B的备库。</li>
-</ol>
-<h2 id="主备延迟"><a href="#主备延迟" class="headerlink" title="主备延迟"></a>主备延迟</h2><p>​		所谓主备延迟，就是同一个事务，在备库执行完成的时间和主库执行完成的时间之间的差值，可以在备库上执行show slave status命令，它的返回结果里面会显示seconds_behind_master，用于表示当前备库延迟了多少秒。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/08/31/MySQL%E4%B8%BB%E5%A4%87%E4%B8%80%E8%87%B4%E5%8E%9F%E7%90%86/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
