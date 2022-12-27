@@ -128,7 +128,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-count">94</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -139,7 +139,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">104</span>
+        <span class="site-state-item-count">107</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -168,6 +168,254 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/12/27/JVM-GCRoot%E6%A3%80%E6%B5%8B%E7%AE%97%E6%B3%95%E5%92%8C%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="Jing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangHao&博客">
+      <meta itemprop="description" content="Stay hungry,stay foolish">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | WangHao&博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/12/27/JVM-GCRoot%E6%A3%80%E6%B5%8B%E7%AE%97%E6%B3%95%E5%92%8C%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/" class="post-title-link" itemprop="url">JVM-GCRoot检测算法和垃圾收集器</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-12-27 19:37:43 / 修改时间：23:39:00" itemprop="dateCreated datePublished" datetime="2022-12-27T19:37:43+08:00">2022-12-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/JVM/" itemprop="url" rel="index"><span itemprop="name">JVM</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="可达性分析中根节点检测算法"><a href="#可达性分析中根节点检测算法" class="headerlink" title="可达性分析中根节点检测算法:"></a>可达性分析中根节点检测算法:</h1><h2 id="根节点枚举（必须STW）"><a href="#根节点枚举（必须STW）" class="headerlink" title="根节点枚举（必须STW）:"></a>根节点枚举（必须STW）:</h2><p>可达性分析算法来进行GC的第一步必定是找出所有的GC Roots（根节点枚举），尽管我们已经知道GC Roots大约是什么类型的对象，但想要高效的找到它们并非易事。迄今为止，所有收集器在根节点枚举这一步骤时都是必须暂停用户线程的，<strong>因为要避免出现在根节点枚举时根节点集合的对象引用关系还在不断变化的情况，否则结果准确性也就无法保证。</strong>这是导致垃圾收集过程必须停顿所有用户线程的其中一个重要原因，即使是号称停顿时间可控，或者（几乎）不会发生停顿的CMS、G1、 ZGC等收集器，枚举根节点时也是必须要停顿的。因此毫无疑问根节点枚举与之前提及的整理内存碎片一样会面临相似的STW的困扰。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/12/27/JVM-GCRoot%E6%A3%80%E6%B5%8B%E7%AE%97%E6%B3%95%E5%92%8C%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/12/27/GCRoot%E6%A3%80%E6%B5%8B%E7%AE%97%E6%B3%95%E5%92%8C%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="Jing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangHao&博客">
+      <meta itemprop="description" content="Stay hungry,stay foolish">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | WangHao&博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/12/27/GCRoot%E6%A3%80%E6%B5%8B%E7%AE%97%E6%B3%95%E5%92%8C%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/" class="post-title-link" itemprop="url">GCRoot检测算法和垃圾收集器</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-12-27 19:37:10" itemprop="dateCreated datePublished" datetime="2022-12-27T19:37:10+08:00">2022-12-27</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/12/26/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="Jing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangHao&博客">
+      <meta itemprop="description" content="Stay hungry,stay foolish">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | WangHao&博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/12/26/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/" class="post-title-link" itemprop="url">JVM垃圾回收</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-12-26 23:45:16" itemprop="dateCreated datePublished" datetime="2022-12-26T23:45:16+08:00">2022-12-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-12-27 23:39:12" itemprop="dateModified" datetime="2022-12-27T23:39:12+08:00">2022-12-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/JVM/" itemprop="url" rel="index"><span itemprop="name">JVM</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>Java 自动内存管理最核心的功能是 <strong>堆</strong> 内存中对象的分配与回收。由上文的介绍可以知道，java1.8版本之后堆主要由4部分组成：<strong>Eden区，两个Survivor区S0和S1</strong>，这些都属于新生代。Tenured属于老年代。</p>
+<h1 id="对象内存分配原则"><a href="#对象内存分配原则" class="headerlink" title="对象内存分配原则"></a>对象内存分配原则</h1><p><strong>对象优先在 Eden 区分配</strong>：最开始对象在新生代中 Eden 区分配。当 Eden 区没有足够空间进行分配时，虚拟机将发起一次 Minor GC。</p>
+<p>在发生Minor GC之前，虚拟机必须先检查老年代最大可用的连续空间是否大于新生代所有对象总空间或者历次晋升的平均大小，如果这个条件成立，那这一次Minor GC可以确保是安全的，就会进行 Minor GC，否则将进行Full GC。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/12/26/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -798,285 +1046,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2022/11/20/JavaIO%E8%AF%A6%E8%A7%A3/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/11/18/Java%E5%80%BC%E4%BC%A0%E9%80%92/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="Jing">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="WangHao&博客">
-      <meta itemprop="description" content="Stay hungry,stay foolish">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | WangHao&博客">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/11/18/Java%E5%80%BC%E4%BC%A0%E9%80%92/" class="post-title-link" itemprop="url">Java值传递</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2022-11-18 10:28:28 / 修改时间：10:57:25" itemprop="dateCreated datePublished" datetime="2022-11-18T10:28:28+08:00">2022-11-18</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>​	<strong>Java中只有一种参数传递方法：值传递。</strong>Java中没有指针，所以也没有引用传递了，仅仅有值传递。不过，可以通过对象的方式来实现引用传递。类似java没有多继承，但可以用多次implements接口实现多继承的功能。</p>
-<p>值传递总结：</p>
-<ul>
-<li>一个方法<strong>不能修改一个基本数据类型的参数</strong>（即数值型或布尔型）。</li>
-</ul>
-<p>基本数据类型：是值传递。内存来说，基本数据类型的值是存放在栈空间，作为方法形参时，这个变量和值会被复制出一份也就是<strong>深拷贝</strong>，在此方法栈中对该变量的改变不会对其他方法栈的变量产生任何影响。</p>
-<ul>
-<li>一个方法可以改变<strong>一个对象参数的状态</strong>。</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/11/18/Java%E5%80%BC%E4%BC%A0%E9%80%92/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/11/10/ElasticSearch%E4%BE%9D%E8%B5%96%E5%BC%82%E5%B8%B8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="Jing">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="WangHao&博客">
-      <meta itemprop="description" content="Stay hungry,stay foolish">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | WangHao&博客">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/11/10/ElasticSearch%E4%BE%9D%E8%B5%96%E5%BC%82%E5%B8%B8/" class="post-title-link" itemprop="url">ElasticSearch依赖异常</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2022-11-10 19:36:21" itemprop="dateCreated datePublished" datetime="2022-11-10T19:36:21+08:00">2022-11-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-11-11 13:12:29" itemprop="dateModified" datetime="2022-11-11T13:12:29+08:00">2022-11-11</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>正常使用redis项目的POM中引入elasticsearch包就导致使用redis的时候报错：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">      &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">      &lt;artifactId&gt;spring-boot-starter-data-elasticsearch&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
-
-<p>ERROR 41100 — [         task-7] .a.i.SimpleAsyncUncaughtExceptionHandler : Unexpected exception occurred invoking async method: public void run.ut.app.schedule.TestTask.adminLoginCache()</p>
-<p>org.springframework.data.redis.RedisSystemException: Unknown redis exception; nested exception is io.netty.handler.codec.EncoderException: java.lang.IncompatibleClassChangeError: Class io.netty.util.Recycler$DefaultHandle does not implement the requested interface io.netty.util.internal.ObjectPool$Handle</p>
-<p>at org.springframework.data.redis.FallbackExceptionTranslationStrategy.getFallback(FallbackExceptionTranslationStrategy.java:53 ~[spring-data-redis-2.5.3.jar:2.5.3]<br>at org.springframework.data.redis.FallbackExceptionTranslationStrategy.translate(FallbackExceptionTranslationStrategy.java:43) ~[spring-data-redis-2.5.3.jar:2.5.3]</p>
-<p>Caused by: io.netty.handler.codec.EncoderException: java.lang.IncompatibleClassChangeError: Class io.netty.util.Recycler$DefaultHandle does not implement the requested interface io.netty.util.internal.ObjectPool$Handle</p>
-<p>at io.lettuce.core.protocol.CommandHandler.writeSingleCommand(CommandHandler.java:421) ~[lettuce-core-6.1.4.RELEASE.jar:6.1.4.RELEASE]</p>
-<p>at io.lettuce.core.protocol.CommandHandler.write(CommandHandler.java:387) ~[lettuce-core-6.1.4.RELEASE.jar:6.1.4.RELEASE]</p>
-<p>添加依赖后可以正常启动redis可以正常使用</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.elasticsearch.plugin&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;transport-netty4-client&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;7.1.0&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
-
-<p>参考：<a target="_blank" rel="noopener" href="https://www.oschina.net/question/4111490_2312057?sort=time">https://www.oschina.net/question/4111490_2312057?sort=time</a></p>
-<p>时间报错，最开始Elastic中使用的是LocalDate报错之后参考下面文章:</p>
-<p>参考：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/code-duck/p/13775207.html?ivk_sa=1024320u">https://www.cnblogs.com/code-duck/p/13775207.html?ivk_sa=1024320u</a></p>
-<p>空指针报错。</p>
-<p>本地开发连接云服务器的reids隔一段时间不连接就会报错：</p>
-<p>Redis exception; nested exception is io.lettuce.core.RedisException: java.io.IOException: 远程主机强迫关闭了一个现有的连接。</p>
-<p>io.lettuce.core.RedisException: java.io.IOException: 远程主机强迫关闭了一个现有的连接。</p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/sebeefe/article/details/126488503">https://blog.csdn.net/sebeefe/article/details/126488503</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.dandelioncloud.cn/article/details/1392446825725767681">https://www.dandelioncloud.cn/article/details/1392446825725767681</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/11/08/%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%8C%85%E8%A3%85%E7%B1%BB/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="Jing">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="WangHao&博客">
-      <meta itemprop="description" content="Stay hungry,stay foolish">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | WangHao&博客">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/11/08/%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%8C%85%E8%A3%85%E7%B1%BB/" class="post-title-link" itemprop="url">基本数据类型与包装类</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2022-11-08 21:19:10 / 修改时间：21:52:24" itemprop="dateCreated datePublished" datetime="2022-11-08T21:19:10+08:00">2022-11-08</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><p>Java的数据类型分为：基本类型、引用类型。引用类型可以赋值为null。</p>
-<p> String不是基本数据类型，是引用类型，是lang包下的类。所以比较字符串时用<strong>equals(),不能用</strong>“&#x3D;&#x3D;”**</p>
-<p>“&#x3D;&#x3D;”比较<strong>引用数据类型，</strong>比较的是<strong>地址</strong>是否相等；&#x3D;&#x3D;”比较<strong>基本数据类型</strong>，比较的是<strong>值</strong>是否相等</p>
-<h2 id="基本数据类型及对应包装类"><a href="#基本数据类型及对应包装类" class="headerlink" title="基本数据类型及对应包装类"></a>基本数据类型及对应包装类</h2><p>Java提供了八种基本数据类型：byte、short、int、long、float、double、boolean、char，以及其对应的包装类：Byte，Short，Integer，Long，Flout，Double，Boolean，Character。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/11/08/%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%8C%85%E8%A3%85%E7%B1%BB/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>

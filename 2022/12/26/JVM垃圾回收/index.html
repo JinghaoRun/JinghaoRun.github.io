@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Java 自动内存管理最核心的功能是 堆 内存中对象的分配与回收。由上文的介绍可以知道，java1.8版本之后堆主要由4部分组成：Eden区，两个Survivor区S0和S1，这些都属于新生代。Tenured属于老年代。 对象内存分配原则对象优先在 Eden 区分配：最开始对象在新生代中 Eden 区分配。当 Eden 区没有足够空间进行分配时，虚拟机将发起一次 Minor GC。 在发生Mino">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JVM垃圾回收">
+<meta property="og:url" content="http://example.com/2022/12/26/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/index.html">
+<meta property="og:site_name" content="WangHao&amp;博客">
+<meta property="og:description" content="Java 自动内存管理最核心的功能是 堆 内存中对象的分配与回收。由上文的介绍可以知道，java1.8版本之后堆主要由4部分组成：Eden区，两个Survivor区S0和S1，这些都属于新生代。Tenured属于老年代。 对象内存分配原则对象优先在 Eden 区分配：最开始对象在新生代中 Eden 区分配。当 Eden 区没有足够空间进行分配时，虚拟机将发起一次 Minor GC。 在发生Mino">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-12-26T15:45:16.000Z">
+<meta property="article:modified_time" content="2022-12-27T15:39:12.354Z">
+<meta property="article:author" content="Jing">
+<meta property="article:tag" content="JVM">
+<meta property="article:tag" content="JVM垃圾回收">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2022/12/26/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2022/12/26/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/","path":"2022/12/26/JVM垃圾回收/","title":"JVM垃圾回收"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>JVM垃圾回收 | WangHao&博客</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">WangHao&博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Welcome to the home of WangHao</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E5%8E%9F%E5%88%99"><span class="nav-number">1.</span> <span class="nav-text">对象内存分配原则</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%BB%E4%BA%A1%E5%AF%B9%E8%B1%A1%E5%88%A4%E6%96%AD%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="nav-number">2.</span> <span class="nav-text">死亡对象判断方法：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0%E6%B3%95%EF%BC%9A"><span class="nav-number">2.0.1.</span> <span class="nav-text">引用计数法：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E8%BE%BE%E6%80%A7%E5%88%86%E6%9E%90%E7%AE%97%E6%B3%95"><span class="nav-number">2.0.2.</span> <span class="nav-text">可达性分析算法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">垃圾收集算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%87%E8%AE%B0-%E6%B8%85%E9%99%A4%E7%AE%97%E6%B3%95"><span class="nav-number">3.0.1.</span> <span class="nav-text">标记-清除算法:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%87%E8%AE%B0-%E5%A4%8D%E5%88%B6%E7%AE%97%E6%B3%95%EF%BC%88%E6%96%B0%E7%94%9F%E4%BB%A3%EF%BC%89%EF%BC%9A"><span class="nav-number">3.0.2.</span> <span class="nav-text">标记-复制算法（新生代）：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%87%E8%AE%B0-%E6%95%B4%E7%90%86%E7%AE%97%E6%B3%95%EF%BC%88%E8%80%81%E5%B9%B4%E4%BB%A3%EF%BC%89%EF%BC%9A"><span class="nav-number">3.0.3.</span> <span class="nav-text">标记-整理算法（老年代）：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%86%E4%BB%A3GC%E6%9C%BA%E5%88%B6"><span class="nav-number">4.</span> <span class="nav-text">分代GC机制:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8D%E5%90%8C%E7%9A%84GC%E6%96%B9%E5%BC%8F%EF%BC%9A"><span class="nav-number">4.0.1.</span> <span class="nav-text">不同的GC方式：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A0%86%E4%B8%AD%E6%96%B0%E7%94%9F%E4%BB%A3%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%EF%BC%9A"><span class="nav-number">4.0.2.</span> <span class="nav-text">堆中新生代的内存分配：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Minor-GC%E4%B8%8EFull-GC%EF%BC%9A"><span class="nav-number">4.0.3.</span> <span class="nav-text">Minor GC与Full GC：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Minor-GC%E8%BF%87%E7%A8%8B%EF%BC%9A"><span class="nav-number">4.0.3.1.</span> <span class="nav-text">Minor GC过程：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Minor-GC%E8%A7%A6%E5%8F%91%E6%97%B6%E6%9C%BA%EF%BC%9A"><span class="nav-number">4.0.3.2.</span> <span class="nav-text">Minor GC触发时机：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Full-GC%E8%A7%A6%E5%8F%91%E6%97%B6%E6%9C%BA%EF%BC%9A"><span class="nav-number">4.0.3.3.</span> <span class="nav-text">Full GC触发时机：</span></a></li></ol></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Jing"
+      src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">Jing</p>
+  <div class="site-description" itemprop="description">Stay hungry,stay foolish</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">107</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/12/26/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="Jing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangHao&博客">
+      <meta itemprop="description" content="Stay hungry,stay foolish">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="JVM垃圾回收 | WangHao&博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JVM垃圾回收
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-12-26 23:45:16" itemprop="dateCreated datePublished" datetime="2022-12-26T23:45:16+08:00">2022-12-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-12-27 23:39:12" itemprop="dateModified" datetime="2022-12-27T23:39:12+08:00">2022-12-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/JVM/" itemprop="url" rel="index"><span itemprop="name">JVM</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>Java 自动内存管理最核心的功能是 <strong>堆</strong> 内存中对象的分配与回收。由上文的介绍可以知道，java1.8版本之后堆主要由4部分组成：<strong>Eden区，两个Survivor区S0和S1</strong>，这些都属于新生代。Tenured属于老年代。</p>
+<h1 id="对象内存分配原则"><a href="#对象内存分配原则" class="headerlink" title="对象内存分配原则"></a>对象内存分配原则</h1><p><strong>对象优先在 Eden 区分配</strong>：最开始对象在新生代中 Eden 区分配。当 Eden 区没有足够空间进行分配时，虚拟机将发起一次 Minor GC。</p>
+<p>在发生Minor GC之前，虚拟机必须先检查老年代最大可用的连续空间是否大于新生代所有对象总空间或者历次晋升的平均大小，如果这个条件成立，那这一次Minor GC可以确保是安全的，就会进行 Minor GC，否则将进行Full GC。</p>
+<span id="more"></span>
+
+<p>Minor GC时会依据空间分配担保机制进行：<strong>空间分配担保</strong>指的是：在Minor GC的过程中，如果<strong>Eden区的存活对象大于Survivor区的大小</strong>，但小于老年代大小，则会直接从Eden晋升到老年代；否则继续待在Eden。这个情况注意跟下面大对象直接进入老年代区分，空间分配担保机制是在Minor GC的过程中出现的，而大对象直接晋升根本不会出现Minor GC。</p>
+<p><strong>大对象直接晋升到老年代</strong>：大对象就是指需要大量连续内存空间的Java对象，HotSpot虚拟机提供了<code>-XX：PretenureSizeThreshold</code>参数（只对Serial和ParNew两款新生代收集器有效，默认是Eden区大小），指定大于该设置值的对象直接在老年代分配，这样做的目的就是避免分配担保机制在Eden区及两个Survivor区之间来回复制，产生大量的内存复制操作。</p>
+<p><strong>长期存活的对象晋升到老年代：</strong>虚拟机给每个对象定义了一个对象分代年龄（Age）计数器，存储在对象头中。对象通常在Eden区里诞生，如果经过第一次 Minor GC后仍然存活，并且能被Survivor容纳的话，该对象会被移动到Survivor空间中，并且将其对象年龄设为1岁。对象在Survivor区中每熬过一次Minor GC，年龄就增加1岁，当它的年龄增加到一定程度（默认为15，最大也是15），就会被晋升到老年代中。对象晋升老年代的年龄阈值，可以通过参数<code>-XX：MaxTenuringThreshold</code>设置，同时这个阈值也是动态变化的：如果在<strong>Survivor空间中相同年龄所有对象大小的总和大于 Survivor空间的一半</strong>，年龄大于或等于该年龄（年龄不包括0）的对象就可以直接进入老年代，无须等到<code>-XX：MaxTenuringThreshold</code>中要求的年龄。</p>
+<h1 id="死亡对象判断方法："><a href="#死亡对象判断方法：" class="headerlink" title="死亡对象判断方法："></a>死亡对象判断方法：</h1><p>堆中几乎放着所有的对象实例，对堆垃圾回收前的第一步就是要判断哪些对象已经死亡（即不能再被任何途径使用的对象）判断对象的死亡有两种策略，其一为<strong>引用计数法</strong>，其二为<strong>可达性分析</strong>。</p>
+<h3 id="引用计数法："><a href="#引用计数法：" class="headerlink" title="引用计数法："></a>引用计数法：</h3><p>这个算法的基本思路是在对象中添加一个引用计数器，每当有一个地方引用它时，计数器值就加一；当引用失效时，计数器值就减一；任何时刻计数器为零的对象就是不可能再被使用的。<strong>缺点是很难解决相互引用的问题</strong>。</p>
+<h3 id="可达性分析算法"><a href="#可达性分析算法" class="headerlink" title="可达性分析算法"></a>可达性分析算法</h3><p>这个算法的基本思想就是通过一系列的称为 <strong>“GC Roots”</strong> 的对象作为起点，从这些节点开始向下搜索，节点所走过的路径称为引用链，当一个对象到 GC Roots 没有任何引用链相连的话，则证明此对象是不可用的，需要被回收。</p>
+<p><strong>可以作为 GC Roots 的对象（引用）</strong></p>
+<p>实际上GC Roots只是一组活跃对象的引用，并不是对象本身。</p>
+<ul>
+<li>在虚拟机栈（栈帧中的本地变量表）中引用的对象，譬如各个线程被调用的方法堆栈中使用到的<br>参数、局部变量、临时变量等。</li>
+<li>在本地方法栈中JNI（即通常所说的Native方法）引用的对象。</li>
+<li>在方法区中类静态属性引用的对象，譬如Java类的引用类型静态变量。</li>
+<li>在方法区中常量引用的对象，譬如字符串常量池里的引用或声明为final的常量。</li>
+<li>所有被同步锁（synchronized关键字）持有的对象。</li>
+<li>Java虚拟机内部的引用，如基本数据类型对应的Class对象，一些常驻的异常对象（比如<br>NullPointExcepiton、OutOfMemoryError）等，还有系统类加载器。</li>
+</ul>
+<p>即使在可达性分析法中不可达的对象，也并非是“非死不可”的，要真正宣告一个对象死亡，至少要经历两次标记过程；</p>
+<p><strong>第一次标记：</strong>可达性分析法中不可达的对象被第一次标记并且进行一次筛选，筛选的条件是此对象是否有必要执行 <code>finalize</code> 方法。当对象没有覆盖 <code>finalize</code> 方法，或 <code>finalize</code> 方法已经被虚拟机调用过时，虚拟机将这两种情况视为没有必要执行，则可以直接回收。</p>
+<p><strong>第二次标记</strong>：被判定为需要执行的对象将会被放在一个队列中进行第二次标记，<strong>在 finalize() 方法中没有重新与引用链建立关联关系的会被回收</strong>，如果对象在 finalize() 方法中重新与引用链建立了关联关系，那么将会逃离本次回收，继续存活。JDK9 版本及后续版本中各个类中的 <code>finalize</code> 方法会被逐渐弃用移除）</p>
+<h1 id="垃圾收集算法"><a href="#垃圾收集算法" class="headerlink" title="垃圾收集算法"></a>垃圾收集算法</h1><h3 id="标记-清除算法"><a href="#标记-清除算法" class="headerlink" title="标记-清除算法:"></a>标记-清除算法:</h3><p>该算法分为“标记”和“清除”阶段：首先<strong>标记出所有不需要回收的对象</strong>，在标记完成后<strong>统一回收掉所有没有被标记的对象</strong>。把标记为垃圾的起始结束地址记录到空闲列表(Free List)中，记录上哪些内存块是可用的，在分配的时候从列表中找到一块足够大的空间划分给对象实例。它是最基础的收集算法，后续的算法都是对其不足进行改进得到。</p>
+<ul>
+<li>优点：速度快，只需要记录垃圾对象的起始结束地址；</li>
+<li>缺点：容易产生内存碎片，空间不连续，大对象无法存放，造成内存浪费。</li>
+</ul>
+<h3 id="标记-复制算法（新生代）："><a href="#标记-复制算法（新生代）：" class="headerlink" title="标记-复制算法（新生代）："></a>标记-复制算法（新生代）：</h3><p>将内存分为大小相同的两块，每次使用其中的一块。当这一块的内存使用完后，就将还存活的对象复制到另一块去，然后再把使用的空间一次清理掉。这样就使每次的内存回收都是对内存区间的一半进行回收。</p>
+<ul>
+<li>优点：没有内存碎片；</li>
+<li>缺点：需要占用双倍内存空间，即总有50%的内存空间无法利用。但适用于对象频繁更新的场景，即每次垃圾回收时存活对象很少，这样就不需要划分给FROM和TO太多空间，例如新生代就是使用的复制算法，新生代内存默认划分为<code>80%Eden + 10%Survivor From + 10%Survivor To</code>，后面会详细介绍。</li>
+</ul>
+<h3 id="标记-整理算法（老年代）："><a href="#标记-整理算法（老年代）：" class="headerlink" title="标记-整理算法（老年代）："></a>标记-整理算法（老年代）：</h3><p>根据老年代的特点提出的一种标记算法，首先进行标记：标记垃圾，但后续步骤不是直接对可回收对象回收，而是整理：把所有的存活的对象都向一端移动，让内存更为连续和紧凑，然后清理掉端边界以外的内存。</p>
+<ul>
+<li>优点：没有内存碎片，内存连续；</li>
+<li>缺点：速度慢，需要移动大量对象。</li>
+</ul>
+<h1 id="分代GC机制"><a href="#分代GC机制" class="headerlink" title="分代GC机制:"></a>分代GC机制:</h1><p>由于堆可以被分为新生代和老年代两个部分，不同乃村区域有各个年代的特点，需要选用适当的GC算法，就有了分代收集算法。在新生代中，每次垃圾收集时都发现有<strong>大批对象死去</strong>，只有少量存活，那就选用<strong>复制算法</strong>，只需要付出少量存活对象的复制成本就可以完成收集。而老年代中因为对象存活率高、没有额外空间对它进行分配担保，就必须使用<strong>标记-清除或者标记-整理</strong> 算法来进行回收。</p>
+<h3 id="不同的GC方式："><a href="#不同的GC方式：" class="headerlink" title="不同的GC方式："></a>不同的GC方式：</h3><p>分代收集（Generation Collection）</p>
+<ul>
+<li>新生代（Young Generation）</li>
+<li>老年代（Tenured&#x2F;Old Generation）</li>
+</ul>
+<p>部分收集（Partial GC）：指目标不是完整收集整个Java堆的垃圾收集，其中又分为：</p>
+<ul>
+<li>新生代收集（Minor GC&#x2F;Young GC）：指目标只是新生代的垃圾收集</li>
+<li>老年代收集（Major GC&#x2F;Old GC）：指目标只是老年代的垃圾收集。目前只有<code>CMS收集器</code>会有单独收集老年代的行为。</li>
+<li>混合收集（Mixed GC）：指目标是收集整个新生代以及部分老年代的垃圾收集。目前只有G1收集器会有这种行为</li>
+</ul>
+<p>整堆收集（Full GC）：收集整个Java堆（新生代+老年代）和方法区的垃圾收集</p>
+<h3 id="堆中新生代的内存分配："><a href="#堆中新生代的内存分配：" class="headerlink" title="堆中新生代的内存分配："></a>堆中新生代的内存分配：</h3><p>由于新生代在对象分配时采用的TLAB（thread-local allocation buffer）（对象创建章节详解）对象分配较为容易，大部分对象用过即死。堆将新生代分区如下：Eden + 幸存区（Survivor From） + 幸存区（Survivor To），默认比例是8:1:1，可以通过参数<code>-XX:SurvivorRatio=ratio </code>调整，默认为8，即Eden的占比，其他二等分，From 和 To用于复制算法，即To要保证一直为空；</p>
+<h3 id="Minor-GC与Full-GC："><a href="#Minor-GC与Full-GC：" class="headerlink" title="Minor GC与Full GC："></a>Minor GC与Full GC：</h3><h4 id="Minor-GC过程："><a href="#Minor-GC过程：" class="headerlink" title="Minor GC过程："></a><strong>Minor GC过程</strong>：</h4><p>​		第一次当Eden内存不足以放新对象时（这时幸存区为空），采用<code>复制</code>算法，将Eden区所有存活的对象复制到幸存区To，让幸存的对象分代年龄+1，然后交换From和To的位置（指针交换）；继续放对象，当第二次Eden内存不足时，将Eden和幸存区From所有存活的对象复制到幸存区To，让幸存的对象分代年龄再+1，然后交换From和To的位置（指针交换）；当分代年龄达到限制时（默认15）幸存区的对象会晋升到老年代，或者大对象直接进入老年代，这个对象的大小阈值可通过参数<code>-XX:PretenureSizeThreshold=size</code>设置（只对Serial和ParNew两款新生代收集器有效），或者经过<strong>动态对象年龄判定</strong>的对象也会晋升到老年代，或者通过<strong>空间分配担保机制</strong>晋升到老年代；当老年代的内存不足以放晋升新对象，就会触发Full GC，采用<strong>标记-清除算法或标记-整理</strong>算法。</p>
+<ul>
+<li><p>Minor GC 会引发 <strong>stop the world（STW）</strong>，暂停其它用户的线程，等垃圾回收结束，用户线程才恢复运行</p>
+</li>
+<li><p>当老年代空间不足，会触发 Full GC，STW的时间更长，如果Full GC后空间仍不足，会抛出<code>OutOfMemoryError: Java heap space</code></p>
+</li>
+</ul>
+<h4 id="Minor-GC触发时机："><a href="#Minor-GC触发时机：" class="headerlink" title="Minor GC触发时机："></a><strong>Minor GC触发时机：</strong></h4><ul>
+<li><p>Eden区域满了，即新创建的对象大小大于Eden所剩空间</p>
+</li>
+<li><p>虚拟机在进行Minor GC之前会判断老年代的最大连续可用连续空间大于新生代对象总大小或者历次晋升的平均大小，就会进行 Minor GC，否则将进行Full GC</p>
+</li>
+</ul>
+<h4 id="Full-GC触发时机："><a href="#Full-GC触发时机：" class="headerlink" title="Full GC触发时机："></a><strong>Full GC触发时机</strong>：</h4><ul>
+<li><p>老年代空间不足，例如晋升到老年代的对象大于老年代剩余内存，就会触发Full GC，一般在Full GC之前会先执行Minor GC：原因是：在对老一代空间进行垃圾收集之前先对年轻一代空间进行垃圾收集，通常会导致垃圾收集器的工作量更少，并且垃圾收集的对象更多，因为老一代空间中的对象可能持有对年轻一代空间中对象的对象引用。如果年轻代空间没有被垃圾收集，那么老代空间中任何持有年轻代空间中对象引用的对象都不能被垃圾收集。</p>
+</li>
+<li><p>空间分配担保时，老年代的最大可用连续空间小于新生代对象总大小和历次晋升的平均大小，就会触发Full GC</p>
+</li>
+<li><p>显式调用 System.gc() 或者Heap dump时也会触发 Full GC</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JVM/" rel="tag"># JVM</a>
+              <a href="/tags/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/" rel="tag"># JVM垃圾回收</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/12/26/JVM%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E6%B5%81%E7%A8%8B/" rel="prev" title="java对象创建流程">
+                  <i class="fa fa-chevron-left"></i> java对象创建流程
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/12/27/GCRoot%E6%A3%80%E6%B5%8B%E7%AE%97%E6%B3%95%E5%92%8C%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/" rel="next" title="GCRoot检测算法和垃圾收集器">
+                  GCRoot检测算法和垃圾收集器 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jing</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
