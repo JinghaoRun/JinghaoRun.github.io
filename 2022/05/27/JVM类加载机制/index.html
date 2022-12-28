@@ -31,7 +31,7 @@
 <meta property="og:image" content="http://example.com/2022/05/27/JVM%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/JVM%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6%5C1.jpg">
 <meta property="og:image" content="http://example.com/2022/05/27/JVM%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/JVM%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6%5C2.jpg">
 <meta property="article:published_time" content="2022-05-27T14:11:47.000Z">
-<meta property="article:modified_time" content="2022-12-26T15:40:46.045Z">
+<meta property="article:modified_time" content="2022-12-28T07:02:59.243Z">
 <meta property="article:author" content="Jing">
 <meta property="article:tag" content="JVM">
 <meta property="article:tag" content="Java类加载">
@@ -123,7 +123,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Class%E7%B1%BB%E6%96%87%E4%BB%B6%E7%9A%84%E7%BB%93%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">Class类文件的结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AF%B4java%E6%98%AF%E5%B9%B3%E5%8F%B0%E6%97%A0%E5%85%B3%E6%80%A7"><span class="nav-number">2.</span> <span class="nav-text">为什么说java是平台无关性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B1%BB%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B%EF%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">类加载过程：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E8%BD%BD"><span class="nav-number">3.1.</span> <span class="nav-text">加载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81%EF%BC%9A"><span class="nav-number">3.2.</span> <span class="nav-text">验证：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%86%E5%A4%87%EF%BC%9A"><span class="nav-number">3.3.</span> <span class="nav-text">准备：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90%EF%BC%9A"><span class="nav-number">3.4.</span> <span class="nav-text">解析：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%EF%BC%9A"><span class="nav-number">3.5.</span> <span class="nav-text">初始化：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%B8%E8%BD%BD%EF%BC%9A"><span class="nav-number">3.6.</span> <span class="nav-text">卸载：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8"><span class="nav-number">4.</span> <span class="nav-text">类加载器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B"><span class="nav-number">5.</span> <span class="nav-text">双亲委派模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E4%B8%8A%E4%B8%8B%E6%96%87%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8"><span class="nav-number">6.</span> <span class="nav-text">线程上下文类加载器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Tomcat%E4%B8%8Espring%E7%9A%84%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%E6%A1%88%E4%BE%8B"><span class="nav-number">7.</span> <span class="nav-text">Tomcat与spring的类加载器案例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Spring%E5%8A%A0%E8%BD%BD%E9%97%AE%E9%A2%98"><span class="nav-number">8.</span> <span class="nav-text">Spring加载问题</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Class%E7%B1%BB%E6%96%87%E4%BB%B6%E7%9A%84%E7%BB%93%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">Class类文件的结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AF%B4java%E6%98%AF%E5%B9%B3%E5%8F%B0%E6%97%A0%E5%85%B3%E6%80%A7"><span class="nav-number">2.</span> <span class="nav-text">为什么说java是平台无关性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B1%BB%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B%EF%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">类加载过程：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E8%BD%BD"><span class="nav-number">3.1.</span> <span class="nav-text">加载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81%EF%BC%9A"><span class="nav-number">3.2.</span> <span class="nav-text">验证：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%86%E5%A4%87%EF%BC%9A"><span class="nav-number">3.3.</span> <span class="nav-text">准备：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90%EF%BC%9A"><span class="nav-number">3.4.</span> <span class="nav-text">解析：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%EF%BC%9A"><span class="nav-number">3.5.</span> <span class="nav-text">初始化：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%B8%E8%BD%BD%EF%BC%9A"><span class="nav-number">3.6.</span> <span class="nav-text">卸载：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8"><span class="nav-number">4.</span> <span class="nav-text">类加载器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B"><span class="nav-number">5.</span> <span class="nav-text">双亲委派模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8"><span class="nav-number">6.</span> <span class="nav-text">自定义类加载器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%EF%BC%9A"><span class="nav-number">6.1.</span> <span class="nav-text">应用场景：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="nav-number">6.2.</span> <span class="nav-text">实现方法：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E4%B8%8A%E4%B8%8B%E6%96%87%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8"><span class="nav-number">7.</span> <span class="nav-text">线程上下文类加载器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Tomcat%E4%B8%8Espring%E7%9A%84%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%E6%A1%88%E4%BE%8B"><span class="nav-number">8.</span> <span class="nav-text">Tomcat与spring的类加载器案例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Spring%E5%8A%A0%E8%BD%BD%E9%97%AE%E9%A2%98"><span class="nav-number">9.</span> <span class="nav-text">Spring加载问题</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -149,7 +149,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">107</span>
+        <span class="site-state-item-count">108</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -224,7 +224,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-12-26 23:40:46" itemprop="dateModified" datetime="2022-12-26T23:40:46+08:00">2022-12-26</time>
+      <time title="修改时间：2022-12-28 15:02:59" itemprop="dateModified" datetime="2022-12-28T15:02:59+08:00">2022-12-28</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -335,6 +335,18 @@
 <p><img src="/2022/05/27/JVM%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/1.png" alt="1"></p>
 <p>​	<strong>好处：</strong>不管是哪个加载器加载，最终都会委托到 BootStrap ClassLoader 进行加载，这样保证了使用不同的类加载器得到的都是同一个结果。</p>
 <p>​	双亲委派模型保证了 Java 程序的稳定运行，可以避免类的重复加载（JVM 区分不同类的方式不仅仅根据类名，相同的类文件被不同的类加载器加载产生的是两个不同的类），也保证了 Java 的核心 API 不被篡改。如果没有使用双亲委派模型，而是每个类加载器加载自己的话就会出现一些问题，比如我们编写一个称为 java.lang.Object 类的话，那么程序运行的时候，系统就会出现多个不同的 Object 类。</p>
+<h1 id="自定义类加载器"><a href="#自定义类加载器" class="headerlink" title="自定义类加载器"></a><strong>自定义类加载器</strong></h1><h2 id="应用场景："><a href="#应用场景：" class="headerlink" title="应用场景："></a>应用场景：</h2><ol>
+<li>想加载非 classpath 随意路径中的类文件</li>
+<li>都是通过接口来使用实现，希望解耦时，常用在框架设计</li>
+<li>这些类希望予以隔离，不同应用的同名类都可以加载，不冲突，常见于 tomcat 容器</li>
+</ol>
+<h2 id="实现方法："><a href="#实现方法：" class="headerlink" title="实现方法："></a>实现方法：</h2><ol>
+<li>继承 ClassLoader 父类</li>
+<li><strong>要遵从双亲委派机制，重写 findClass 方法</strong>（重写 loadClass 方法，就不会走双亲委派机制）</li>
+<li>读取类文件的字节码</li>
+<li>调用父类的 defineClass 方法来加载类</li>
+<li>使用者调用该类加载器的 loadClass 方法</li>
+</ol>
 <h1 id="线程上下文类加载器"><a href="#线程上下文类加载器" class="headerlink" title="线程上下文类加载器"></a>线程上下文类加载器</h1><p>​	jvm推荐我们使用双亲委托机制，主要是保证了相同的类不会被重复加载。但是Java 提供了很多服务提供者接口（Service Provider Interface，SPI），允许第三方为这些接口提供实现。常见的 SPI 有 JDBC、JCE、JNDI、JAXP 和 JBI 等，在这些SPI场景中，却无法使用双亲委派机制。具体如JNDI服务，它的代码由启动类加载器来完成加载。但 JNDI 存在的目的就是对资源进行查找和集中管理，它需要调用由其他厂商实现并部署在应用程序的 ClassPath 下的 JNDI 服务提供者接口<code>（Service Provider Interface，SPI）</code>的代码，也就是说<strong>高层提供了统一接口让低层去实现，同时又要是在高层加载（或实例化）低层的类时。</strong>现在问题来了，启动类加载器是绝不可能找到并加载这些代码的，<strong>必须通过线程上下文类加载器（TCCL）来帮助高层的ClassLoader找到并加载该类</strong></p>
 <p>​	解决方法：</p>
 <p>​	<strong>线程上下文类加载器</strong>（Thread Context ClassLoader）。<strong>这个类加载器可以通过 java.lang.Thread 类的 getContextClassLoader()与setContextClassLoader(ClassLoader cl)分别来获取和设置，如果创建线程时还未设置，它将会从父线程中继承一个，如果在应用程序的全局范围内都没有设置过的话，那这个类加载器默认就是应用程序类加载器。</strong></p>
