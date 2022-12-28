@@ -128,7 +128,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-count">95</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -168,6 +168,121 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/06/24/%E7%BB%A7%E6%89%BF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="Jing">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangHao&博客">
+      <meta itemprop="description" content="Stay hungry,stay foolish">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | WangHao&博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/06/24/%E7%BB%A7%E6%89%BF/" class="post-title-link" itemprop="url">继承</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-06-24 22:39:21" itemprop="dateCreated datePublished" datetime="2022-06-24T22:39:21+08:00">2022-06-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-11-17 15:28:11" itemprop="dateModified" datetime="2022-11-17T15:28:11+08:00">2022-11-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>多继承<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43533825/article/details/96574691">https://blog.csdn.net/weixin_43533825/article/details/96574691</a></p>
+<p>java的三大特性 封装</p>
+<h2 id="封装："><a href="#封装：" class="headerlink" title="封装："></a><strong>封装：</strong></h2><p><strong>将数据和操作数据的方法进行有机结合，隐藏对象的属性和实现细节，仅对外公开接口来和对象进行交互.</strong></p>
+<h2 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h2><p>​		继承是使用<strong>已存在的类</strong>的定义作为基础建立新类的技术，新类的定义可以增加<strong>新的数据或新的功能，也可以用父类的功能，但不能选择性地继承父类</strong>。通过使用继承我们能够非常方便地复用以前的代码。	</p>
+<p>​		子类重新实现父类的方法称重写；重写时可以修改访问权限修饰符和返回值，方法名和参数类型及个数都不可以修改；仅当返回值为类类型时，重写的方法才可以修改返回值类型，且必须是父类方法返回值的子类；要么就不修改，与父类返回值类型相同。那么，该如何理解呢？为什么要是父类返回值类型的子类？</p>
+<p>​		我的理解是，这是为了向上转型；<strong>既然子类重写了父类的方法，有时候就需要用父类对象引用来调用子类重写的方法，</strong>为方便说明，记父类的返回值类型为A。也就是说要把A的子类对象引用赋给A的对象引用，如果此时返回值类型不是A类或A的子类，其他类的对象引用是不能赋给A的对象引用的，这样就会出错；所以说，子类重写的方法，如果返回值为类类型，其返回值类型必须与父类返回值类型相同或为父类返回值类型的子类。</p>
+<h2 id="多态"><a href="#多态" class="headerlink" title="多态"></a>多态</h2><p>​		首先我觉得即<strong>一个引用变量到底会指向哪个类的实例对象</strong>，该<strong>引用变量发出的方法调用到底是哪个类中实现的方法</strong>，必须在由程序<strong>运行期间</strong>才能决定。强调在编译的时候，不知道该引用指向的是哪个对象的实例，包括调用哪个实例的方法，只有运行的时候，动态知道。</p>
+<p>​		举个例子：</p>
+<p>​		任何事物的多个姿态，多个形态。比如，你说一个猫在吃东西，同样的，你也能说一个动物在吃东西。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public class Test &#123;</span><br><span class="line">    public static void main(String[] args)&#123;</span><br><span class="line">        Animal animal = new Cat();</span><br><span class="line">        animal.eat() // 猫也会吃饭</span><br><span class="line">        // 你看到了一只猫，同样它也是动物</span><br><span class="line">        // 比如有很多其他种类继承了动物哈，</span><br><span class="line">        // 当编译期间的animal引用变量，到底指的哪个实例对象，（重要）（主语是引用变量）</span><br><span class="line">        // 或者该引用调用的eat方法，到底是哪个实例对象的eat，编译期间恐怕不知道哦（主语是引用变量）</span><br><span class="line">        // 只有运行期间，哦哦， 原来是猫的eat方法哇...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="表现形式"><a href="#表现形式" class="headerlink" title="表现形式"></a>表现形式</h3><ul>
+<li><strong>Java的方法重载，就是在类中可以创建多个方法，它们具有相同的名字，但可具有不同的参数列表、返回值类型。调用方法时通过传递的参数类型来决定具体使用哪个方法</strong>，这就是多态性。比如，java lang的包很多工具类如String工具类，那么就有很多相同的名字，但是参数类型、数量和返回值等等不一样。</li>
+<li><strong>Java的方法重写，是父类与子类之间的多态性，子类可继承父类中的方法，但有时子类并不想原封不动地继承父类的方法，而是想作一定的修改，这就需要采用方法的重写。重写的参数列表和返回类型均不可修改</strong>。这也是多态性。比如JUC的AQS框架，凡事继承了AQS的那几个类，其中几个重要的方法，都被重写了，很多这样的情况。</li>
+</ul>
+<h3 id="底层原理："><a href="#底层原理：" class="headerlink" title="底层原理："></a>底层原理：</h3><p>​		首先当程序运行需要某个类时，类加载器会将相应的class文件载入到JVM中，并在方法区建立该类的类型信息（包括方法代码，类变量、成员变量以及<strong>方法表</strong>）。方法表的结构如同字段表一样，依次包括了<strong>访问标志、名称索引、描述符索引、属性表集合</strong>几项。</p>
+<p>​		<strong>方法表是实现动态调用的核心。为了优化对象调用方法的速度，方法区的类型信息会增加一个指针，该指针指向记录该类方法的方法表，方法表中的每一个项都是对应方法的指针</strong>。</p>
+<p><strong>方法调用的多态：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Person</span> &#123;</span><br><span class="line">    <span class="comment">// 重写object的toString</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">toString</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;I&#x27;m a person.&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">eat</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">speak</span><span class="params">()</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Boy</span> <span class="keyword">extends</span> <span class="title class_">Person</span>&#123;</span><br><span class="line">    <span class="comment">// 重写object的toString</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">toString</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;I&#x27;m a boy&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 继承Person的speak</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">speak</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">    <span class="comment">// 自己实现的自定义方法</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">fight</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Girl</span> <span class="keyword">extends</span> <span class="title class_">Person</span>&#123;</span><br><span class="line">    <span class="comment">// 重写object的toString</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">toString</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;I&#x27;m a girl&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 继承Person的speak</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">speak</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">    <span class="comment">// 自己实现的自定义方法</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">sing</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​		在方法表中方法表条目指向的是<strong>具体的方法地址</strong>，最开始的条目是继承值Object的方法，接着是继承自父类的方法，再接着是自定义的方法。</p>
+<p>​		上例中继承自于 Person 的方法 eat() 和 speak() 分别指向 <strong>Person 的方法实现和子类本身的实现</strong>。如果子类改写了父类的方法，那么子类和父类的那些<strong>同名的方法共享一个方法表项</strong>就是处在方法表中同一个索引的位置。因此，<strong>所有继承父类的子类的方法表中，其父类所定义的方法的偏移量也总是一个定值</strong>。Person 或 Object中的任意一个方法，在它们的方法表和其子类 Girl 和 Boy 的方法表中的位置 (index) 是一样的。这样 JVM 在调用实例方法其实只需要指定调用方法表中的第几个方法即可。</p>
+<p>调用过程：</p>
+<ol>
+<li>在常量池里找到方法调用的<strong>符号引用</strong>（肯定先看到Person定义引用类型）</li>
+<li>查看Person的方法表，得到speak方法在该<strong>方法表的偏移量</strong>（假设为15），这样就得到该方法的直接引用。</li>
+<li>根据this（invoker this字节码）指针得到<strong>具体的对象</strong>（即 girl 所指向的位于堆中的对象）。</li>
+<li>根据对象得到该对象对应的方法表，根据偏移量15查看<strong>有无重写（override）该方法</strong>，如果重写，则可以直接调用（Girl的方法表的speak项指向自身的方法而非父类）；如果没有重写，则需要拿到按照继承关系从下往上的基类（这里是Person类）的方法表，同样按照这个偏移量15查看有无该方法。</li>
+</ol>
+<p><strong>接口调用的多态：</strong></p>
+<p>​		一个类可以实现多个接口，那么就像多继承一样，这样的话，在方法表中的索引就会不一样，所以Java 对于接口方法的调用是采用<strong>搜索方法表</strong>的方式。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -365,7 +480,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/06/09/Json%E5%BA%8F%E5%88%97%E5%8C%96%E5%92%8C%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/06/09/Java%E5%BA%8F%E5%88%97%E5%8C%96%E5%92%8C%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/head.jpg">
@@ -383,7 +498,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/06/09/Json%E5%BA%8F%E5%88%97%E5%8C%96%E5%92%8C%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" class="post-title-link" itemprop="url">Json序列化和反序列化</a>
+          <a href="/2022/06/09/Java%E5%BA%8F%E5%88%97%E5%8C%96%E5%92%8C%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" class="post-title-link" itemprop="url">Json序列化和反序列化</a>
         </h2>
 
         <div class="post-meta-container">
@@ -1001,103 +1116,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2022/05/12/Java%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/29/%E5%BC%82%E5%B8%B8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="Jing">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="WangHao&博客">
-      <meta itemprop="description" content="Stay hungry,stay foolish">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | WangHao&博客">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/04/29/%E5%BC%82%E5%B8%B8/" class="post-title-link" itemprop="url">异常</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-04-29 16:42:40" itemprop="dateCreated datePublished" datetime="2021-04-29T16:42:40+08:00">2021-04-29</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-08-08 15:05:37" itemprop="dateModified" datetime="2022-08-08T15:05:37+08:00">2022-08-08</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="异常概念"><a href="#异常概念" class="headerlink" title="异常概念"></a>异常概念</h1><p>实际上，当java程序执行时出现错误时，jvm会把执行时出错的信息(例如出错原因、类型、 位置)收集，然后打包成为1个对象(object)，程序员可以对这种对象进行处理。这种对象就是所谓的异常。<strong>可能出现的异常的代码并不是肯定会出现异常, 还取决于执行环境和数据</strong>。</p>
-<p>在Java中，所有的异常都有一个共同的超类Throwable（可抛出类）。Throwable类有两个重要的子类：Exception（异常）和 Error（错误），二者都是Java异常处理的重要子类，各自都包含大量子类。异常和错误的区别是：异常能被程序本身可以处理，错误是无法处理。</p>
-<h1 id="异常分类：两种分类方法"><a href="#异常分类：两种分类方法" class="headerlink" title="异常分类：两种分类方法"></a>异常分类：两种分类方法</h1><h2 id="Error-和-Exception"><a href="#Error-和-Exception" class="headerlink" title="Error 和 Exception"></a>Error 和 Exception</h2><ul>
-<li><strong>Error</strong>：表示程序在运行期间出现了非常严重的错误，并且该错误是不可恢复的，由于这属于JVM层次的严重错误，因此这种错误是会导致程序终止执行的。此外，编译器不会检查Error是否被处理，因此在程序中不推荐去捕获Error类型的异常，主要原因是运行时异常多是由于逻辑错误导致的，属于应该解决的错误，也就是说，一个正确的程序中是不应该存在Error的。OutOfMemoryError、ThreadDeath等都属于错误。当这些异常发生时，JVM一般会选择将线程终止。</li>
-<li><strong>Exception</strong>：表示可恢复的异常，是编译器可以捕捉到的。可分为运行时异常（RuntimeException）和非运行时异常。</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/04/29/%E5%BC%82%E5%B8%B8/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>

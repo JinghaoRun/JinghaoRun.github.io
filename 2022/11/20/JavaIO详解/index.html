@@ -27,16 +27,16 @@
 <meta property="og:site_name" content="WangHao&amp;博客">
 <meta property="og:description" content="Java IO详解基本概念：同步与异步 同步：是应用程序要直接参与 IO 读写的操作。同步方式在处理 IO 事件的时候，必须阻塞在某个方法上面等待我们的 IO 事件完成(阻塞 IO 事件或者通过轮询 IO事件的方式) 异步：所有的 IO 读写交给操作系统去处理，应用程序只需要等待通知。所有的 IO 读写都交给了操作系统。这个时候，我们可以去做其他的事情，并不需要去完成真正的 IO 操作，当操作完成">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2022/11/20/JavaIO%E8%AF%A6%E8%A7%A3/blog/source_posts/JavaIO详解/1.jpg">
-<meta property="og:image" content="http://example.com/2022/11/20/JavaIO%E8%AF%A6%E8%A7%A3/blog/source_posts/JavaIO详解/2.jpg">
+<meta property="og:image" content="http://example.com/2022/11/20/JavaIO%E8%AF%A6%E8%A7%A3/JavaIO%E8%AF%A6%E8%A7%A3%5C1.jpg">
+<meta property="og:image" content="http://example.com/2022/11/20/JavaIO%E8%AF%A6%E8%A7%A3/JavaIO%E8%AF%A6%E8%A7%A3%5C2.jpg">
 <meta property="og:image" content="http://example.com/2022/11/20/JavaIO%E8%AF%A6%E8%A7%A3/blog/source_posts/JavaIO详解/3.png">
 <meta property="og:image" content="http://example.com/2022/11/20/JavaIO%E8%AF%A6%E8%A7%A3/blog/source_posts/JavaIO详解/4.png">
 <meta property="article:published_time" content="2022-11-20T06:53:17.000Z">
-<meta property="article:modified_time" content="2022-12-22T03:05:52.599Z">
+<meta property="article:modified_time" content="2022-12-28T09:41:32.127Z">
 <meta property="article:author" content="Jing">
 <meta property="article:tag" content="JavaIO详解">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2022/11/20/JavaIO%E8%AF%A6%E8%A7%A3/blog/source_posts/JavaIO详解/1.jpg">
+<meta name="twitter:image" content="http://example.com/2022/11/20/JavaIO%E8%AF%A6%E8%A7%A3/JavaIO%E8%AF%A6%E8%A7%A3%5C1.jpg">
 
 
 <link rel="canonical" href="http://example.com/2022/11/20/JavaIO%E8%AF%A6%E8%A7%A3/">
@@ -137,7 +137,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-count">95</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -223,7 +223,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-12-22 11:05:52" itemprop="dateModified" datetime="2022-12-22T11:05:52+08:00">2022-12-22</time>
+      <time title="修改时间：2022-12-28 17:41:32" itemprop="dateModified" datetime="2022-12-28T17:41:32+08:00">2022-12-28</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -264,11 +264,11 @@
 <li>字符流：而字符流在操作时使用了缓冲区，通过缓冲区再操作文件。字符流以字符为单位。</li>
 </ul>
 <p>字节流可以处理任何类型的数据，如图片、avi等，而字符流只能处理字符类型的数据</p>
-<p><img src="/2022/11/20/JavaIO%E8%AF%A6%E8%A7%A3/blog\source_posts\JavaIO详解\1.jpg"></p>
+<p><img src="/2022/11/20/JavaIO%E8%AF%A6%E8%A7%A3/JavaIO%E8%AF%A6%E8%A7%A3%5C1.jpg"></p>
 <p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/25418336">图片来源</a></p>
 <h2 id="BIO"><a href="#BIO" class="headerlink" title="BIO"></a>BIO</h2><p>同步阻塞io：进程系统调用获取数据后，没有等到数据，则陷入阻塞状态。等到IO获取数据后，进程才就绪状态，经典模式为Acceptor模式：即每当一个client线程访问，服务器创建一个线程来回答。可以采用线程池进行优化。</p>
 <p>每个客户端的Socket连接请求，服务端都会对应有个处理线程与之对应，对于没有分配到处理线程的连接就会被阻塞或者拒绝。相当于是一个连接一个线程。</p>
-<p><img src="/2022/11/20/JavaIO%E8%AF%A6%E8%A7%A3/blog\source_posts\JavaIO详解\2.jpg"></p>
+<p><img src="/2022/11/20/JavaIO%E8%AF%A6%E8%A7%A3/JavaIO%E8%AF%A6%E8%A7%A3%5C2.jpg"></p>
 <p><strong>特点：</strong></p>
 <ol>
 <li>使用一个独立的线程维护一个socket连接，随着连接数量的增多，对虚拟机造成一定压力。</li>
