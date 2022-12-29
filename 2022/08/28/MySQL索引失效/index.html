@@ -148,7 +148,7 @@
 <p>​		此时这条语句是不会走t_modified字段索引的，而where t_modified&#x3D;’2018-7-1’的时候可以用上索引。原因如下：</p>
 <span id="more"></span>
 
-<p><img src="/MySQL%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88%5C1.jpg"></p>
+<p><img src="/2022/08/28/MySQL%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88/MySQL%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88%5C1.jpg"></p>
 <p>​		当条件用的是where t_modified&#x3D;’2018-7-1’的话，引擎就会按照上面绿色箭头的路线，快速定位到 t_modified&#x3D;’2018-7-1’需要的结果。但是，如果计算month()函数的话，你会看到传入7的时候，在树的第一层就不知道该怎么办了。</p>
 <p>​		<strong>对索引字段做函数操作，可能会破坏索引值的有序性，因此优化器就决定放弃走树搜索功能。</strong>然后优化器对比索引大小，选择一个索引较小的走全索引扫描。</p>
 <h1 id="二：隐式类型转换"><a href="#二：隐式类型转换" class="headerlink" title="二：隐式类型转换"></a>二：隐式类型转换</h1><p>如下例子：</p>
@@ -160,7 +160,7 @@
 <p>​		交易日志表tradelog（utf8mb4）和交易详情表trade_detail（utf8）（tradeid字段有索引）连表查询，现在要查询id&#x3D;2（tradelog）的交易的所有操作步骤信息（trade_detail）sql语句如下：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select d.* from tradelog l, trade_detail d where d.tradeid=l.tradeid and l.id=2; </span><br></pre></td></tr></table></figure>
 
-<p><img src="/MySQL%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88%5C2.jpg"></p>
+<p><img src="/2022/08/28/MySQL%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88/MySQL%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88%5C2.jpg"></p>
 <p>​		</p>
 <ol>
 <li>第一行显示优化器会先在交易记录表tradelog上查到id&#x3D;2的行，这个步骤用上了主键索引，rows&#x3D;1表示只扫描一行；</li>

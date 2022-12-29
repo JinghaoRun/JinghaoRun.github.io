@@ -164,7 +164,7 @@
 <h2 id="Docker镜像加载原理"><a href="#Docker镜像加载原理" class="headerlink" title="Docker镜像加载原理"></a>Docker镜像加载原理</h2><p>​		docker的镜像实际上由一层一层的文件系统组成，这种层级的文件系统UnionFS。</p>
 <p>​		bootfs(boot file system)主要包含bootloader和kernel, bootloader主要是引导加载kernel, Linux刚启动时会加载bootfs文件系统，在Docker镜像的最底层是引导文件系统bootfs。</p>
 <p>​		rootfs (root file system) ，在bootfs之上。包含的就是典型 Linux 系统中的 &#x2F;dev, &#x2F;proc, &#x2F;bin, &#x2F;etc 等标准目录和文件。rootfs就是各种不同的操作系统发行版</p>
-<p><img src="/Docker%E7%9B%B8%E5%85%B3%E4%BD%BF%E7%94%A8%5C1.png"></p>
+<p><img src="/2022/09/03/Docker%E7%9B%B8%E5%85%B3%E4%BD%BF%E7%94%A8/Docker%E7%9B%B8%E5%85%B3%E4%BD%BF%E7%94%A8%5C1.png"></p>
 <h2 id="镜像与容器的关系"><a href="#镜像与容器的关系" class="headerlink" title="镜像与容器的关系"></a>镜像与容器的关系</h2><p>​		Docker镜像层都是只读的，容器层是可写的，当容器启动时，一个新的可写层被加载到镜像的顶部。这一层通常被称作“容器层”，“容器层”之下的都叫“镜像层”。所有对容器的改动 - 无论添加、删除、还是修改文件都只会发生在容器层中。只有容器层是可写的，容器层下面的所有镜像层都是只读的。</p>
 <p><strong>容器提交为镜像：</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker commit 提交容器副本使之成为一个新的镜像</span><br><span class="line"></span><br><span class="line">docker commit -m=&quot;提交的描述信息&quot; -a=&quot;作者&quot;容器ID要创建的目标镜像名:[标签名]</span><br></pre></td></tr></table></figure>
@@ -193,7 +193,7 @@
 <p>		</p>
 <p>Dockerfile是用来构建Docker镜像的文本文件，是由一条条构建镜像所需的指令和参数构成的脚本。</p>
 <p>​		我的理解就是，上面讲过镜像是一层一层构成的，在启动容器之前，根据需求定制镜像，这个DockerFile就是需求描述，使用docker build命令来构建镜像，之后在run的容器就是我们定制后需要的容器。</p>
-<h2 id="常用指令"><a href="#常用指令" class="headerlink" title="常用指令"></a><strong>常用指令</strong></h2><p><img src="/Docker%E7%9B%B8%E5%85%B3%E4%BD%BF%E7%94%A8%5C2.png"></p>
+<h2 id="常用指令"><a href="#常用指令" class="headerlink" title="常用指令"></a><strong>常用指令</strong></h2><p><img src="/2022/09/03/Docker%E7%9B%B8%E5%85%B3%E4%BD%BF%E7%94%A8/Docker%E7%9B%B8%E5%85%B3%E4%BD%BF%E7%94%A8%5C2.png"></p>
 <h2 id="项目发布到Docker步骤"><a href="#项目发布到Docker步骤" class="headerlink" title="项目发布到Docker步骤"></a>项目发布到<strong>Docker</strong>步骤</h2><ol>
 <li>使用Maven中Clean  Complie  Package将项目打包成jar包</li>
 <li>将编写的DockerFile和jar包上川岛宿主机的同一个目录下</li>

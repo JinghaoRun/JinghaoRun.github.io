@@ -199,7 +199,7 @@
 <li><p>适用场景：堆内存较小的场景，例如个人电脑和部分微服务场景。</p>
 </li>
 </ul>
-<p><img src="G:\blog\source_posts\JVM-GCRoot检测算法和垃圾收集器\1.png"></p>
+<p><img src="/2022/12/27/JVM-GCRoot%E6%A3%80%E6%B5%8B%E7%AE%97%E6%B3%95%E5%92%8C%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/blog\source_posts\JVM-GCRoot检测算法和垃圾收集器\1.png"></p>
 <h3 id="吞吐量优先组合"><a href="#吞吐量优先组合" class="headerlink" title="吞吐量优先组合"></a>吞吐量优先组合</h3><p>Parallel Scavenge + Paralledl Old，开启参数： <code>-XX:+UseParallelGC -XX:+UseParallelOldGC</code>，jdk1.8的默认组合方式。<strong>新生代采用标记-复制算法，老年代采用标记-整理算法。</strong></p>
 <p>Parallel Scavenge 收集器采用多线程进行垃圾收集，提供了很多参数供用户找到最合适的停顿时间或最大吞吐量</p>
 <p><strong>吞吐量就是 CPU 中用于运行用户代码的时间与 CPU 总消耗时间的比值。</strong></p>
@@ -221,7 +221,7 @@
 <li><strong>重新标记（STW）：</strong> 重新标记阶段就是为了修正并发标记期间因为用户程序继续运行而导致标记产生变动的那一部分对象的标记记录，是通过<strong>增量更新</strong>算法实现的。这个阶段的停顿时间一般会比初始标记阶段的时间稍长，远远比并发标记阶段时间短</li>
 <li><strong>并发清除：</strong> 开启用户线程，同时 GC 线程开始对未标记的区域做清扫。</li>
 </ul>
-<p><img src="G:\blog\source_posts\JVM-GCRoot检测算法和垃圾收集器\2.png"></p>
+<p><img src="/2022/12/27/JVM-GCRoot%E6%A3%80%E6%B5%8B%E7%AE%97%E6%B3%95%E5%92%8C%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/blog\source_posts\JVM-GCRoot检测算法和垃圾收集器\2.png"></p>
 <p>优点：</p>
 <ul>
 <li><strong>并发收集、低停顿</strong></li>

@@ -171,7 +171,7 @@
 <li>具体产品（ConcreteProduct）：是简单工厂模式的创建目标。</li>
 </ul>
 <h1 id="简单工厂模式实例"><a href="#简单工厂模式实例" class="headerlink" title="简单工厂模式实例"></a>简单工厂模式实例</h1><p>我们将创建一个 <em>Shape</em> 接口（抽象产品）和实现 <em>Shape</em> 接口的实体类（具体产品）。下一步是定义工厂类 <em>ShapeFactory</em>。<em>FactoryPatternDemo</em> 类使用 <em>ShapeFactory</em> 来获取 <em>Shape</em> 对象。它将向 <em>ShapeFactory</em> 传递信息（<em>CIRCLE &#x2F; RECTANGLE &#x2F; SQUARE</em>），以便获取它所需对象的类型。</p>
-<p><img src="/%E9%9D%99%E6%80%81%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F%5C1.jpg" alt="1"></p>
+<p><img src="/2022/07/12/%E9%9D%99%E6%80%81%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/%E9%9D%99%E6%80%81%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F%5C1.jpg" alt="1"></p>
 <p>产品接口：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Shape</span> &#123;</span><br><span class="line">   <span class="keyword">void</span> <span class="title function_">draw</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 

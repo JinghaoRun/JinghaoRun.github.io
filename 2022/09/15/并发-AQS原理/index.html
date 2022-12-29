@@ -153,7 +153,7 @@
 <p>​		CLH(Craig,Landin,and Hagersten)队列是一个虚拟的双向队列（虚拟的双向队列即不存在队列实例，仅存在结点之间的关联关系）。AQS 是将每条请求共享资源的线程封装成一个 CLH 锁队列的一个结点（Node）来实现锁的分配。</p>
 <span id="more"></span>
 
-<p><img src="/%E5%B9%B6%E5%8F%91-AQS%E5%8E%9F%E7%90%86%5C1.jpg"></p>
+<p><img src="/2022/09/15/%E5%B9%B6%E5%8F%91-AQS%E5%8E%9F%E7%90%86/%E5%B9%B6%E5%8F%91-AQS%E5%8E%9F%E7%90%86%5C1.jpg"></p>
 <p>​		AQS 使用一个 int 成员变量来表示同步状态，通过内置的 FIFO 队列来完成获取资源线程的排队工作。AQS 使用 CAS 对该同步状态进行原子操作实现对其值的修改。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">volatile</span> <span class="type">int</span> state;<span class="comment">//共享变量，使用volatile修饰保证线程可见性Copy to clipboardErrorCopied</span></span><br></pre></td></tr></table></figure>
 

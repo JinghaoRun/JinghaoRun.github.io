@@ -162,7 +162,7 @@
 </ul>
 <h2 id="Spring-AOP的实现方式："><a href="#Spring-AOP的实现方式：" class="headerlink" title="Spring AOP的实现方式："></a>Spring AOP的实现方式：</h2><p>​		在 Spring AOP 中动态代理的实现方式可分为 JDK 动态代理和 CGLIB 字节码提升，JDK 动态代理只能对接口进行代理，而 CGLIB 字节码提升对类也是可以进行代理的。</p>
 <h3 id="Joinpoint"><a href="#Joinpoint" class="headerlink" title="Joinpoint"></a>Joinpoint</h3><p>​		Joinpoint（连接点） 在 AOP 中是指在程序执行过程中的某个阶段点，简而言之就是指类中的方法、构造器、字段。</p>
-<p><img src="G:\blog\source_posts\SpringAOP源码详解\1.jpg"></p>
+<p><img src="/2022/10/26/SpringAOP%E6%BA%90%E7%A0%81%E8%AF%A6%E8%A7%A3/blog\source_posts\SpringAOP源码详解\1.jpg"></p>
 <p>​		Joinpoint 接口表示一个通用的运行时连接点，是具有一定业务逻辑的，其接口定义如下：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Joinpoint</span> &#123;</span><br><span class="line">    <span class="comment">// 执行连接点的业务逻辑，并进入下一个拦截器</span></span><br><span class="line">	Object <span class="title function_">proceed</span><span class="params">()</span> <span class="keyword">throws</span> Throwable;</span><br><span class="line"></span><br><span class="line">	Object <span class="title function_">getThis</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">	AccessibleObject <span class="title function_">getStaticPart</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -174,7 +174,7 @@
 
 <p>ReflectiveMethodInvocation 和 CglibMethodInvocation 都是 MethodInvocation  的子类，<strong>ReflectiveMethodInvocation 是 Spring 基于 JDK 动态代理实现的 Joinpoint ，而  CglibMethodInvocation 是Spring 基于 CGLIB 实现的 Joinpoint。</strong></p>
 <h4 id="Pointcut"><a href="#Pointcut" class="headerlink" title="Pointcut"></a>Pointcut</h4><p>Pointcut（切入点）在 AOP 中是指切面与程序流程的交叉点，即用于匹配那些需要增强的连接点，简而言之就是充当过滤器的角色。</p>
-<p><img src="G:\blog\source_posts\SpringAOP源码详解\2.jpg"></p>
+<p><img src="/2022/10/26/SpringAOP%E6%BA%90%E7%A0%81%E8%AF%A6%E8%A7%A3/blog\source_posts\SpringAOP源码详解\2.jpg"></p>
 <p>Pointcut 接口是 Spring AOP 中切入点的抽象，由ClassFilter和MethodMatcher组成，其接口定义如下：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Pointcut</span> &#123;</span><br><span class="line">    </span><br><span class="line">	ClassFilter <span class="title function_">getClassFilter</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">	MethodMatcher <span class="title function_">getMethodMatcher</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">	<span class="type">Pointcut</span> <span class="variable">TRUE</span> <span class="operator">=</span> TruePointcut.INSTANCE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 

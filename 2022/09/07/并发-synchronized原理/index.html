@@ -185,10 +185,10 @@
 <p>​		对象锁的的拥有者线程才可以执行 <code>monitorexit</code> 指令来释放锁。在执行 <code>monitorexit</code> 指令后，将锁计数器设为 0，表明锁被释放，其他线程可以尝试获取锁。</p>
 <p>如果获取对象锁失败，那当前线程就要阻塞等待，直到锁被另外一个线程释放为止。</p>
 <h2 id="Monitor-原理"><a href="#Monitor-原理" class="headerlink" title="Monitor 原理"></a>Monitor 原理</h2><p><strong>32位虚拟机对象头Mark Word：</strong></p>
-<p><img src="G:\blog\source_posts\synchronized原理\1.jpg"></p>
+<p><img src="/2022/09/07/%E5%B9%B6%E5%8F%91-synchronized%E5%8E%9F%E7%90%86/blog\source_posts\synchronized原理\1.jpg"></p>
 <p>​		Monitor 被翻译为监视器或<strong>管程</strong>，每个 Java 对象都可以关联一个 Monitor 对象，如果使用 synchronized 给对象上锁（注意，必须是重量级）之后，该对象头的 Mark Word 就被设置为指向 Monitor 对象的指针 + “10” 重量级锁标志。</p>
 <p>Monitor 结构如下：</p>
-<p><img src="/synchronized%E5%8E%9F%E7%90%86%5C2.png"></p>
+<p><img src="/2022/09/07/%E5%B9%B6%E5%8F%91-synchronized%E5%8E%9F%E7%90%86/synchronized%E5%8E%9F%E7%90%86%5C2.png"></p>
 <ul>
 <li>刚开始的时候 Monitor 中 Owner 为 null；</li>
 <li>当 Thread-2 执行 synchronized(obj) 就会将obj 关联的 Monitor 的所有者 Owner 置为 Thread-2，Monitor 中只能有一个 Owner ；</li>
