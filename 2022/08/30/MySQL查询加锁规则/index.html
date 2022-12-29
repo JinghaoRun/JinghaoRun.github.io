@@ -27,13 +27,13 @@
 <meta property="og:site_name" content="WangHao&amp;博客">
 <meta property="og:description" content="​		间隙锁是一种加在两个索引之间的锁，例如(10, 20)；或者加在第一个索引之前，例如(-∞, 10)；或最后一个索引之后的间隙，例如(20, ∞)。这个间隙可以跨一个索引记录，多个索引记录，甚至是空的。另：间隙锁在可重复读隔离级别下才有效，而在别的隔离级别下只有行锁。在读提交隔离级别下语句执行过程中加上的行锁，在语句执行完成后，就要把“不满足条件的行”上的行锁直接释放了，不需要等到事务提交。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2022/08/30/MySQL%E6%9F%A5%E8%AF%A2%E5%8A%A0%E9%94%81%E8%A7%84%E5%88%99/MySQL%E6%9F%A5%E8%AF%A2%E5%8A%A0%E9%94%81%E8%A7%84%E5%88%99%5C1.jpg">
+<meta property="og:image" content="http://example.com/MySQL%E6%9F%A5%E8%AF%A2%E5%8A%A0%E9%94%81%E8%A7%84%E5%88%99%5C1.jpg">
 <meta property="article:published_time" content="2022-08-30T08:14:27.000Z">
 <meta property="article:modified_time" content="2022-09-02T01:49:32.517Z">
 <meta property="article:author" content="Jing">
 <meta property="article:tag" content="MySQL查询加锁规则">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2022/08/30/MySQL%E6%9F%A5%E8%AF%A2%E5%8A%A0%E9%94%81%E8%A7%84%E5%88%99/MySQL%E6%9F%A5%E8%AF%A2%E5%8A%A0%E9%94%81%E8%A7%84%E5%88%99%5C1.jpg">
+<meta name="twitter:image" content="http://example.com/MySQL%E6%9F%A5%E8%AF%A2%E5%8A%A0%E9%94%81%E8%A7%84%E5%88%99%5C1.jpg">
 
 
 <link rel="canonical" href="http://example.com/2022/08/30/MySQL%E6%9F%A5%E8%AF%A2%E5%8A%A0%E9%94%81%E8%A7%84%E5%88%99/">
@@ -260,7 +260,7 @@
 
 
 
-<p><img src="/2022/08/30/MySQL%E6%9F%A5%E8%AF%A2%E5%8A%A0%E9%94%81%E8%A7%84%E5%88%99/MySQL%E6%9F%A5%E8%AF%A2%E5%8A%A0%E9%94%81%E8%A7%84%E5%88%99%5C1.jpg"></p>
+<p><img src="/MySQL%E6%9F%A5%E8%AF%A2%E5%8A%A0%E9%94%81%E8%A7%84%E5%88%99%5C1.jpg"></p>
 <p>​		这里session A要给普通索引c上c&#x3D;5的这一行加上读锁。</p>
 <ol>
 <li>加锁单位是next-key lock，因此会给(0,5]加上next-key lock。</li>

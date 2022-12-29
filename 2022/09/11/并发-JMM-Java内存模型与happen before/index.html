@@ -27,14 +27,14 @@
 <meta property="og:site_name" content="WangHao&amp;博客">
 <meta property="og:description" content="CPU 缓存模型​		CPU Cache 缓存的是内存数据用于解决 CPU 处理速度和内存不匹配的问题，内存缓存的是硬盘数据用于解决硬盘访问速度过慢的问题。现代的 CPU Cache 通常分为三层，分别叫 L1,L2,L3 Cache。 ​		CPU Cache 的工作方式： 先复制一份数据到 CPU Cache 中，当 CPU 需要用到的时候就可以直接从 CPU Cache 中读取数据，当运算完">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2022/09/11/%E5%B9%B6%E5%8F%91-JMM-Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E4%B8%8Ehappen%20before/%E5%B9%B6%E5%8F%91-JMM-Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%5C1.png">
+<meta property="og:image" content="http://example.com/%E5%B9%B6%E5%8F%91-JMM-Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%5C1.png">
 <meta property="article:published_time" content="2022-09-11T04:12:02.000Z">
 <meta property="article:modified_time" content="2022-09-11T06:58:12.093Z">
 <meta property="article:author" content="Jing">
 <meta property="article:tag" content="JMM:Java内存模型">
 <meta property="article:tag" content="happen-before">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2022/09/11/%E5%B9%B6%E5%8F%91-JMM-Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E4%B8%8Ehappen%20before/%E5%B9%B6%E5%8F%91-JMM-Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%5C1.png">
+<meta name="twitter:image" content="http://example.com/%E5%B9%B6%E5%8F%91-JMM-Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%5C1.png">
 
 
 <link rel="canonical" href="http://example.com/2022/09/11/%E5%B9%B6%E5%8F%91-JMM-Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E4%B8%8Ehappen%20before/">
@@ -255,7 +255,7 @@
 <li><strong>主内存</strong> ：所有线程创建的实例对象都存放在主内存中，不管该实例对象是成员变量还是方法中的本地变量(也称局部变量)</li>
 <li><strong>本地内存</strong> ：每个线程都有一个私有的本地内存来存储共享变量的副本，并且，每个线程只能访问自己的本地内存，无法访问其他线程的本地内存。本地内存是 JMM 抽象出来的一个概念，存储了主内存中的共享变量副本。</li>
 </ul>
-<p><img src="/2022/09/11/%E5%B9%B6%E5%8F%91-JMM-Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E4%B8%8Ehappen%20before/%E5%B9%B6%E5%8F%91-JMM-Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%5C1.png"></p>
+<p><img src="/%E5%B9%B6%E5%8F%91-JMM-Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%5C1.png"></p>
 <p>从上图来看，线程 1 与线程 2 之间如果要进行通信的话，必须要经历下面 2 个步骤：</p>
 <ol>
 <li>线程 1 把本地内存中修改过的共享变量副本的值同步到主内存中去。</li>

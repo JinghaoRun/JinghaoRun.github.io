@@ -27,13 +27,13 @@
 <meta property="og:site_name" content="WangHao&amp;博客">
 <meta property="og:description" content="ReentrantLock 简介​		ReentrantLock 又被称为显式锁，它是基于 AQS 原理继承 Lock 接口实现的，简而言之，就是用 Java 实现的锁，而 synchronized 是用 c++ 实现的，所以被称为隐式锁。它们都支持可重入，相对于 synchronized 它还具备如下特点  可中断（指的是当线程竞争锁失败时，被动避免死等） 可以设置超时时间（主动避免死等，可以避">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2022/09/11/%E5%B9%B6%E5%8F%91-ReentrantLock%E7%9A%84%E5%8E%9F%E7%90%86/blog/source_posts/并发-ReentrantLock的原理/1.jpg">
+<meta property="og:image" content="g:/blog/source_posts/并发-ReentrantLock的原理/1.jpg">
 <meta property="article:published_time" content="2022-09-11T08:34:13.000Z">
 <meta property="article:modified_time" content="2022-09-11T12:30:54.962Z">
 <meta property="article:author" content="Jing">
 <meta property="article:tag" content="ReentrantLock">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2022/09/11/%E5%B9%B6%E5%8F%91-ReentrantLock%E7%9A%84%E5%8E%9F%E7%90%86/blog/source_posts/并发-ReentrantLock的原理/1.jpg">
+<meta name="twitter:image" content="g:/blog/source_posts/并发-ReentrantLock的原理/1.jpg">
 
 
 <link rel="canonical" href="http://example.com/2022/09/11/%E5%B9%B6%E5%8F%91-ReentrantLock%E7%9A%84%E5%8E%9F%E7%90%86/">
@@ -296,7 +296,7 @@
 <p>使用方法:</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="type">ReentrantLock</span> <span class="variable">lock</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ReentrantLock</span>();</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建一个新的条件变量(休息室)</span></span><br><span class="line">    <span class="type">Condition</span> <span class="variable">condition1</span> <span class="operator">=</span> lock.newCondition();</span><br><span class="line">    <span class="type">Condition</span> <span class="variable">condition2</span> <span class="operator">=</span> lock.newCondition();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获得锁</span></span><br><span class="line">    lock.lock();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 进入休息室1等待</span></span><br><span class="line">    condition1.await();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 唤醒休息室1里的一个线程</span></span><br><span class="line">    condition1.signal();</span><br><span class="line">    <span class="comment">// 唤醒休息室1里的所有线程</span></span><br><span class="line">    condition1.signalAll();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h1 id="ReentrantLock的原理"><a href="#ReentrantLock的原理" class="headerlink" title="ReentrantLock的原理"></a>ReentrantLock的原理</h1><p><img src="/2022/09/11/%E5%B9%B6%E5%8F%91-ReentrantLock%E7%9A%84%E5%8E%9F%E7%90%86/blog\source_posts\并发-ReentrantLock的原理\1.jpg"></p>
+<h1 id="ReentrantLock的原理"><a href="#ReentrantLock的原理" class="headerlink" title="ReentrantLock的原理"></a>ReentrantLock的原理</h1><p><img src="G:\blog\source_posts\并发-ReentrantLock的原理\1.jpg"></p>
 <ul>
 <li>ReentrantLock实现了Lock接口，并使用内部类Sync(Sync继承AbstractQueuedSynchronizer)来实现同步操作</li>
 <li>ReentrantLock内部类Sync</li>

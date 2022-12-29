@@ -27,15 +27,15 @@
 <meta property="og:site_name" content="WangHao&amp;博客">
 <meta property="og:description" content="ThreadLocal的使用示例： 123456789101112131415161718192021222324public class ThreadLocalTest &amp;#123;    private List&lt;String&gt; messages &#x3D; new ArrayList&lt;&gt;();    &#x2F;&#x2F;存入当前类的实例    public static final Thre">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2022/09/13/%E5%B9%B6%E5%8F%91-ThreadLocal/%E5%B9%B6%E5%8F%91-ThreadLocal%5C1.jpg">
-<meta property="og:image" content="http://example.com/2022/09/13/%E5%B9%B6%E5%8F%91-ThreadLocal/blog/source_posts/并发-ThreadLocal/2.jpg">
-<meta property="og:image" content="http://example.com/2022/09/13/%E5%B9%B6%E5%8F%91-ThreadLocal/%E5%B9%B6%E5%8F%91-ThreadLocal%5C3.jpg">
+<meta property="og:image" content="http://example.com/%E5%B9%B6%E5%8F%91-ThreadLocal%5C1.jpg">
+<meta property="og:image" content="g:/blog/source_posts/并发-ThreadLocal/2.jpg">
+<meta property="og:image" content="http://example.com/%E5%B9%B6%E5%8F%91-ThreadLocal%5C3.jpg">
 <meta property="article:published_time" content="2022-09-13T03:29:50.000Z">
 <meta property="article:modified_time" content="2022-09-13T08:40:52.477Z">
 <meta property="article:author" content="Jing">
 <meta property="article:tag" content="ThreadLocal">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2022/09/13/%E5%B9%B6%E5%8F%91-ThreadLocal/%E5%B9%B6%E5%8F%91-ThreadLocal%5C1.jpg">
+<meta name="twitter:image" content="http://example.com/%E5%B9%B6%E5%8F%91-ThreadLocal%5C1.jpg">
 
 
 <link rel="canonical" href="http://example.com/2022/09/13/%E5%B9%B6%E5%8F%91-ThreadLocal/">
@@ -247,13 +247,13 @@
 <li>get()：获取线程本地变量的内容。</li>
 <li>remove()：移除线程本地变量。注意在线程池的线程复用场景中在线程执行完毕时一定要调用remove，避免在线程被重新放入线程池中时被本地变量的旧状态仍然被保存。</li>
 </ul>
-<h1 id="ThreadLocal的数据结构"><a href="#ThreadLocal的数据结构" class="headerlink" title="ThreadLocal的数据结构"></a>ThreadLocal的数据结构</h1><p><img src="/2022/09/13/%E5%B9%B6%E5%8F%91-ThreadLocal/%E5%B9%B6%E5%8F%91-ThreadLocal%5C1.jpg"></p>
+<h1 id="ThreadLocal的数据结构"><a href="#ThreadLocal的数据结构" class="headerlink" title="ThreadLocal的数据结构"></a>ThreadLocal的数据结构</h1><p><img src="/%E5%B9%B6%E5%8F%91-ThreadLocal%5C1.jpg"></p>
 <p><code>Thread</code>类有一个类型为<code>ThreadLocal.ThreadLocalMap</code>的实例变量<code>threadLocals</code>，也就是说<strong>每个线程有一个自己的<code>ThreadLocalMap</code>。</strong></p>
 <p><code>ThreadLocalMap</code>有自己的独立实现，可以简单地将它的<code>key</code>视作<code>ThreadLocal</code>，<code>value</code>为代码中放入的值（实际上<code>key</code>并不是<code>ThreadLocal</code>本身，而是它的一个<strong>弱引用</strong>）。</p>
 <p>每个线程在往<code>ThreadLocal</code>里放值的时候，<strong>都会往自己的<code>ThreadLocalMap</code>里存，读也是以<code>ThreadLocal</code>作为引用，在自己的<code>map</code>里找对应的<code>key</code><strong>，当需要存多个值时，可以直接存一个复杂对象或者是新建多个ThreadLocal作为当前线程ThreadLocalMap的key来存储值。从而实现了</strong>线程隔离</strong>。</p>
 <p><code>ThreadLocalMap</code>有点类似<code>HashMap</code>的结构，只是<code>HashMap</code>是由<strong>数组+链表</strong>实现的，而<code>ThreadLocalMap</code>中并没有<strong>链表</strong>结构，在插入数据出现散列冲突时会不断向后遍历找到空的位置，将值插入进去。</p>
 <p>我们还要注意<code>Entry</code>， 它的<code>key</code>是<code>ThreadLocal&lt;?&gt; k</code> ，继承自<code>WeakReference</code>， 也就是我们常说的弱引用类型。</p>
-<h1 id="ThreadLocal-set-方法源码"><a href="#ThreadLocal-set-方法源码" class="headerlink" title="ThreadLocal.set()方法源码"></a>ThreadLocal.set()方法源码</h1><p><img src="/2022/09/13/%E5%B9%B6%E5%8F%91-ThreadLocal/blog\source_posts\并发-ThreadLocal\2.jpg"></p>
+<h1 id="ThreadLocal-set-方法源码"><a href="#ThreadLocal-set-方法源码" class="headerlink" title="ThreadLocal.set()方法源码"></a>ThreadLocal.set()方法源码</h1><p><img src="G:\blog\source_posts\并发-ThreadLocal\2.jpg"></p>
 <p><code>ThreadLocal</code>中的<code>set</code>方法原理如上图所示，很简单，主要是判断<code>ThreadLocalMap</code>是否存在，然后使用<code>ThreadLocal</code>中的<code>set</code>方法进行数据处理。</p>
 <p>set方法的源码如下：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">set</span><span class="params">(T value)</span> &#123;</span><br><span class="line">    <span class="comment">// 获取当前线程</span></span><br><span class="line">    <span class="type">Thread</span> <span class="variable">t</span> <span class="operator">=</span> Thread.currentThread();</span><br><span class="line">    <span class="comment">// 获取当前线程的threadLocals字段</span></span><br><span class="line">    <span class="type">ThreadLocalMap</span> <span class="variable">map</span> <span class="operator">=</span> getMap(t);</span><br><span class="line">    <span class="comment">// 判断线程的threadLocals是否初始化了</span></span><br><span class="line">    <span class="keyword">if</span> (map != <span class="literal">null</span>) &#123;</span><br><span class="line">        map.set(<span class="built_in">this</span>, value);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 没有则创建一个ThreadLocalMap对象进行初始化</span></span><br><span class="line">        createMap(t, value);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
@@ -270,7 +270,7 @@
 
 <h1 id="ThreadLocal内存泄露问题"><a href="#ThreadLocal内存泄露问题" class="headerlink" title="ThreadLocal内存泄露问题"></a>ThreadLocal内存泄露问题</h1><p>​		内存泄露问题：指程序中动态分配的堆内存由于某种原因没有被释放或者无法释放，造成系统内存的浪费，导致程序运行速度减慢或者系统奔溃等严重后果。内存泄露堆积将会导致内存溢出。</p>
 <p>​		ThreadLocal的内存泄露问题一般考虑和Entry对象有关，在上面的Entry定义可以看出ThreadLocal::Entry被弱引用所修饰。</p>
-<p><img src="/2022/09/13/%E5%B9%B6%E5%8F%91-ThreadLocal/%E5%B9%B6%E5%8F%91-ThreadLocal%5C3.jpg"></p>
+<p><img src="/%E5%B9%B6%E5%8F%91-ThreadLocal%5C3.jpg"></p>
 <p>当ThreadLocal Ref被回收了，由于在Entry使用的是弱引用，因此在下次垃圾回收的时候就会将ThreadLocal对象清除，这个时候Entry中的KEY&#x3D;null。但是由于ThreadLocalMap中任然存在Current Thread Ref这个强引用，因此Entry中value的值任然无法清除。还是存在内存泄露的问题。</p>
 <p>由此可以发现，使用ThreadLocal造成内存泄露的问题是因为：ThreadLocalMap的生命周期与Thread一致，如果不手动清除掉Entry对象的话就可能会造成内存泄露问题。因此，需要我们在每次在使用完之后需要手动的remove掉Entry对象。</p>
 <p><strong>这里使用软引用的原因是：</strong>在ThreadLocalMap的set&#x2F;getEntry中，会对key进行判断，<strong>如果key为null，那么value也会被设置为null</strong>，这样即使在忘记调用了remove方法，当ThreadLocal被销毁时，对应value的内容也会被清空。<strong>多一层保障！</strong></p>

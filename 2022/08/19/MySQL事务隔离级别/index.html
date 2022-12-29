@@ -27,13 +27,13 @@
 <meta property="og:site_name" content="WangHao&amp;博客">
 <meta property="og:description" content="事务事务就是要保证一组数据库操作，要么全部成功，要么全部失败。在MySQL中，事务支持是在引擎层实现的。 ACID（Atomicity、Consistency、Isolation、Durability，即原子性、一致性、隔离性、持久性）">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2022/08/19/MySQL%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/blog/source_posts/MySQL事务隔离级别/1.jpg">
+<meta property="og:image" content="g:/blog/source_posts/MySQL事务隔离级别/1.jpg">
 <meta property="article:published_time" content="2022-08-19T06:00:56.000Z">
 <meta property="article:modified_time" content="2022-08-19T14:49:45.467Z">
 <meta property="article:author" content="Jing">
 <meta property="article:tag" content="MySQL事务隔离级别">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2022/08/19/MySQL%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/blog/source_posts/MySQL事务隔离级别/1.jpg">
+<meta name="twitter:image" content="g:/blog/source_posts/MySQL事务隔离级别/1.jpg">
 
 
 <link rel="canonical" href="http://example.com/2022/08/19/MySQL%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/">
@@ -261,7 +261,7 @@
 <p>​		在实现上，数据库里面会创建一个视图，访问的时候以视图的逻辑结果为准。在“可重复读”隔离级别下，这个视图是在事务启动时创建的，整个事务存在期间都用这个视图。在“读提交”隔离级别下，这个视图是在每个SQL语句开始执行的时候创建的。这里需要注意的是，“读未提交”隔离级别下直接返回记录上的最新值，没有视图概念；而“串行化”隔离级别下直接用加锁的方式来避免并行访问。</p>
 <h1 id="事务隔离的实现"><a href="#事务隔离的实现" class="headerlink" title="事务隔离的实现"></a>事务隔离的实现</h1><p>在MySQL中，实际上每条记录在更新的时候都会同时记录一条回滚操作。记录上的最新值，通过回滚操作，都可以得到前一个状态的值。</p>
 <p>假设一个值从1被按顺序改成了2、3、4，在回滚日志里面就会有类似下面的记录。</p>
-<p><img src="/2022/08/19/MySQL%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/blog\source_posts\MySQL事务隔离级别\1.jpg" alt="1"></p>
+<p><img src="G:\blog\source_posts\MySQL事务隔离级别\1.jpg" alt="1"></p>
 <p>但是在查询这条记录的时候，不同时刻启动的事务会有不同的read-view。如图中看到的，在视图A、B、C里面，这一个记录的值分别是1、2、4，<strong>同一条记录在系统中可以存在多个版本，就是数据库的多版本并发控制（MVCC）</strong></p>
 <p>当系统里没有比这个回滚日志更早的read-view的时候回滚日志才会删除。所以不建议使用长事务的原因是：长事务意味着系统里面会存在很老的事务视图。由于这些事务随时可能访问数据库里面的任何数据，所以这个事务提交之前，数据库里面它可能用到的回滚记录都必须保留，这就会导致大量占用存储空间。</p>
 <h1 id="事务的启动方式"><a href="#事务的启动方式" class="headerlink" title="事务的启动方式"></a>事务的启动方式</h1><ol>

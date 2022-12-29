@@ -240,7 +240,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="Attribute"><a href="#Attribute" class="headerlink" title="Attribute"></a>Attribute</h1><p><strong>Attribute</strong>是一个属性对象，这个属性的名称为AttributeKey<T> key，而属性的值为T value。 <strong>AttributeKey</strong>是Constant的一个扩展，因此也有一个ConstantPool来管理和创建，这和ChannelOption是类似的。</T></p>
+        <h1 id="Attribute"><a href="#Attribute" class="headerlink" title="Attribute"></a>Attribute</h1><p><strong>Attribute</strong>是一个属性对象，这个属性的名称为AttributeKey<T> key，而属性的值为T value。 <strong>AttributeKey</strong>是Constant的一个扩展，因此也有一个ConstantPool来管理和创建，这和ChannelOption是类似的。</p>
 <p>Channel类本身继承了AttributeMap类，而AttributeMap它持有多个Attribute，这些Attribute可以通过AttributeKey来访问的。所以，才可以通过<code>channel.attr(key).set(value)</code>的方式将属性设置到channel中了(即，这里的attr方法实际上是AttributeMap接口中的方法)。</p>
 <span id="more"></span>
 

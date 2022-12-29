@@ -27,17 +27,17 @@
 <meta property="og:site_name" content="WangHao&amp;博客">
 <meta property="og:description" content="索引的定义定义MySQL官方对索引的定义：索引（Index）是帮助MySQL 高效获取数据的数据结构。可以得到索引的本质是数据结构，可以简单理解为排好序的快速查找数据结构。这种数据结构往往空间很大，是存在硬盘里的，又称为磁盘级索引。 优缺点优势：  提高数据检索的效率，降低数据库的IO成本。 通过索引列对数据进行排序，降低数据排序的成本，降低了CPU的消耗。  劣势：  虽然索引提高了查询速度，但">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2022/08/19/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95%5C4.jpg">
-<meta property="og:image" content="http://example.com/2022/08/19/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95%5C5.jpg">
-<meta property="og:image" content="http://example.com/2022/08/19/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95%5C1.jpg">
-<meta property="og:image" content="http://example.com/2022/08/19/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95%5C2.jpg">
-<meta property="og:image" content="http://example.com/2022/08/19/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95%5C3.jpg">
+<meta property="og:image" content="http://example.com/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95%5C4.jpg">
+<meta property="og:image" content="http://example.com/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95%5C5.jpg">
+<meta property="og:image" content="http://example.com/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95%5C1.jpg">
+<meta property="og:image" content="http://example.com/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95%5C2.jpg">
+<meta property="og:image" content="http://example.com/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95%5C3.jpg">
 <meta property="article:published_time" content="2022-08-19T14:49:40.000Z">
 <meta property="article:modified_time" content="2022-08-21T05:54:55.131Z">
 <meta property="article:author" content="Jing">
 <meta property="article:tag" content="MySQL数据库的索引">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2022/08/19/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95%5C4.jpg">
+<meta name="twitter:image" content="http://example.com/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95%5C4.jpg">
 
 
 <link rel="canonical" href="http://example.com/2022/08/19/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95/">
@@ -266,7 +266,7 @@
 <h2 id="搜索树"><a href="#搜索树" class="headerlink" title="搜索树"></a>搜索树</h2><p>​		二叉搜索树的特点是：每个节点的左儿子小于父节点，父节点又小于右儿子。这样在搜索的时候，就可以直接比较大小顺着路径找到目标。当然为了维持O(log(N))的查询复杂度，你就需要保持这棵树是平衡二叉树。为了做这个保证，更新的时间复杂度也是O(log(N))，树可以有二叉，也可以有多叉。多叉树就是每个节点有多个儿子，儿子之间的大小保证从左到右递增。</p>
 <p>​		树可以有二叉，也可以有多叉。多叉树就是每个节点有多个儿子，儿子之间的大小保证从左到右递增。以InnoDB的一个整数字段索引为例，这个N差不多是1200。这棵树高是4的时候，就可以存1200的3次方个值，这已经17亿了。考虑到树根的数据块总是在内存中的，一个10亿行的表上一个整数字段的索引，查找一个值最多只需要访问3次磁盘。其实，树的第二层也有很大概率在内存中，那么访问磁盘的平均次数就更少了。</p>
 <h3 id="B树"><a href="#B树" class="headerlink" title="B树"></a>B树</h3><p>​		B树是<strong>一颗多路平衡查找树</strong>，它类似普通的平衡二叉树，不同的一点是B树允许每个节点有更多的子节点。下图是 B树的简化图.</p>
-<p><img src="/2022/08/19/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95%5C4.jpg" alt="4"></p>
+<p><img src="/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95%5C4.jpg" alt="4"></p>
 <p>B树有如下特点:</p>
 <ol>
 <li>所有键值分布在整颗树中（索引值和具体data都在每个节点里）；</li>
@@ -279,7 +279,7 @@
 <li>所有关键字存储在叶子节点出现,内部节点(非叶子节点并不存储真正的 data)</li>
 <li>为所有叶子结点增加了一个链指针</li>
 </ol>
-<p><img src="/2022/08/19/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95%5C5.jpg" alt="5"></p>
+<p><img src="/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95%5C5.jpg" alt="5"></p>
 <h3 id="B树与B-树的对比"><a href="#B树与B-树的对比" class="headerlink" title="B树与B+树的对比"></a>B树与B+树的对比</h3><ul>
 <li>B+树相比B树特点</li>
 <li>B+树非叶子节点不保存数据相关的信息，只保存关键字和子节点的引用，关键字对应的数据保存在叶子节点中，叶子节点是顺序排列的，并且相邻节点具有顺序引用的关系，通过指针进行链接，实际上是一个有序链表。</li>
@@ -305,7 +305,7 @@
 <p>​		<strong>在建表的时候，建立非业务字段的自增主键来实现递增的追加插入</strong>，不涉及到挪动其他记录，也不会触发叶子节点的分裂。自增主键是指自增列上定义的主键，在建表语句中一般是这么定义的： NOT NULL PRIMARY KEY AUTO_INCREMENT。需要注意的是，自增主键需要占用空间小的字段，<strong>主键长度越小，普通索引（叶子节点数据存储主键，回表查询）的叶子节点就越小，普通索引占用的空间也就越小。</strong></p>
 <h1 id="联合索引"><a href="#联合索引" class="headerlink" title="联合索引"></a>联合索引</h1><h2 id="联合索引概念"><a href="#联合索引概念" class="headerlink" title="联合索引概念"></a>联合索引概念</h2><p>​	联合索引：根据创建联合索引的顺序，以最左原则进行where检索，比如（age，name）以age&#x3D;1 或 age&#x3D; 1 and name&#x3D;‘张三’可以使用索引，单以name&#x3D;‘张三’ 不会使用索引，考虑到存储空间的问题，还请根据业务需求，将查找频繁的数据进行靠左创建索引。</p>
 <h2 id="联合索引存储结构"><a href="#联合索引存储结构" class="headerlink" title="联合索引存储结构"></a>联合索引存储结构</h2><p>既然是一个索引，必然是一个B+树，假设联合索引(col1, col2,col3)，其非叶子节点存储的是第一个关键字的索引，而叶节点存储的则是三个关键字col1、col2、col3三个关键字的数据，且按照col1、col2、col3的顺序进行排序。如图所示：</p>
-<p><img src="/2022/08/19/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95%5C1.jpg" alt="1"></p>
+<p><img src="/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95%5C1.jpg" alt="1"></p>
 <h1 id="覆盖索引"><a href="#覆盖索引" class="headerlink" title="覆盖索引"></a>覆盖索引</h1><p>​	覆盖索引是select的数据列只用从索引中就能够取得，不必读取数据行，换句话说查询列要被所建的<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E7%B4%A2%E5%BC%95/5716853">索引</a>覆盖，所要查询的数据在索引数结构中就可以取到，就不用回表去查ID然后再在完整的数据中取想要的数据。</p>
 <p>因此可以直接提供查询结果，不需要回表。也就是说，在这个查询里面，索引k已经“覆盖了”我们的查询需求，我们称为覆盖索引。</p>
 <h1 id="最左前缀原则"><a href="#最左前缀原则" class="headerlink" title="最左前缀原则"></a>最左前缀原则</h1><p>​		最左前缀原则是，不需要为每一种查询都设计一个索引，只要满足最左前缀，就可以利用该联合索引来加速检索。这个最左前缀可以是联合索引的最左N个字段，也可以是字符串索引的最左M个字符。</p>
@@ -317,10 +317,10 @@
 
 <p>​		这个语句在搜索索引树的时候，只能用 “张”，找到第一个满足条件的记录ID3，在MySQL 5.6之前，只能从ID3开始一个个回表。到主键索引上找出数据行，再对比字段值。执行流程如下图所示：</p>
 <p>​		在(name,age)索引里,这个过程InnoDB并不会去看age的值，只是按顺序把“name第一个字是’张’”的记录一条条取出来回表。因此，需要回表4次。</p>
-<p><img src="/2022/08/19/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95%5C2.jpg" alt="2"></p>
+<p><img src="/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95%5C2.jpg" alt="2"></p>
 <p>​		而MySQL 5.6 引入的索引下推优化（index condition pushdown)， 可以在索引遍历过程中，对索引中包含的字段先做判断，直接过滤掉不满足条件的记录，让满足检索条件的行去回表找到完整的行数据，减少回表次数。</p>
 <p>​		下图显示InnoDB在(name,age)索引内部就判断了age是否等于10，对于不等于10的记录，直接判断并跳过。在我们的这个例子中，只需要对ID4、ID5这两条记录回表取数据判断，就只需要回表2次。</p>
-<p><img src="/2022/08/19/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95%5C3.jpg" alt="3"></p>
+<p><img src="/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%B4%A2%E5%BC%95%5C3.jpg" alt="3"></p>
 <h1 id="索引建立原则"><a href="#索引建立原则" class="headerlink" title="索引建立原则"></a>索引建立原则</h1><p>​		给表创建索引时，应该创建哪些索引，每个索引应该包含哪些字段，字段的顺序怎么排列，这个问题没有标准答案，需要根据具体的业务来做权衡。：<br>​		既然这是一个权衡问题，没有办法保证所有的查询都高效，那就要优先保证高频的查询高效，较低频次的查询也尽可能的使用到尽可能长的最左前缀索引。可以借助pt-query-digest来采样统计业务查询语句的访问频度，可能需要迭代几次才能确定联合索引的最终字段及其排序。</p>
 <p><strong>注意</strong>， InnoDB 引擎中,虽然删除了表的部分记录数据,但是它的索引数据还在, 并未释放，往往会出现数据空间不大，索引占用的空间却巨大，这是因为索引可能因为删除，或者页分裂等原因，导致数据页有空洞，重建索引的过程会创建一个新的索引，把数据按顺序插入，这样页面的利用率最高，也就是索引更紧凑、更省空间。</p>
 <h1 id="普通索引与唯一索引的区别"><a href="#普通索引与唯一索引的区别" class="headerlink" title="普通索引与唯一索引的区别"></a>普通索引与唯一索引的区别</h1><ul>

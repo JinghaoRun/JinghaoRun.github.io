@@ -27,16 +27,16 @@
 <meta property="og:site_name" content="WangHao&amp;博客">
 <meta property="og:description" content="对象创建流程 1.类加载检查：​	遇到new时先去常量池中看能不能定位到这个类的符号引用并且检查这个符号引用代表的类是否已被加载过、解析和初始化过。如果没有，那必须先执行相应的类加载过程。 2.分配内存:​	类加载检查完成后就知道了占用内存大小，从java堆中找出内存，方法有两种：主要取决于堆内存是否规整，而 Java 堆内存是否规整，取决于 GC 收集器的算法是”标记-清除”，还是”标记-整理”">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2022/12/26/JVM%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E6%B5%81%E7%A8%8B/JVM%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E6%B5%81%E7%A8%8B%5C4.png">
-<meta property="og:image" content="http://example.com/2022/12/26/JVM%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E6%B5%81%E7%A8%8B/JVM%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E6%B5%81%E7%A8%8B%5C1.png">
-<meta property="og:image" content="http://example.com/2022/12/26/JVM%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E6%B5%81%E7%A8%8B/JVM%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E6%B5%81%E7%A8%8B%5C2.png">
+<meta property="og:image" content="http://example.com/JVM%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E6%B5%81%E7%A8%8B%5C4.png">
+<meta property="og:image" content="http://example.com/JVM%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E6%B5%81%E7%A8%8B%5C1.png">
+<meta property="og:image" content="http://example.com/JVM%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E6%B5%81%E7%A8%8B%5C2.png">
 <meta property="article:published_time" content="2022-12-26T15:07:06.000Z">
 <meta property="article:modified_time" content="2022-12-26T15:40:16.099Z">
 <meta property="article:author" content="Jing">
 <meta property="article:tag" content="JVM">
 <meta property="article:tag" content="对象创建流程">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2022/12/26/JVM%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E6%B5%81%E7%A8%8B/JVM%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E6%B5%81%E7%A8%8B%5C4.png">
+<meta name="twitter:image" content="http://example.com/JVM%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E6%B5%81%E7%A8%8B%5C4.png">
 
 
 <link rel="canonical" href="http://example.com/2022/12/26/JVM%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E6%B5%81%E7%A8%8B/">
@@ -239,7 +239,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="对象创建流程"><a href="#对象创建流程" class="headerlink" title="对象创建流程"></a>对象创建流程</h1><p><img src="/2022/12/26/JVM%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E6%B5%81%E7%A8%8B/JVM%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E6%B5%81%E7%A8%8B%5C4.png"></p>
+        <h1 id="对象创建流程"><a href="#对象创建流程" class="headerlink" title="对象创建流程"></a>对象创建流程</h1><p><img src="/JVM%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E6%B5%81%E7%A8%8B%5C4.png"></p>
 <h3 id="1-类加载检查："><a href="#1-类加载检查：" class="headerlink" title="1.类加载检查："></a>1.类加载检查：</h3><p>​	遇到new时先去常量池中看能不能定位到这个类的符号引用并且检查这个符号引用代表的类是否已被加载过、解析和初始化过。如果没有，那必须先执行相应的类加载过程。</p>
 <h3 id="2-分配内存"><a href="#2-分配内存" class="headerlink" title="2.分配内存:"></a>2.分配内存:</h3><p>​	类加载检查完成后就知道了占用内存大小，从java堆中找出内存，方法有两种：主要取决于堆内存是否规整，而 Java 堆内存是否规整，取决于 GC 收集器的算法是”标记-清除”，还是”标记-整理”（也称作”标记-压缩”）</p>
 <span id="more"></span>
@@ -269,9 +269,9 @@
 <p>我们的 Java 程序通过<strong>栈上的 reference 数据来操作堆上的具体对象</strong>。对象的访问方式由虚拟机实现而定，目前主流的访问方式有：<strong>使用句柄</strong>、<strong>直接指针</strong>。</p>
 <h3 id="句柄方式："><a href="#句柄方式：" class="headerlink" title="句柄方式："></a>句柄方式：</h3><p>reference 中存储的就是对象的句柄地址，Java <strong>堆中将会划分出一块内存来作为句柄池</strong>，句柄中包含了对象<strong>实例数据与类型数据各自的具体地址信息</strong>。</p>
 <p>使用句柄来访问的最大好处就是reference中存储的是稳定句柄地址，在对象被移动（垃圾收集时移动对象是非常普遍的行为）时只会改变句柄中的实例数据指针，而reference本身不需要被修改。</p>
-<p><img src="/2022/12/26/JVM%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E6%B5%81%E7%A8%8B/JVM%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E6%B5%81%E7%A8%8B%5C1.png"></p>
+<p><img src="/JVM%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E6%B5%81%E7%A8%8B%5C1.png"></p>
 <h3 id="直接指针："><a href="#直接指针：" class="headerlink" title="直接指针："></a>直接指针：</h3><p> reference 中存储的直接就是对象的地址。使用直接指针访问方式最大的好处就是速度快，它节省了一次指针定位的时间开销。</p>
-<p><img src="/2022/12/26/JVM%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E6%B5%81%E7%A8%8B/JVM%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E6%B5%81%E7%A8%8B%5C2.png"></p>
+<p><img src="/JVM%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E6%B5%81%E7%A8%8B%5C2.png"></p>
 
     </div>
 

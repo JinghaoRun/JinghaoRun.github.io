@@ -27,14 +27,14 @@
 <meta property="og:site_name" content="WangHao&amp;博客">
 <meta property="og:description" content="循环依赖简介A对象创建时依赖了B对象，B对象创建时依赖了A对象，如下举例： 123456789public class A &amp;#123;       @Autowired       private B b;   &amp;#125;   public class B &amp;#123;       @Autowired       private A a;   &amp;#125;  在 Spring 中，一个对象并">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2022/09/25/Spring%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E7%9A%84%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/blog/source_posts/Spring依赖注入的循环依赖/1.jpg">
-<meta property="og:image" content="http://example.com/2022/09/25/Spring%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E7%9A%84%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/blog/source_posts/Spring依赖注入的循环依赖/2.jpg">
+<meta property="og:image" content="g:/blog/source_posts/Spring依赖注入的循环依赖/1.jpg">
+<meta property="og:image" content="g:/blog/source_posts/Spring依赖注入的循环依赖/2.jpg">
 <meta property="article:published_time" content="2022-09-25T13:40:08.000Z">
 <meta property="article:modified_time" content="2022-10-26T02:23:55.930Z">
 <meta property="article:author" content="Jing">
 <meta property="article:tag" content="Spring循环依赖">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2022/09/25/Spring%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E7%9A%84%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/blog/source_posts/Spring依赖注入的循环依赖/1.jpg">
+<meta name="twitter:image" content="g:/blog/source_posts/Spring依赖注入的循环依赖/1.jpg">
 
 
 <link rel="canonical" href="http://example.com/2022/09/25/Spring%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E7%9A%84%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/">
@@ -300,10 +300,10 @@
 <p>在BeanPostProcessor 中可以完全替换掉某个 beanName 对应的 bean 对象。</p>
 <p>而 BeanPostProcessor 的执行在 Bean 的生命周期中是处于属性注入之后的，循环依赖是发生在属性注入过程中的，所以很有可能导致，注入给 B 对象的 A 对象和经历过完整生命周期之后的 A 对象，不是一个对象。这就是有问题的。</p>
 <h2 id="AOP-Bean注入原理："><a href="#AOP-Bean注入原理：" class="headerlink" title="AOP Bean注入原理："></a>AOP Bean注入原理：</h2><p>​		AOP 就是通过一个 BeanPostProcessor 来实现的，在 Spring 中 AOP 利用的要么是 JDK 动态代理，要么 CGLib 的动态代理，所以如果给一个类中的某个方法设置了切面，那么这个类最终就需要生成一个代理对象。</p>
-<p>​		一般过程就是：A 类—&gt;生成一个普通对象–&gt;属性注入–&gt;基于切面生成一个代理对象–&gt;把代理对象<br>放入 singletonObjects 单例池中。<br><img src="/2022/09/25/Spring%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E7%9A%84%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/blog\source_posts\Spring依赖注入的循环依赖\1.jpg"></p>
+<p>​		一般过程就是：A 类—&gt;生成一个普通对象–&gt;属性注入–&gt;基于切面生成一个代理对象–&gt;把代理对象<br>放入 singletonObjects 单例池中。<br><img src="G:\blog\source_posts\Spring依赖注入的循环依赖\1.jpg"></p>
 <p>​		所以在这种情况下的循环依赖，Spring 是解决不了循环依赖问题的，因为在属性注入时，Spring 也不知道 A 对象后续会经过哪些 BeanPostProcessor 以及会对 A 对象做什么处理。</p>
 <h2 id="如何解决AOP下的循环依赖问题："><a href="#如何解决AOP下的循环依赖问题：" class="headerlink" title="如何解决AOP下的循环依赖问题："></a>如何解决AOP下的循环依赖问题：</h2><p>​		首先，<strong>singletonFactories 中存的是某个 beanName 对应的 ObjectFactory，在 bean 的生命周期中，生成完原始对象之后，就会构造一个 ObjectFactory 存入 singletonFactories 中。</strong></p>
-<p><img src="/2022/09/25/Spring%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E7%9A%84%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/blog\source_posts\Spring依赖注入的循环依赖\2.jpg"></p>
+<p><img src="G:\blog\source_posts\Spring依赖注入的循环依赖\2.jpg"></p>
 <p>​		这个 ObjectFactory 是一个函数式接口，支持Lambda表达式：() -&gt;getEarlyBeanReference(beanName, mbd, bean)</p>
 <p>​	上面的Lambda表达式就是一个ObjectFactory，执行该Lambda表达式就会去执行getEarlyBeanReference方法.</p>
 <p>图中的 ObjectFactory 就是上文说的 labmda 表达式，中间有 getEarlyBeanReference 方法。</p>

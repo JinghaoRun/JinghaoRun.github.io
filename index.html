@@ -572,7 +572,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="对象创建流程"><a href="#对象创建流程" class="headerlink" title="对象创建流程"></a>对象创建流程</h1><p><img src="/2022/12/26/JVM%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E6%B5%81%E7%A8%8B/JVM%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E6%B5%81%E7%A8%8B%5C4.png"></p>
+          <h1 id="对象创建流程"><a href="#对象创建流程" class="headerlink" title="对象创建流程"></a>对象创建流程</h1><p><img src="/JVM%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E6%B5%81%E7%A8%8B%5C4.png"></p>
 <h3 id="1-类加载检查："><a href="#1-类加载检查：" class="headerlink" title="1.类加载检查："></a>1.类加载检查：</h3><p>​	遇到new时先去常量池中看能不能定位到这个类的符号引用并且检查这个符号引用代表的类是否已被加载过、解析和初始化过。如果没有，那必须先执行相应的类加载过程。</p>
 <h3 id="2-分配内存"><a href="#2-分配内存" class="headerlink" title="2.分配内存:"></a>2.分配内存:</h3><p>​	类加载检查完成后就知道了占用内存大小，从java堆中找出内存，方法有两种：主要取决于堆内存是否规整，而 Java 堆内存是否规整，取决于 GC 收集器的算法是”标记-清除”，还是”标记-整理”（也称作”标记-压缩”）</p>
           <!--noindex-->
@@ -846,7 +846,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="Attribute"><a href="#Attribute" class="headerlink" title="Attribute"></a>Attribute</h1><p><strong>Attribute</strong>是一个属性对象，这个属性的名称为AttributeKey<T> key，而属性的值为T value。 <strong>AttributeKey</strong>是Constant的一个扩展，因此也有一个ConstantPool来管理和创建，这和ChannelOption是类似的。</T></p>
+          <h1 id="Attribute"><a href="#Attribute" class="headerlink" title="Attribute"></a>Attribute</h1><p><strong>Attribute</strong>是一个属性对象，这个属性的名称为AttributeKey<T> key，而属性的值为T value。 <strong>AttributeKey</strong>是Constant的一个扩展，因此也有一个ConstantPool来管理和创建，这和ChannelOption是类似的。</p>
 <p>Channel类本身继承了AttributeMap类，而AttributeMap它持有多个Attribute，这些Attribute可以通过AttributeKey来访问的。所以，才可以通过<code>channel.attr(key).set(value)</code>的方式将属性设置到channel中了(即，这里的attr方法实际上是AttributeMap接口中的方法)。</p>
           <!--noindex-->
             <div class="post-button">

@@ -977,7 +977,7 @@
     
     <div class="post-body" itemprop="articleBody">
           <h1 id="异常场景"><a href="#异常场景" class="headerlink" title="异常场景"></a>异常场景</h1><p>​	 力扣102二叉树的层序遍历中，需要向队列中插入null元素，在队列的操作中，ArrayDeque内部通过数组+双索引的方式，使用&amp;操作来定位对于元素的存放删除，LinkedList内部以链表的形式来保存集合中的元素，ArrayList明显快于LinkedList，所以我一直使用ArrayDeque作为队列的数据结构使用（栈相反），在插入null元素时 ArrayDeque报了空指针异常，而LinkedList则没有异常抛出。</p>
-<h1 id="ArrayDeque的offer源码"><a href="#ArrayDeque的offer源码" class="headerlink" title="ArrayDeque的offer源码"></a>ArrayDeque的offer源码</h1><p><img src="/2022/06/28/ArrayDeque%E5%92%8CLinkedList%E6%B7%BB%E5%8A%A0null%E5%85%83%E7%B4%A0/1.jpg" alt="1"></p>
+<h1 id="ArrayDeque的offer源码"><a href="#ArrayDeque的offer源码" class="headerlink" title="ArrayDeque的offer源码"></a>ArrayDeque的offer源码</h1><p><img src="/ArrayDeque%E5%92%8CLinkedList%E6%B7%BB%E5%8A%A0null%E5%85%83%E7%B4%A0/1.jpg" alt="1"></p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2022/06/28/ArrayDeque%E5%92%8CLinkedList%E6%B7%BB%E5%8A%A0null%E5%85%83%E7%B4%A0/#more" rel="contents">
