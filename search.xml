@@ -30,31 +30,6 @@
     
     <entry>
       <title>Spring事件机制</title>
-      <link href="/2023/01/01/Spring-ApplicationListener/"/>
-      <url>/2023/01/01/Spring-ApplicationListener/</url>
-      
-        <content type="html"><![CDATA[<h1 id="ApplicationListener介绍"><a href="#ApplicationListener介绍" class="headerlink" title="ApplicationListener介绍"></a>ApplicationListener介绍</h1><p>ApplicationListener可以监听某个事件event通过实现这个接口，传入一个泛型事件，在run方法中就可以监听这个事件，从而做出一定的逻辑比如在等所有bean加载完之后执行某些操作注意的是**先有 InitializingBean，后有 ApplicationListener&lt; ContextRefreshedEvent&gt;**，也就是在IOC将所有的bean 都处理完成后会触发的时间。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SystemListener</span> <span class="keyword">implements</span> <span class="title class_">ApplicationListener</span>&lt;ContextRefreshedEvent&gt; &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onApplicationEvent</span><span class="params">(ContextRefreshedEvent event)</span> &#123;</span><br><span class="line">        <span class="comment">//由于在 WEB （spring mvc）项目中存在两个context，即一个 root application context 和自己项目的 projectName-servlet context（projectName-servlet context 会作为 root application context 的子容器），会导致实现了此接口的方法被执行两次，加入以下判断解决</span></span><br><span class="line">        <span class="keyword">if</span> (event.getApplicationContext().getParent() == <span class="literal">null</span>) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;do something&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h1 id="Spring内置事件"><a href="#Spring内置事件" class="headerlink" title="Spring内置事件"></a>Spring内置事件</h1><h3 id="1、ContextRefreshedEvent"><a href="#1、ContextRefreshedEvent" class="headerlink" title="1、ContextRefreshedEvent"></a>1、ContextRefreshedEvent</h3><p>ApplicationContext 被初始化或刷新时，该事件被发布。这也可以在 ConfigurableApplicationContext接口中使用 refresh() 方法来发生。此处的初始化是指：<strong>所有的Bean被成功装载，后处理Bean被检测并激活，所有Singleton Bean  被预实例化，ApplicationContext容器已就绪可用</strong></p><h3 id="2、ContextStartedEvent"><a href="#2、ContextStartedEvent" class="headerlink" title="2、ContextStartedEvent"></a>2、ContextStartedEvent</h3><p>当使用 ConfigurableApplicationContext （ApplicationContext子接口）接口中的  start()  方法启动 ApplicationContext 时，该事件被发布。你可以调查你的数据库，或者你可以在接受到这个事件后重启任何停止的应用程序</p><h3 id="3、ContextStoppedEvent"><a href="#3、ContextStoppedEvent" class="headerlink" title="3、ContextStoppedEvent"></a>3、ContextStoppedEvent</h3><p>当使用 ConfigurableApplicationContext 接口中的 stop() 停止 ApplicationContext 时，发布这个事件。你可以在接受到这个事件后做必要的清理的工作</p><h3 id="4、ContextClosedEvent"><a href="#4、ContextClosedEvent" class="headerlink" title="4、ContextClosedEvent"></a>4、ContextClosedEvent</h3><p>当使用 ConfigurableApplicationContext 接口中的 close() 方法关闭 ApplicationContext 时，该事件被发布。一个已关闭的上下文到达生命周期末端；它不能被刷新或重启</p><h3 id="5、RequestHandledEvent"><a href="#5、RequestHandledEvent" class="headerlink" title="5、RequestHandledEvent"></a>5、RequestHandledEvent</h3><p>这是一个 web-specific 事件，告诉所有 bean HTTP 请求已经被服务。只能应用于使用DispatcherServlet的Web应用。在使用Spring作为前端的MVC控制器时，当Spring处理用户请求结束后，系统会自动触发该事件</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> Java框架 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> ApplicationListener </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Spring事件机制</title>
       <link href="/2023/01/01/Spring%E4%BA%8B%E4%BB%B6%E6%9C%BA%E5%88%B6/"/>
       <url>/2023/01/01/Spring%E4%BA%8B%E4%BB%B6%E6%9C%BA%E5%88%B6/</url>
       
