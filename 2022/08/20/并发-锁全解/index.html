@@ -1,0 +1,199 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>并发-锁全解 | WangHao&amp;博客</title><meta name="author" content="WangHao"><meta name="copyright" content="WangHao"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="公平锁&#x2F;非公平锁公平锁指多个线程按照申请锁的顺序来获取锁。非公平锁指多个线程获取锁的顺序并不是按照申请锁的顺序，有可能后申请的线程比先申请的线程优先获取锁。可能会造成优先级反转或者饥饿现象。 可重入锁可重入锁又名递归锁，是指在同一个线程在外层方法获取锁的时候，在进入内层方法会自动获取锁，典型的synchronized、ReentrantLock 独享锁&#x2F;共享锁 独享锁：是指该锁">
+<meta property="og:type" content="article">
+<meta property="og:title" content="并发-锁全解">
+<meta property="og:url" content="http://example.com/2022/08/20/%E5%B9%B6%E5%8F%91-%E9%94%81%E5%85%A8%E8%A7%A3/index.html">
+<meta property="og:site_name" content="WangHao&amp;博客">
+<meta property="og:description" content="公平锁&#x2F;非公平锁公平锁指多个线程按照申请锁的顺序来获取锁。非公平锁指多个线程获取锁的顺序并不是按照申请锁的顺序，有可能后申请的线程比先申请的线程优先获取锁。可能会造成优先级反转或者饥饿现象。 可重入锁可重入锁又名递归锁，是指在同一个线程在外层方法获取锁的时候，在进入内层方法会自动获取锁，典型的synchronized、ReentrantLock 独享锁&#x2F;共享锁 独享锁：是指该锁">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/38.jpg">
+<meta property="article:published_time" content="2022-08-20T15:59:34.000Z">
+<meta property="article:modified_time" content="2023-01-18T14:53:08.471Z">
+<meta property="article:author" content="WangHao">
+<meta property="article:tag" content="Java的锁">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/38.jpg"><link rel="shortcut icon" href="/img/head.jpg"><link rel="canonical" href="http://example.com/2022/08/20/%E5%B9%B6%E5%8F%91-%E9%94%81%E5%85%A8%E8%A7%A3/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '并发-锁全解',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-01-18 22:53:08'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/head.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">102</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">123</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/38.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">WangHao&amp;博客</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">并发-锁全解</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-08-20T15:59:34.000Z" title="发表于 2022-08-20 23:59:34">2022-08-20</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-01-18T14:53:08.471Z" title="更新于 2023-01-18 22:53:08">2023-01-18</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">Java并发编程</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="并发-锁全解"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="公平锁-x2F-非公平锁"><a href="#公平锁-x2F-非公平锁" class="headerlink" title="公平锁&#x2F;非公平锁"></a>公平锁&#x2F;非公平锁</h2><p>公平锁指多个线程按照申请锁的顺序来获取锁。非公平锁指多个线程获取锁的顺序并不是按照申请锁的顺序，有可能后申请的线程比先申请的线程优先获取锁。可能会造成优先级反转或者饥饿现象。</p>
+<h2 id="可重入锁"><a href="#可重入锁" class="headerlink" title="可重入锁"></a>可重入锁</h2><p><strong>可重入锁又名递归锁，是指在同一个线程在外层方法获取锁的时候，在进入内层方法会自动获取锁，典型的synchronized、ReentrantLock</strong></p>
+<h2 id="独享锁-x2F-共享锁"><a href="#独享锁-x2F-共享锁" class="headerlink" title="独享锁&#x2F;共享锁"></a>独享锁&#x2F;共享锁</h2><ul>
+<li>独享锁：是指该锁一次只能被一个线程所持有。</li>
+<li>共享锁：是该锁可被多个线程所持有。</li>
+</ul>
+<h2 id="互斥锁-x2F-读写锁"><a href="#互斥锁-x2F-读写锁" class="headerlink" title="互斥锁&#x2F;读写锁"></a>互斥锁&#x2F;读写锁</h2><p><strong>上面讲的独享锁&#x2F;共享锁就是一种广义的说法，互斥锁&#x2F;读写锁就是其具体的实现</strong></p>
+<h2 id="乐观锁-x2F-悲观锁"><a href="#乐观锁-x2F-悲观锁" class="headerlink" title="乐观锁&#x2F;悲观锁"></a>乐观锁&#x2F;悲观锁</h2><ol>
+<li>乐观锁与悲观锁不是指具体的什么类型的锁，而是指看待并发同步的角度。</li>
+<li>悲观锁认为对于同一个人数据的并发操作，一定是会发生修改的，哪怕没有修改，也会认为修改。因此对于同一个数据的并发操作，悲观锁采取加锁的形式。悲观的认为，不加锁的并发操作一定会出现问题。</li>
+<li>乐观锁则认为对于同一个数据的并发操作，是不会发生修改的。在更新数据的时候，会采用尝试更新，不断重新的方式更新数据。乐观的认为，不加锁的并发操作时没有事情的。</li>
+<li>悲观锁适合写操作非常多的场景，乐观锁适合读操作非常多的场景，不加锁带来大量的性能提升。</li>
+<li>悲观锁在Java中的使用，就是利用各种锁。乐观锁在Java中的使用，是无锁编程，常常采用的是CAS算法，典型的例子就是原子类，通过CAS自旋实现原子类操作的更新。重量级锁是悲观锁的一种，自旋锁、轻量级锁与偏向锁属于乐观锁</li>
+</ol>
+<h2 id="分段锁"><a href="#分段锁" class="headerlink" title="分段锁"></a>分段锁</h2><ol>
+<li>分段锁其实是一种锁的设计，并不是具体的一种锁，对于ConcurrentHashMap而言，其1.7并发的实现就是通过分段锁的形式来哦实现高效的并发操作。</li>
+<li>以ConcurrentHashMap来说一下分段锁的含义以及设计思想，ConcurrentHashMap中的分段锁称为Segment，它即类似于HashMap（JDK7与JDK8中HashMap的实现）的结构，即内部拥有一个Entry数组，数组中的每个元素又是一个链表；同时又是ReentrantLock（Segment继承了ReentrantLock）</li>
+<li>当需要put元素的时候，并不是对整个hashmap进行加锁，而是先通过hashcode来知道他要放在那一个分段中，然后对这个分段进行加锁，所以当多线程put的时候，只要不是放在一个分段中，就实现了真正的并行的插入。但是，在统计size的时候，可就是获取hashmap全局信息的时候，就需要获取所有的分段锁才能统计。</li>
+<li>分段锁的设计目的是细化锁的粒度，当操作不需要更新整个数组的时候，就仅仅针对数组中的一项进行加锁操作。</li>
+</ol>
+<h2 id="偏向锁-x2F-轻量级锁-x2F-重量级锁"><a href="#偏向锁-x2F-轻量级锁-x2F-重量级锁" class="headerlink" title="偏向锁&#x2F;轻量级锁&#x2F;重量级锁"></a>偏向锁&#x2F;轻量级锁&#x2F;重量级锁</h2><ol>
+<li>这三种锁是锁的状态，并且是针对Synchronized。在Java5通过引入锁升级的机制来实现高效Synchronized。这三种锁的状态是通过对象监视器在对象头中的字段来表明的。偏向锁是指一段同步代码一直被一个线程所访问，那么该线程会自动获取锁。降低获取锁的代价。</li>
+<li>偏向锁的适用场景：始终只有一个线程在执行代码块，在它没有执行完释放锁之前，没有其它线程去执行同步快，在锁无竞争的情况下使用，一旦有了竞争就升级为轻量级锁，升级为轻量级锁的时候需要撤销偏向锁，撤销偏向锁的时候会导致stop the  word操作；在有锁竞争时，偏向锁会多做很多额外操作，尤其是撤销偏向锁的时候会导致进入安全点，安全点会导致stw，导致性能下降，这种情况下应当禁用。</li>
+<li>轻量级锁是指当锁是偏向锁的时候，被另一个线程锁访问，偏向锁就会升级为轻量级锁，其他线程会通过自选的形式尝试获取锁，不会阻塞，提高性能。</li>
+<li>重量级锁是指当锁为轻量级锁的时候，另一个线程虽然是自旋，但自旋不会一直持续下去，当自旋一定次数的时候，还没有获取到锁，就会进入阻塞，该锁膨胀为重量级锁。重量级锁会让其他申请的线程进入阻塞，性能降低。</li>
+</ol>
+<h2 id="自旋锁"><a href="#自旋锁" class="headerlink" title="自旋锁"></a>自旋锁</h2><ol>
+<li>在Java中，自旋锁是指尝试获取锁的线程不会立即阻塞，而是采用循环的方式去尝试获取锁，这样的好处是减少线程上下文切换的消耗，缺点是循环会消耗CPU。</li>
+<li>自旋锁原理非常简单，如果持有锁的线程能在很短时间内释放锁资源，那么那些等待竞争锁的线程就不需要做内核态和用户态之间的切换进入阻塞挂起状态，它们只需要等一等（自旋），等持有锁的线程释放锁后即可立即获取锁，这样就避免用户线程和内核的切换的消耗。</li>
+<li>自旋锁尽可能的减少线程的阻塞，适用于锁的竞争不激烈，且占用锁时间非常短的代码来说性能能大幅度的提升，因为自旋的消耗会小于线程阻塞挂起再唤醒的操作的消耗。</li>
+<li>但是如果锁的竞争激烈，或者持有锁的线程需要长时间占用锁执行同步块，这时候就不适用使用自旋锁了，因为自旋锁在获取锁前一直都是占用cpu做无用功，同时有大量线程在竞争一个锁，会导致获取锁的时间很长，线程自旋的消耗大于线程阻塞挂起操作的消耗，其它需要cpu的线程又不能获取到cpu，造成cpu的浪费。</li>
+</ol>
+<h2 id="读写锁（ReentrantReadWriteLock）"><a href="#读写锁（ReentrantReadWriteLock）" class="headerlink" title="读写锁（ReentrantReadWriteLock）"></a>读写锁（ReentrantReadWriteLock）</h2><p>Java中的锁——Lock和synchronized中介绍的ReentrantLock和synchronized基本上都是<strong>排它锁</strong>，意味着这些锁在同一时刻只允许一个线程进行访问，而<strong>读写锁在同一时刻可以允许多个读线程访问</strong>，<strong>在写线程访问的时候其他的读线程和写线程都会被阻塞</strong>。<strong>读写锁维护一对锁(读锁和写锁)，通过锁的分离，使得并发性提高</strong>。</p>
+<p>并发包中对ReadWriteLock接口的实现类是<strong>ReentrantReadWriteLock</strong>，这个实现类具有下面三个特点<br>①具有与ReentrantLock类似的公平锁和非公平锁的实现：默认的支持非公平锁，对于二者而言，非公平锁的吞吐量由于公平锁；<br>②支持重入：读线程获取读锁之后能够再次获取读锁，写线程获取写锁之后能再次获取写锁，<strong>也可以获取读锁。</strong><br>③锁能降级：遵循获取写锁的情况下再获取读锁，释放写锁的顺序，即写锁能够降级为读锁</p>
+<p>ReadWriteLock接口中只有两个方法，分别是readLock和writeLock分别可以获取到读锁和写锁，再分别可以使用readLock.lock和unlock来加锁和释放锁。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 维护了readlock和writelock</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> ReentrantReadWriteLock.ReadLock readerLock;</span><br><span class="line"><span class="comment">/** Inner class providing writelock */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> ReentrantReadWriteLock.WriteLock writerLock;</span><br><span class="line"><span class="comment">/** Performs all synchronization mechanics */</span></span><br><span class="line"><span class="keyword">final</span> Sync sync; <span class="comment">// 同样的是sync 继承aqs</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 可惜的是state依然是一个， 但是不慌</span></span><br><span class="line"><span class="comment">// 高16位表示读状态，低16位表示获取到写锁的线程的可重入锁</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">SHARED_SHIFT</span>   <span class="operator">=</span> <span class="number">16</span>;</span><br><span class="line"><span class="comment">// 共享锁的读锁的状态单位值65536</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">SHARED_UNIT</span>    <span class="operator">=</span> (<span class="number">1</span> &lt;&lt; SHARED_SHIFT);</span><br><span class="line"><span class="comment">// 共享锁线程最大个数65536</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">MAX_COUNT</span>      <span class="operator">=</span> (<span class="number">1</span> &lt;&lt; SHARED_SHIFT) - <span class="number">1</span>;</span><br><span class="line"><span class="comment">// 排它锁写锁掩码，二进制 15个1</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">EXCLUSIVE_MASK</span> <span class="operator">=</span> (<span class="number">1</span> &lt;&lt; SHARED_SHIFT) - <span class="number">1</span>;</span><br><span class="line"><span class="comment">// 返回读锁线程数</span></span><br><span class="line"><span class="keyword">static</span> <span class="type">int</span> <span class="title function_">sharedCount</span><span class="params">(<span class="type">int</span> c)</span>    &#123; <span class="keyword">return</span> c &gt;&gt;&gt; SHARED_SHIFT; &#125;</span><br><span class="line"><span class="comment">// 返回写锁可重入个数</span></span><br><span class="line"><span class="keyword">static</span> <span class="type">int</span> <span class="title function_">exclusiveCount</span><span class="params">(<span class="type">int</span> c)</span> &#123; <span class="keyword">return</span> c &amp; EXCLUSIVE_MASK; &#125;</span><br></pre></td></tr></table></figure>
+
+<p>读写锁同步器的同步状态就是读写锁的读写状态，只是读写锁的同步器需要在同步状态上维护多个读线程和写线程的状态。<strong>使用按位切割的方式将一个整形变量按照高低16位切割成两个部分</strong>。对比下图，<strong>低位值表示当前获取写锁的线程重入两次</strong>，<strong>高位的值表示当前获取读锁的线程重入一次</strong>。读写锁的获取伴随着读写状态值的更新。当低位为0000_0000_0000_0000的时候表示写锁已经释放，当高位为0000_0000_0000_0000的时候表示读锁已经释放。</p>
+<p>从下面的划分得到：当state值不等于0的时候，如果写状态(state &amp; 0x0000FFFF)等于0的话，读状态是大于0的，表示读锁被获取；如果写状态不等于0的话，读锁没有被获取。这个特点也在源码中实现。</p>
+<p><img src="1.png"></p>
+<h3 id="写锁writeLock"><a href="#写锁writeLock" class="headerlink" title="写锁writeLock"></a>写锁writeLock</h3><p>①读写锁是支持重入的锁，而对于<strong>写锁而言还是排他的</strong>，这样避免多个线程同时去修改临界资源导致程序出现错误。如果当前线程已经获取了写锁，则按照上面读写状态的设计增加写锁状态的值；如果当前线程在获取写锁的时候，读锁已经被获取或者该线程之前已经有别的线程获取到写锁，当前线程就会进入等待状态。</p>
+<p>②写锁的释放源码<br>写锁的释放和ReentrantLock的锁释放思路基本相同，每次释放都是减少写状态，直到写状态值为0(exclusiveCount(nextc) &#x3D;&#x3D; 0)的时候释放写锁，后续阻塞等待的读写线程可以继续竞争锁。</p>
+<h3 id="读锁readLock"><a href="#读锁readLock" class="headerlink" title="读锁readLock"></a>读锁readLock</h3><p>①读锁是同样是支持重入的，除此之外也是共享式的，能够被多个线程获取。在同一时刻的竞争队列中，如果没有写线程想要获取读写锁，那么读锁总会被读线程获取到(然后更新读状态的值)。每个读线程都可以重入的获取读锁，而对应的获取次数保存在本地线程中，由线程自身维护该值。</p>
+<p>②获取读锁的条件：其他线程已经获取了写锁，则当前线程获取读锁会失败而进入等待状态；如果<strong>当前线程获取了写锁或者写锁没有被获取，那么就可以获取到读锁</strong>，并更细同步状态(读状态值)。</p>
+<p>③读锁的每次释放都是减少读状态，</p>
+<h2 id="锁的降级"><a href="#锁的降级" class="headerlink" title="锁的降级"></a>锁的降级</h2><p>锁降级的概念：如果当先线程是写锁的持有者，并保持获得写锁的状态，同时又获取到读锁，然后释放写锁的过程。(注意不同于这样的分段过程：当前线程拥有写锁，释放掉写锁之后再获取读锁的过程，这种分段过程不能称为锁降级)。</p>
+<h2 id="Java锁总结"><a href="#Java锁总结" class="headerlink" title="Java锁总结"></a>Java锁总结</h2><p><strong>Java锁机制可归为Sychornized锁和Lock锁两类。Synchronized是基于JVM来保证数据同步的，而Lock则是硬件层面，依赖特殊的CPU指令来实现数据同步的。</strong></p>
+<ul>
+<li>Synchronized是一个非公平、悲观、独享、互斥、可重入的重量级锁。</li>
+<li>ReentrantLock是一个默认非公平但可实现公平的、悲观、独享、互斥、可重入、重量级锁。</li>
+<li>ReentrantReadWriteLock是一个默认非公平但可实现公平的、悲观、写独享、读共享、读写、可重入、重量级锁。</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/cscw/p/13769404.html#7-%E5%9F%BA%E4%BA%8Evolatile--cas-%E5%AE%9E%E7%8E%B0%E5%90%8C%E6%AD%A5%E9%94%81%E7%9A%84%E5%8E%9F%E7%90%86">参考</a></p>
+<p><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/2118483">读写锁参考</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">WangHao</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2022/08/20/%E5%B9%B6%E5%8F%91-%E9%94%81%E5%85%A8%E8%A7%A3/">http://example.com/2022/08/20/%E5%B9%B6%E5%8F%91-%E9%94%81%E5%85%A8%E8%A7%A3/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">WangHao&博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Java%E7%9A%84%E9%94%81/">Java的锁</a></div><div class="post_share"><div class="social-share" data-image="/img/38.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/08/21/MySQL%E7%9A%84%E5%88%A0%E9%99%A4%E4%B8%8E%E7%A9%BA%E9%97%B4%E5%9B%9E%E6%94%B6/"><img class="prev-cover" src="/img/67.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">MySQL的删除与空间回收</div></div></a></div><div class="next-post pull-right"><a href="/2022/08/20/MySQL%E4%B8%ADInoodb%E7%9A%84MVCC%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6%E5%8E%9F%E7%90%86/"><img class="next-cover" src="/img/76.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">MySQL中Inoodb的MVCC版本控制原理</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/head.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">WangHao</div><div class="author-info__description">Stay hungry,stay foolish</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">102</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">123</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AC%E5%B9%B3%E9%94%81-x2F-%E9%9D%9E%E5%85%AC%E5%B9%B3%E9%94%81"><span class="toc-number">1.</span> <span class="toc-text">公平锁&#x2F;非公平锁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AF%E9%87%8D%E5%85%A5%E9%94%81"><span class="toc-number">2.</span> <span class="toc-text">可重入锁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8B%AC%E4%BA%AB%E9%94%81-x2F-%E5%85%B1%E4%BA%AB%E9%94%81"><span class="toc-number">3.</span> <span class="toc-text">独享锁&#x2F;共享锁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%92%E6%96%A5%E9%94%81-x2F-%E8%AF%BB%E5%86%99%E9%94%81"><span class="toc-number">4.</span> <span class="toc-text">互斥锁&#x2F;读写锁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B9%90%E8%A7%82%E9%94%81-x2F-%E6%82%B2%E8%A7%82%E9%94%81"><span class="toc-number">5.</span> <span class="toc-text">乐观锁&#x2F;悲观锁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E6%AE%B5%E9%94%81"><span class="toc-number">6.</span> <span class="toc-text">分段锁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%81%8F%E5%90%91%E9%94%81-x2F-%E8%BD%BB%E9%87%8F%E7%BA%A7%E9%94%81-x2F-%E9%87%8D%E9%87%8F%E7%BA%A7%E9%94%81"><span class="toc-number">7.</span> <span class="toc-text">偏向锁&#x2F;轻量级锁&#x2F;重量级锁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E6%97%8B%E9%94%81"><span class="toc-number">8.</span> <span class="toc-text">自旋锁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%BB%E5%86%99%E9%94%81%EF%BC%88ReentrantReadWriteLock%EF%BC%89"><span class="toc-number">9.</span> <span class="toc-text">读写锁（ReentrantReadWriteLock）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%99%E9%94%81writeLock"><span class="toc-number">9.1.</span> <span class="toc-text">写锁writeLock</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%BB%E9%94%81readLock"><span class="toc-number">9.2.</span> <span class="toc-text">读锁readLock</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%94%81%E7%9A%84%E9%99%8D%E7%BA%A7"><span class="toc-number">10.</span> <span class="toc-text">锁的降级</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java%E9%94%81%E6%80%BB%E7%BB%93"><span class="toc-number">11.</span> <span class="toc-text">Java锁总结</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/01/11/%E5%B9%B6%E5%8F%91-%E6%AD%BB%E9%94%81/" title="并发-死锁"><img src="/img/102.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="并发-死锁"/></a><div class="content"><a class="title" href="/2023/01/11/%E5%B9%B6%E5%8F%91-%E6%AD%BB%E9%94%81/" title="并发-死锁">并发-死锁</a><time datetime="2023-01-11T14:14:15.000Z" title="发表于 2023-01-11 22:14:15">2023-01-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/01/07/RocketMQ%E4%BD%BF%E7%94%A8%E4%B8%AD%E9%81%87%E5%88%B0%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/" title="RocketMQ使用中遇到循环依赖"><img src="/img/101.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RocketMQ使用中遇到循环依赖"/></a><div class="content"><a class="title" href="/2023/01/07/RocketMQ%E4%BD%BF%E7%94%A8%E4%B8%AD%E9%81%87%E5%88%B0%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/" title="RocketMQ使用中遇到循环依赖">RocketMQ使用中遇到循环依赖</a><time datetime="2023-01-07T14:36:53.000Z" title="发表于 2023-01-07 22:36:53">2023-01-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/01/06/RocketMQ%E6%B6%88%E6%81%AF%E5%8F%AF%E9%9D%A0%E6%80%A7%E4%BF%9D%E8%AF%81/" title="RocketMQ消息可靠性保证"><img src="/img/100.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RocketMQ消息可靠性保证"/></a><div class="content"><a class="title" href="/2023/01/06/RocketMQ%E6%B6%88%E6%81%AF%E5%8F%AF%E9%9D%A0%E6%80%A7%E4%BF%9D%E8%AF%81/" title="RocketMQ消息可靠性保证">RocketMQ消息可靠性保证</a><time datetime="2023-01-06T14:57:15.000Z" title="发表于 2023-01-06 22:57:15">2023-01-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/01/04/RocketMQ%E8%AF%A6%E8%A7%A3%E4%B8%8E%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/" title="RocketMQ详解与项目使用"><img src="/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RocketMQ详解与项目使用"/></a><div class="content"><a class="title" href="/2023/01/04/RocketMQ%E8%AF%A6%E8%A7%A3%E4%B8%8E%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/" title="RocketMQ详解与项目使用">RocketMQ详解与项目使用</a><time datetime="2023-01-04T08:24:40.000Z" title="发表于 2023-01-04 16:24:40">2023-01-04</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/01/02/Spring%E4%BA%8B%E5%8A%A1/" title="Spring事务"><img src="/img/99.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Spring事务"/></a><div class="content"><a class="title" href="/2023/01/02/Spring%E4%BA%8B%E5%8A%A1/" title="Spring事务">Spring事务</a><time datetime="2023-01-02T15:46:49.000Z" title="发表于 2023-01-02 23:46:49">2023-01-02</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/img/38.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By WangHao</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/fireworks.min.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
