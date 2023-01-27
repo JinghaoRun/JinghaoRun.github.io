@@ -1,0 +1,236 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>MySQL如何解决一主多从的过期读问题 | WangHao&amp;博客</title><meta name="author" content="WangHao"><meta name="copyright" content="WangHao"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="两种架构基于一主多从的读写分离，如何处理主备延迟导致的读写分离问题。 读写分离的主要目标：分摊主库压力。 有两种架构： 1、客户端主动做负载均衡，把数据库的连接信息放在客户端的连接层。由客户端选择后端数据库进行查询。  2、MySQL和客户端之间加上一个中间代理层proxy，客户端只连接proxy，由proxy根据请求类型和上下文决定请求的分发路由。  两种架构特点 1、客户端直连方案，少了一层p">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL如何解决一主多从的过期读问题">
+<meta property="og:url" content="http://example.com/2023/01/27/MySQL%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E4%B8%80%E4%B8%BB%E5%A4%9A%E4%BB%8E%E7%9A%84%E8%BF%87%E6%9C%9F%E8%AF%BB%E9%97%AE%E9%A2%98/index.html">
+<meta property="og:site_name" content="WangHao&amp;博客">
+<meta property="og:description" content="两种架构基于一主多从的读写分离，如何处理主备延迟导致的读写分离问题。 读写分离的主要目标：分摊主库压力。 有两种架构： 1、客户端主动做负载均衡，把数据库的连接信息放在客户端的连接层。由客户端选择后端数据库进行查询。  2、MySQL和客户端之间加上一个中间代理层proxy，客户端只连接proxy，由proxy根据请求类型和上下文决定请求的分发路由。  两种架构特点 1、客户端直连方案，少了一层p">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/103.jpg">
+<meta property="article:published_time" content="2023-01-27T10:03:38.000Z">
+<meta property="article:modified_time" content="2023-01-27T11:55:34.528Z">
+<meta property="article:author" content="WangHao">
+<meta property="article:tag" content="解决一主多从的过期读问题">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/103.jpg"><link rel="shortcut icon" href="/img/head.jpg"><link rel="canonical" href="http://example.com/2023/01/27/MySQL%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E4%B8%80%E4%B8%BB%E5%A4%9A%E4%BB%8E%E7%9A%84%E8%BF%87%E6%9C%9F%E8%AF%BB%E9%97%AE%E9%A2%98/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'MySQL如何解决一主多从的过期读问题',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-01-27 19:55:34'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/head.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">103</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">124</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/103.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">WangHao&amp;博客</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">MySQL如何解决一主多从的过期读问题</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-01-27T10:03:38.000Z" title="发表于 2023-01-27 18:03:38">2023-01-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-01-27T11:55:34.528Z" title="更新于 2023-01-27 19:55:34">2023-01-27</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93/">MySQL数据库</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="MySQL如何解决一主多从的过期读问题"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="两种架构"><a href="#两种架构" class="headerlink" title="两种架构"></a>两种架构</h2><p>基于一主多从的读写分离，如何处理主备延迟导致的读写分离问题。</p>
+<p>读写分离的主要目标：分摊主库压力。</p>
+<p>有两种架构：</p>
+<p>1、客户端主动做负载均衡，把数据库的连接信息放在客户端的连接层。由客户端选择后端数据库进行查询。</p>
+<p><img src="1.png"></p>
+<p>2、MySQL和客户端之间加上一个中间代理层proxy，客户端只连接proxy，由proxy根据请求类型和上下文决定请求的分发路由。</p>
+<p><img src="2.png"></p>
+<p>两种架构特点</p>
+<p>1、客户端直连方案，少了一层proxy转发，查询性能较好，结构也比较简单。</p>
+<p>由于要了解后端部署细节，所以在出现主备切换、库迁移等操作时，客户端都会感知到，并且调整数据库连接信息。客户端再分配一个负责管理后端的组件，让业务端只注重于业务逻辑开发</p>
+<p>2、带proxy的架构，使客户端不需要关注后端细节。</p>
+<p>连接维护、后端信息维护等工作，都是由proxy完成的。但是架构整体相对复杂</p>
+<p>两种架构都会遇到”过期读”问题：</p>
+<p>由于主从可能存在延迟，客户端执行完一个更新事务后马上发起查询，如果查询选择的是从库的话，就有可能读到的是事务更新之前的状态。</p>
+<p>客户端希望的是查询从库的数据结果和查主库的数据结果是一样的。</p>
+<p>下面是解决方案：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">强制走主库方案；</span><br><span class="line">sleep方案；</span><br><span class="line">判断主备无延迟方案；</span><br><span class="line">配合semi_sync方案；</span><br><span class="line">等主库位点方案；</span><br><span class="line">等GTID方案；</span><br></pre></td></tr></table></figure>
+
+<p>实际应用中，这几个方案可以混合使用。</p>
+<p>比如，现在客户端对请求做分类，区分哪些请求可以接受过期读，哪些请求完全不饿能接受过期读。然后，对于不能接受过期读的语句，再使用等GTID或等位点的方案，</p>
+<p>过期读本质上是由一写多读导致的，为了避免过期读，只有两种选择：</p>
+<p>1、超时放弃</p>
+<p>2、转到主库查询</p>
+<h2 id="强制走主库方案"><a href="#强制走主库方案" class="headerlink" title="强制走主库方案"></a>强制走主库方案</h2><p>将查询请求做分类：</p>
+<p>1、对于必须要拿到最新结果的请求，强制将其发到主库上。</p>
+<p>2、对于可以读到旧数据的请求，才将其发到从库上。</p>
+<p>这种方案虽然取巧，但是好用。</p>
+<p>此方案最大的问题在于：当遇到实时性比较高要求的业务需求，就要放弃读写分离，所有的读写压力都在主库，等同于放弃了扩展性。</p>
+<h2 id="Sleep方案"><a href="#Sleep方案" class="headerlink" title="Sleep方案"></a>Sleep方案</h2><p>主库更新后，读从库之前先sleep。如执行一条select sleep(1)命令。</p>
+<p>方案假设：大多数情况下主备延迟在1s之内，做一个sleep可以有很大概率拿到到最新的数据</p>
+<p>该方案不精确：</p>
+<p>1、如果这个查询请求0.1s就能在从库拿到正确结果，sleep(1)也会等1s</p>
+<p>2、如果延迟超过1s，还是会出现过期读</p>
+<h2 id="判断主备无延迟方案"><a href="#判断主备无延迟方案" class="headerlink" title="判断主备无延迟方案"></a>判断主备无延迟方案</h2><p>要确保备库无延迟有三种做法：</p>
+<p>在show slave status结果里的seconds_behind_master参数可以用来衡量主备延迟时间的长短。</p>
+<p>第一种方法</p>
+<p>每次从库执行查询请求前，先判断seconds_behind_master是否等于0，如果不等于0就要等到这个参数变为0才执行查询操作。</p>
+<p>第二种方法</p>
+<p>比对位点确保主备无延迟。</p>
+<pre><code>Master_Log_File 和 Read_Master_Log_Pos,表示的是读到的主库的最新位点；
+
+Relay_Master_Log_File 和 Exec_Master_Log_Pos,表示的是备库执行的最新位点；
+</code></pre>
+<p>如果Master_Log_File 和 Relay_Master_Log_File 值相同，且Read_Master_Log_Pos和Exec_Master_Log_Pos相同，说明接受到的日志已经同步完成。</p>
+<p>第三种方法</p>
+<p>对比GTID集合确保主备无延迟</p>
+<p>如果两个集合相同，表示备库接收到了日志都已同步完成。</p>
+<p>一个事务的binlog在主备库之间的状态：</p>
+<p>1、主库执行完成，写入binlog，并反馈给客户端；</p>
+<p>2、binlog被从主库发送给备库，备库收到</p>
+<p>3、在备库执行binlog完成。</p>
+<p>我们上面判断主备无延迟的逻辑是”备库收到的日志都执行完成了”，但是有一部分日志会处于客户端已经收到提交确认，而备库还没收到日志的状态。<br>在这里插入图片描述</p>
+<p>在主库上执行完成了三个事务trx1、trx2、trx3，前两个已经传到从库并且执行完成了。trx3在主库执行完成，并且已经回复给客户端，但是还没有传到从库中。此时在从库B上执行查询请求，按照上面的三个方法的逻辑，从库会认为已经没有同步延迟，但是还是会查不到trx3.</p>
+<h2 id="配合semi-sync"><a href="#配合semi-sync" class="headerlink" title="配合semi-sync"></a>配合semi-sync</h2><p>解决上面的问题，要引入半同步复制，即semi-sync replication</p>
+<p>semi-sync是这样做的：</p>
+<p>1、事务提交的时候，主库把binlog发给从库；</p>
+<p>2、从库收到binlog以后，发回给主库一个ack，表示收到了</p>
+<p>3、主库收到这个ack以后，才能给客户端返回”事务完成”的确认</p>
+<p>也就是说，如果启用了semi-sync，就说明所有给客户端发送过确认的事务备库都已经收到了日志。</p>
+<p>semi-sync+位点的判断方案，在一主一备场景是成立的，在一主多从场景中，主库只要等到一个从库的ack，就开始给客户端返回确认。</p>
+<p>但是这样会出现问题：</p>
+<p>1、查询落到没有收到最新日志的从库上，产生过期读。</p>
+<p>2、业务更新高峰期，主库的位点或者GTID集合更新很快，两个位点的等值判断一直不成立，很可能出现从库上迟迟无法响应查询请求的情况</p>
+<h2 id="等主库位点方案"><a href="#等主库位点方案" class="headerlink" title="等主库位点方案"></a>等主库位点方案</h2><p>这个命令逻辑如下：</p>
+<p>1、在从库执行</p>
+<p>2、参数file和pos指的是主库的文件名和位置</p>
+<p>3、timeout可选，设置为正整数N表示这个函数最多等待N秒</p>
+<p>4、返回正整数M，表示从命令开始执行，到应用完file和pos表示的binlog位置执行了多少事务</p>
+<p>返回值还有一下异常结果：</p>
+<p>1、NULL，执行期间，备库同步线程发生异常。</p>
+<p>2、-1，等待时间超过N秒</p>
+<p>3、0，这个位置已经执行过了</p>
+<p>使用该方法步骤：</p>
+<p>1、事务trx1更新完后，马上执行show master status得到当前主库执行到的File和Position</p>
+<p>2、选定一个从库执行查询语句</p>
+<p>3、在从库上执行select master_pos_wait(File,Position,1)</p>
+<p>4、如果返回值是&gt;&#x3D;0的正整数，则在这个从库执行查询语句</p>
+<p>5、否则到主库执行查询语句。</p>
+<p>假设，每条select最多在从库上等待1s，如果1s内master_pos_wait返回一个&gt;&#x3D;0的整数，就确保了从库上执行的这个查询结果一定包含trx1数据。</p>
+<p>如果每个从库都延迟超过了1s，查询压力都会跑到主库上去。</p>
+<p>但是为了不允许过期读，只有两种方法：1、超时放弃 2、转到主库查询</p>
+<h2 id="GTID方案"><a href="#GTID方案" class="headerlink" title="GTID方案"></a>GTID方案</h2><p>命令逻辑是：</p>
+<p>1、等待，直到这个库执行的事务中包含传入的gtid_set，返回0</p>
+<p>2、超时返回1</p>
+<p>等GTID的执行流程为：</p>
+<p>1、事务trx1更新后，从返回包直接获取这个事务GTID，记为gtid1</p>
+<p>2、选定一个从库执行查询语句</p>
+<p>3、在从库上执行select wait_for_executed_gtid_set(gtid1,1)</p>
+<p>4、如果返回值为0，在这个从库中执行查询语句</p>
+<p>5、否则，到主库执行查询语句</p>
+<p>tips：使MySQL在执行事务后，返回包中带上GTID：</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">WangHao</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2023/01/27/MySQL%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E4%B8%80%E4%B8%BB%E5%A4%9A%E4%BB%8E%E7%9A%84%E8%BF%87%E6%9C%9F%E8%AF%BB%E9%97%AE%E9%A2%98/">http://example.com/2023/01/27/MySQL%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E4%B8%80%E4%B8%BB%E5%A4%9A%E4%BB%8E%E7%9A%84%E8%BF%87%E6%9C%9F%E8%AF%BB%E9%97%AE%E9%A2%98/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">WangHao&博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%A7%A3%E5%86%B3%E4%B8%80%E4%B8%BB%E5%A4%9A%E4%BB%8E%E7%9A%84%E8%BF%87%E6%9C%9F%E8%AF%BB%E9%97%AE%E9%A2%98/">解决一主多从的过期读问题</a></div><div class="post_share"><div class="social-share" data-image="/img/103.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/01/11/%E5%B9%B6%E5%8F%91-%E6%AD%BB%E9%94%81/"><img class="next-cover" src="/img/102.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">并发-死锁</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/head.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">WangHao</div><div class="author-info__description">Stay hungry,stay foolish</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">103</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">124</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%A4%E7%A7%8D%E6%9E%B6%E6%9E%84"><span class="toc-number">1.</span> <span class="toc-text">两种架构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%BA%E5%88%B6%E8%B5%B0%E4%B8%BB%E5%BA%93%E6%96%B9%E6%A1%88"><span class="toc-number">2.</span> <span class="toc-text">强制走主库方案</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Sleep%E6%96%B9%E6%A1%88"><span class="toc-number">3.</span> <span class="toc-text">Sleep方案</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A4%E6%96%AD%E4%B8%BB%E5%A4%87%E6%97%A0%E5%BB%B6%E8%BF%9F%E6%96%B9%E6%A1%88"><span class="toc-number">4.</span> <span class="toc-text">判断主备无延迟方案</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E5%90%88semi-sync"><span class="toc-number">5.</span> <span class="toc-text">配合semi-sync</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AD%89%E4%B8%BB%E5%BA%93%E4%BD%8D%E7%82%B9%E6%96%B9%E6%A1%88"><span class="toc-number">6.</span> <span class="toc-text">等主库位点方案</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GTID%E6%96%B9%E6%A1%88"><span class="toc-number">7.</span> <span class="toc-text">GTID方案</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/01/27/MySQL%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E4%B8%80%E4%B8%BB%E5%A4%9A%E4%BB%8E%E7%9A%84%E8%BF%87%E6%9C%9F%E8%AF%BB%E9%97%AE%E9%A2%98/" title="MySQL如何解决一主多从的过期读问题"><img src="/img/103.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MySQL如何解决一主多从的过期读问题"/></a><div class="content"><a class="title" href="/2023/01/27/MySQL%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E4%B8%80%E4%B8%BB%E5%A4%9A%E4%BB%8E%E7%9A%84%E8%BF%87%E6%9C%9F%E8%AF%BB%E9%97%AE%E9%A2%98/" title="MySQL如何解决一主多从的过期读问题">MySQL如何解决一主多从的过期读问题</a><time datetime="2023-01-27T10:03:38.000Z" title="发表于 2023-01-27 18:03:38">2023-01-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/01/11/%E5%B9%B6%E5%8F%91-%E6%AD%BB%E9%94%81/" title="并发-死锁"><img src="/img/102.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="并发-死锁"/></a><div class="content"><a class="title" href="/2023/01/11/%E5%B9%B6%E5%8F%91-%E6%AD%BB%E9%94%81/" title="并发-死锁">并发-死锁</a><time datetime="2023-01-11T14:14:15.000Z" title="发表于 2023-01-11 22:14:15">2023-01-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/01/07/RocketMQ%E4%BD%BF%E7%94%A8%E4%B8%AD%E9%81%87%E5%88%B0%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/" title="RocketMQ使用中遇到循环依赖"><img src="/img/101.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RocketMQ使用中遇到循环依赖"/></a><div class="content"><a class="title" href="/2023/01/07/RocketMQ%E4%BD%BF%E7%94%A8%E4%B8%AD%E9%81%87%E5%88%B0%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/" title="RocketMQ使用中遇到循环依赖">RocketMQ使用中遇到循环依赖</a><time datetime="2023-01-07T14:36:53.000Z" title="发表于 2023-01-07 22:36:53">2023-01-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/01/06/RocketMQ%E6%B6%88%E6%81%AF%E5%8F%AF%E9%9D%A0%E6%80%A7%E4%BF%9D%E8%AF%81/" title="RocketMQ消息可靠性保证"><img src="/img/100.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RocketMQ消息可靠性保证"/></a><div class="content"><a class="title" href="/2023/01/06/RocketMQ%E6%B6%88%E6%81%AF%E5%8F%AF%E9%9D%A0%E6%80%A7%E4%BF%9D%E8%AF%81/" title="RocketMQ消息可靠性保证">RocketMQ消息可靠性保证</a><time datetime="2023-01-06T14:57:15.000Z" title="发表于 2023-01-06 22:57:15">2023-01-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/01/04/RocketMQ%E8%AF%A6%E8%A7%A3%E4%B8%8E%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/" title="RocketMQ详解与项目使用"><img src="/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RocketMQ详解与项目使用"/></a><div class="content"><a class="title" href="/2023/01/04/RocketMQ%E8%AF%A6%E8%A7%A3%E4%B8%8E%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/" title="RocketMQ详解与项目使用">RocketMQ详解与项目使用</a><time datetime="2023-01-04T08:24:40.000Z" title="发表于 2023-01-04 16:24:40">2023-01-04</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/img/103.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By WangHao</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/fireworks.min.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
